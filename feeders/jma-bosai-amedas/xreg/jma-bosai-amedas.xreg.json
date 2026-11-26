@@ -18,7 +18,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/JP.JMA.Amedas"
+        "#/messagegroups/JP.JMA.Amedas",
+        "#/messagegroups/JP.JMA.Amedas.avro",
+        "#/messagegroups/JP.JMA.Amedas.avro.binary"
       ]
     },
     "JP.JMA.Amedas.Mqtt": {
@@ -39,7 +41,9 @@
         ]
       },
       "messagegroups": [
-        "#/messagegroups/JP.JMA.Amedas.mqtt"
+        "#/messagegroups/JP.JMA.Amedas.mqtt",
+        "#/messagegroups/JP.JMA.Amedas.mqtt.avro",
+        "#/messagegroups/JP.JMA.Amedas.mqtt.avro.binary"
       ],
       "description": "MQTT/5.0 producer endpoint for jma-bosai-amedas CloudEvents."
     },
@@ -61,7 +65,9 @@
         ]
       },
       "messagegroups": [
-        "#/messagegroups/JP.JMA.Amedas.amqp"
+        "#/messagegroups/JP.JMA.Amedas.amqp",
+        "#/messagegroups/JP.JMA.Amedas.amqp.avro",
+        "#/messagegroups/JP.JMA.Amedas.amqp.avro.binary"
       ],
       "description": "AMQP/1.0 producer endpoint for jma-bosai-amedas CloudEvents."
     }
@@ -84,6 +90,10 @@
             "subject": {
               "value": "jp.jma.amedas/{station_code}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -104,6 +114,10 @@
             "subject": {
               "value": "jp.jma.amedas/{station_code}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -188,6 +202,144 @@
                 "value": "{event}",
                 "description": "event routing axis carried in the event payload."
               }
+            }
+          }
+        }
+      }
+    },
+    "JP.JMA.Amedas.avro": {
+      "messagegroupid": "JP.JMA.Amedas.avro",
+      "messages": {
+        "JP.JMA.Amedas.Station": {
+          "messageid": "JP.JMA.Amedas.Station",
+          "basemessage": "/messagegroups/JP.JMA.Amedas/messages/JP.JMA.Amedas.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/JP.JMA.Amedas.avro/schemas/JP.JMA.Amedas.Station"
+        },
+        "JP.JMA.Amedas.Observation": {
+          "messageid": "JP.JMA.Amedas.Observation",
+          "basemessage": "/messagegroups/JP.JMA.Amedas/messages/JP.JMA.Amedas.Observation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/JP.JMA.Amedas.avro/schemas/JP.JMA.Amedas.Observation"
+        }
+      }
+    },
+    "JP.JMA.Amedas.avro.binary": {
+      "messagegroupid": "JP.JMA.Amedas.avro.binary",
+      "messages": {
+        "JP.JMA.Amedas.Station": {
+          "messageid": "JP.JMA.Amedas.Station",
+          "basemessage": "/messagegroups/JP.JMA.Amedas/messages/JP.JMA.Amedas.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/JP.JMA.Amedas.avro/schemas/JP.JMA.Amedas.Station",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "JP.JMA.Amedas.Observation": {
+          "messageid": "JP.JMA.Amedas.Observation",
+          "basemessage": "/messagegroups/JP.JMA.Amedas/messages/JP.JMA.Amedas.Observation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/JP.JMA.Amedas.avro/schemas/JP.JMA.Amedas.Observation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "JP.JMA.Amedas.mqtt.avro": {
+      "messagegroupid": "JP.JMA.Amedas.mqtt.avro",
+      "messages": {
+        "JP.JMA.Amedas.mqtt.Station": {
+          "messageid": "JP.JMA.Amedas.mqtt.Station",
+          "basemessage": "/messagegroups/JP.JMA.Amedas.mqtt/messages/JP.JMA.Amedas.mqtt.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/JP.JMA.Amedas.avro/schemas/JP.JMA.Amedas.Station"
+        },
+        "JP.JMA.Amedas.mqtt.Observation": {
+          "messageid": "JP.JMA.Amedas.mqtt.Observation",
+          "basemessage": "/messagegroups/JP.JMA.Amedas.mqtt/messages/JP.JMA.Amedas.mqtt.Observation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/JP.JMA.Amedas.avro/schemas/JP.JMA.Amedas.Observation"
+        }
+      }
+    },
+    "JP.JMA.Amedas.mqtt.avro.binary": {
+      "messagegroupid": "JP.JMA.Amedas.mqtt.avro.binary",
+      "messages": {
+        "JP.JMA.Amedas.mqtt.Station": {
+          "messageid": "JP.JMA.Amedas.mqtt.Station",
+          "basemessage": "/messagegroups/JP.JMA.Amedas.mqtt/messages/JP.JMA.Amedas.mqtt.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/JP.JMA.Amedas.avro/schemas/JP.JMA.Amedas.Station",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "JP.JMA.Amedas.mqtt.Observation": {
+          "messageid": "JP.JMA.Amedas.mqtt.Observation",
+          "basemessage": "/messagegroups/JP.JMA.Amedas.mqtt/messages/JP.JMA.Amedas.mqtt.Observation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/JP.JMA.Amedas.avro/schemas/JP.JMA.Amedas.Observation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "JP.JMA.Amedas.amqp.avro": {
+      "messagegroupid": "JP.JMA.Amedas.amqp.avro",
+      "messages": {
+        "JP.JMA.Amedas.amqp.Station": {
+          "messageid": "JP.JMA.Amedas.amqp.Station",
+          "basemessage": "/messagegroups/JP.JMA.Amedas.amqp/messages/JP.JMA.Amedas.amqp.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/JP.JMA.Amedas.avro/schemas/JP.JMA.Amedas.Station"
+        },
+        "JP.JMA.Amedas.amqp.Observation": {
+          "messageid": "JP.JMA.Amedas.amqp.Observation",
+          "basemessage": "/messagegroups/JP.JMA.Amedas.amqp/messages/JP.JMA.Amedas.amqp.Observation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/JP.JMA.Amedas.avro/schemas/JP.JMA.Amedas.Observation"
+        }
+      }
+    },
+    "JP.JMA.Amedas.amqp.avro.binary": {
+      "messagegroupid": "JP.JMA.Amedas.amqp.avro.binary",
+      "messages": {
+        "JP.JMA.Amedas.amqp.Station": {
+          "messageid": "JP.JMA.Amedas.amqp.Station",
+          "basemessage": "/messagegroups/JP.JMA.Amedas.amqp/messages/JP.JMA.Amedas.amqp.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/JP.JMA.Amedas.avro/schemas/JP.JMA.Amedas.Station",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "JP.JMA.Amedas.amqp.Observation": {
+          "messageid": "JP.JMA.Amedas.amqp.Observation",
+          "basemessage": "/messagegroups/JP.JMA.Amedas.amqp/messages/JP.JMA.Amedas.amqp.Observation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/JP.JMA.Amedas.avro/schemas/JP.JMA.Amedas.Observation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
             }
           }
         }
@@ -930,9 +1082,101 @@
                   }
                 ]
               }
+            },
+            "2": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "JP.JMA.Amedas.Station",
+                "fields": [
+                  {
+                    "name": "station_code",
+                    "type": "string",
+                    "doc": "JMA AMeDAS five-digit station code used as the stable identifier in the Bosai AMeDAS station table and observation map. JSON Structure annotations: {\"pattern\": \"^[0-9]{5}$\"}"
+                  },
+                  {
+                    "name": "kj_name",
+                    "type": "string",
+                    "doc": "Japanese kanji station name from the JMA AMeDAS station table (kjName), used by the Bosai web application for Japanese display labels."
+                  },
+                  {
+                    "name": "kana",
+                    "type": "string",
+                    "doc": "Japanese kana station reading from the JMA AMeDAS station table (knName in live payloads, kana in older examples), used by the Bosai web application for phonetic Japanese display."
+                  },
+                  {
+                    "name": "en_name",
+                    "type": "string",
+                    "doc": "English station name from the JMA AMeDAS station table."
+                  },
+                  {
+                    "name": "latitude",
+                    "type": "double",
+                    "doc": "Station latitude in WGS84 decimal degrees. The JMA station table publishes latitude as [degrees, minutes]; the bridge converts it with degrees + minutes/60. JSON Structure annotations: {\"maximum\": 90, \"minimum\": -90, \"symbol\": \"°\", \"unit\": \"degree\"}"
+                  },
+                  {
+                    "name": "longitude",
+                    "type": "double",
+                    "doc": "Station longitude in WGS84 decimal degrees. The JMA station table publishes longitude as [degrees, minutes]; the bridge converts it with degrees + minutes/60. JSON Structure annotations: {\"maximum\": 180, \"minimum\": -180, \"symbol\": \"°\", \"unit\": \"degree\"}"
+                  },
+                  {
+                    "name": "altitude_m",
+                    "type": "double",
+                    "doc": "Station elevation above sea level in meters from the JMA station table alt field. JSON Structure annotations: {\"unit\": \"meter\"}"
+                  },
+                  {
+                    "name": "station_type",
+                    "type": {
+                      "type": "enum",
+                      "name": "JP.JMA.Amedas.Station_types.station_type",
+                      "symbols": [
+                        "A",
+                        "B",
+                        "C",
+                        "D",
+                        "E",
+                        "F",
+                        "G"
+                      ]
+                    },
+                    "doc": "JMA AMeDAS station capability tier as published in the live Bosai station table. The tier controls which measurements may be emitted for a station, and the current feed uses codes A through G. JSON Structure annotations: {\"descriptions\": {\"A\": \"JMA AMeDAS capability tier A station, typically a major station with pressure and broader meteorological observations.\", \"B\": \"JMA AMeDAS capability tier B station.\", \"C\": \"JMA AMeDAS capability tier C station, commonly an automated regional station with a smaller measurement set.\", \"D\": \"JMA AMeDAS capability tier D station as published in the live Bosai station table.\", \"E\": \"JMA AMeDAS capability tier E station as published in the live Bosai station table.\", \"F\": \"JMA AMeDAS capability tier F station as published in the live Bosai station table.\", \"G\": \"JMA AMeDAS capability tier G station as published in the Bosai station table. These special-purpose stations expose a non-standard measurement mix compared with the core A/B/C network.\"}, \"enum\": [\"A\", \"B\", \"C\", \"D\", \"E\", \"F\", \"G\"]}"
+                  },
+                  {
+                    "name": "elems_bitmask",
+                    "type": "string",
+                    "doc": "JMA Bosai AMeDAS element bitmask string from the station table. Each non-zero character indicates that the corresponding station capability is enabled in the Bosai web application."
+                  },
+                  {
+                    "name": "enabled_measurements",
+                    "type": {
+                      "type": "array",
+                      "items": "string"
+                    },
+                    "doc": "Measurement capability names derived by the bridge from the JMA elems_bitmask. The values describe which observation families the station can emit, such as precipitation, wind, temperature, sunshine_duration, snow_depth, humidity, pressure, or visibility."
+                  },
+                  {
+                    "name": "prefecture",
+                    "type": "string",
+                    "doc": "ASCII-safe Japanese prefecture or region slug used as a MQTT and AMQP routing axis. The bridge derives this from JMA station/volcano metadata when available, otherwise emits unknown. JSON Structure annotations: {\"pattern\": \"^[a-z0-9][a-z0-9-]*$\"}"
+                  },
+                  {
+                    "name": "event",
+                    "type": {
+                      "type": "enum",
+                      "name": "JP.JMA.Amedas.Station_types.event",
+                      "symbols": [
+                        "info"
+                      ]
+                    },
+                    "doc": "Fixed topic event segment for Station messages. JSON Structure annotations: {\"enum\": [\"info\"], \"name\": \"StationEventEnum\"}"
+                  }
+                ],
+                "doc": "Reference event for one JMA AMeDAS station from the Bosai amedastable.json station table, including names, geodetic position, elevation, station capability tier, and measurement capability bitmask."
+              }
             }
           },
-          "format": "Avro/1.11.3"
+          "format": "Avro/1.11.3",
+          "defaultversionid": "2"
         },
         "JP.JMA.Amedas.Observation": {
           "versions": {
@@ -1393,9 +1637,435 @@
                   }
                 ]
               }
+            },
+            "2": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "JP.JMA.Amedas.Observation",
+                "fields": [
+                  {
+                    "name": "station_code",
+                    "type": "string",
+                    "doc": "JMA AMeDAS five-digit station code used as the stable identifier in the Bosai AMeDAS station table and observation map. JSON Structure annotations: {\"pattern\": \"^[0-9]{5}$\"}"
+                  },
+                  {
+                    "name": "observed_at",
+                    "type": "string",
+                    "doc": "Observation snapshot timestamp converted from JMA latest_time.txt to UTC and serialized as RFC3339. AMeDAS map snapshots are published every ten minutes."
+                  },
+                  {
+                    "name": "observed_at_local",
+                    "type": "string",
+                    "doc": "Original JMA latest_time.txt timestamp in Japan Standard Time with +09:00 offset, serialized as RFC3339."
+                  },
+                  {
+                    "name": "temp",
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "doc": "Air temperature observed automatically by AMeDAS, expressed in degrees Celsius. JMA documents temperature as air temperature displayed in 0.1 °C units. JSON Structure annotations: {\"altnames\": {\"jma-bosai\": \"temp\"}, \"unit\": \"celsius\"}"
+                  },
+                  {
+                    "name": "temp_qc_flag",
+                    "type": [
+                      "int",
+                      "null"
+                    ],
+                    "doc": "JMA quality-control flag accompanying the measurement tuple in the Bosai AMeDAS map payload. A value of 0 indicates normal data; values 1 through 9 indicate JMA error, correction, missing, estimated, or other non-normal quality states as represented by the Bosai web application."
+                  },
+                  {
+                    "name": "humidity",
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "doc": "Relative humidity of the air observed automatically by AMeDAS, expressed as percent. JMA documents humidity as relative humidity displayed in 1 percent units. JSON Structure annotations: {\"altnames\": {\"jma-bosai\": \"humidity\"}, \"maximum\": 100, \"minimum\": 0, \"unit\": \"percent\"}"
+                  },
+                  {
+                    "name": "humidity_qc_flag",
+                    "type": [
+                      "int",
+                      "null"
+                    ],
+                    "doc": "JMA quality-control flag accompanying the measurement tuple in the Bosai AMeDAS map payload. A value of 0 indicates normal data; values 1 through 9 indicate JMA error, correction, missing, estimated, or other non-normal quality states as represented by the Bosai web application."
+                  },
+                  {
+                    "name": "pressure",
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "doc": "Station pressure from JMA Bosai AMeDAS where available, expressed in hectopascals. JSON Structure annotations: {\"altnames\": {\"jma-bosai\": \"pressure\"}, \"unit\": \"hectopascal\"}"
+                  },
+                  {
+                    "name": "pressure_qc_flag",
+                    "type": [
+                      "int",
+                      "null"
+                    ],
+                    "doc": "JMA quality-control flag accompanying the measurement tuple in the Bosai AMeDAS map payload. A value of 0 indicates normal data; values 1 through 9 indicate JMA error, correction, missing, estimated, or other non-normal quality states as represented by the Bosai web application."
+                  },
+                  {
+                    "name": "normal_pressure",
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "doc": "Sea-level adjusted pressure (normalPressure in the Bosai payload) where available, expressed in hectopascals. JSON Structure annotations: {\"unit\": \"hectopascal\"}"
+                  },
+                  {
+                    "name": "normal_pressure_qc_flag",
+                    "type": [
+                      "int",
+                      "null"
+                    ],
+                    "doc": "JMA quality-control flag accompanying the measurement tuple in the Bosai AMeDAS map payload. A value of 0 indicates normal data; values 1 through 9 indicate JMA error, correction, missing, estimated, or other non-normal quality states as represented by the Bosai web application."
+                  },
+                  {
+                    "name": "wind_speed",
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "doc": "Wind speed averaged over the ten minutes before observation time, expressed in meters per second. JMA documents wind speed as the speed of the wind over the preceding ten minutes. JSON Structure annotations: {\"unit\": \"meter_per_second\"}"
+                  },
+                  {
+                    "name": "wind_speed_qc_flag",
+                    "type": [
+                      "int",
+                      "null"
+                    ],
+                    "doc": "JMA quality-control flag accompanying the measurement tuple in the Bosai AMeDAS map payload. A value of 0 indicates normal data; values 1 through 9 indicate JMA error, correction, missing, estimated, or other non-normal quality states as represented by the Bosai web application."
+                  },
+                  {
+                    "name": "wind_direction",
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "doc": "Wind direction from which the wind blows, converted by the bridge from JMA 16-direction codes to degrees clockwise from true north. JSON Structure annotations: {\"exclusiveMaximum\": 360, \"minimum\": 0, \"unit\": \"degree\"}"
+                  },
+                  {
+                    "name": "wind_direction_qc_flag",
+                    "type": [
+                      "int",
+                      "null"
+                    ],
+                    "doc": "JMA quality-control flag accompanying the measurement tuple in the Bosai AMeDAS map payload. A value of 0 indicates normal data; values 1 through 9 indicate JMA error, correction, missing, estimated, or other non-normal quality states as represented by the Bosai web application."
+                  },
+                  {
+                    "name": "wind_gust",
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "doc": "Maximum instantaneous wind speed (gust) for the observation interval from the JMA Bosai per-station point payload, expressed in meters per second. The bridge enriches map observations with this value only for configured point-detail stations. JSON Structure annotations: {\"unit\": \"meter_per_second\"}"
+                  },
+                  {
+                    "name": "wind_gust_qc_flag",
+                    "type": [
+                      "int",
+                      "null"
+                    ],
+                    "doc": "JMA quality-control flag accompanying the gust tuple in the Bosai AMeDAS per-station point payload. A value of 0 indicates normal data; values 1 through 9 indicate JMA non-normal quality states as represented by the Bosai web application."
+                  },
+                  {
+                    "name": "wind_gust_direction",
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "doc": "Direction from which the maximum instantaneous wind gust blew, converted by the bridge from JMA 16-direction codes in gustDirection to degrees clockwise from true north. The field is present only when point-detail enrichment is configured and JMA publishes a gust direction. JSON Structure annotations: {\"exclusiveMaximum\": 360, \"minimum\": 0, \"unit\": \"degree\"}"
+                  },
+                  {
+                    "name": "wind_gust_time",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "doc": "UTC RFC3339 timestamp for the maximum instantaneous wind gust time from the JMA Bosai per-station gustTime object. JMA publishes hour and minute in local time; the bridge resolves the date relative to the observation timestamp and converts it to UTC."
+                  },
+                  {
+                    "name": "max_temp",
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "doc": "Maximum air temperature from the JMA Bosai per-station point payload, expressed in degrees Celsius. The bridge enriches map observations with this value only for configured point-detail stations. JSON Structure annotations: {\"unit\": \"celsius\"}"
+                  },
+                  {
+                    "name": "max_temp_time",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "doc": "UTC RFC3339 timestamp for the maximum air temperature time from the JMA Bosai per-station maxTempTime object. JMA publishes hour and minute in local time; the bridge resolves the date relative to the observation timestamp and converts it to UTC."
+                  },
+                  {
+                    "name": "min_temp",
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "doc": "Minimum air temperature from the JMA Bosai per-station point payload, expressed in degrees Celsius. The bridge enriches map observations with this value only for configured point-detail stations. JSON Structure annotations: {\"unit\": \"celsius\"}"
+                  },
+                  {
+                    "name": "min_temp_time",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "doc": "UTC RFC3339 timestamp for the minimum air temperature time from the JMA Bosai per-station minTempTime object. JMA publishes hour and minute in local time; the bridge resolves the date relative to the observation timestamp and converts it to UTC."
+                  },
+                  {
+                    "name": "precipitation10m",
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "doc": "Precipitation amount for the previous 10 minutes, expressed in millimeters of liquid water equivalent. JMA documents precipitation as rain or snow amount melted to water and displayed in 0.5 mm units. JSON Structure annotations: {\"altnames\": {\"jma-bosai\": \"precipitation10m\"}, \"unit\": \"millimeter\"}"
+                  },
+                  {
+                    "name": "precipitation10m_qc_flag",
+                    "type": [
+                      "int",
+                      "null"
+                    ],
+                    "doc": "JMA quality-control flag accompanying the measurement tuple in the Bosai AMeDAS map payload. A value of 0 indicates normal data; values 1 through 9 indicate JMA error, correction, missing, estimated, or other non-normal quality states as represented by the Bosai web application."
+                  },
+                  {
+                    "name": "precipitation1h",
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "doc": "Precipitation amount for the previous 1 hour, expressed in millimeters of liquid water equivalent. JSON Structure annotations: {\"altnames\": {\"jma-bosai\": \"precipitation1h\"}, \"unit\": \"millimeter\"}"
+                  },
+                  {
+                    "name": "precipitation1h_qc_flag",
+                    "type": [
+                      "int",
+                      "null"
+                    ],
+                    "doc": "JMA quality-control flag accompanying the measurement tuple in the Bosai AMeDAS map payload. A value of 0 indicates normal data; values 1 through 9 indicate JMA error, correction, missing, estimated, or other non-normal quality states as represented by the Bosai web application."
+                  },
+                  {
+                    "name": "precipitation3h",
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "doc": "Precipitation amount for the previous 3 hours, expressed in millimeters of liquid water equivalent. JSON Structure annotations: {\"altnames\": {\"jma-bosai\": \"precipitation3h\"}, \"unit\": \"millimeter\"}"
+                  },
+                  {
+                    "name": "precipitation3h_qc_flag",
+                    "type": [
+                      "int",
+                      "null"
+                    ],
+                    "doc": "JMA quality-control flag accompanying the measurement tuple in the Bosai AMeDAS map payload. A value of 0 indicates normal data; values 1 through 9 indicate JMA error, correction, missing, estimated, or other non-normal quality states as represented by the Bosai web application."
+                  },
+                  {
+                    "name": "precipitation24h",
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "doc": "Precipitation amount for the previous 24 hours, expressed in millimeters of liquid water equivalent. JSON Structure annotations: {\"altnames\": {\"jma-bosai\": \"precipitation24h\"}, \"unit\": \"millimeter\"}"
+                  },
+                  {
+                    "name": "precipitation24h_qc_flag",
+                    "type": [
+                      "int",
+                      "null"
+                    ],
+                    "doc": "JMA quality-control flag accompanying the measurement tuple in the Bosai AMeDAS map payload. A value of 0 indicates normal data; values 1 through 9 indicate JMA error, correction, missing, estimated, or other non-normal quality states as represented by the Bosai web application."
+                  },
+                  {
+                    "name": "sun10m",
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "doc": "Sunshine duration for the previous 10 minutes, expressed in minutes. JMA publishes this ten-minute map field in minutes, so its unit intentionally differs from the hourly sun1h field. JSON Structure annotations: {\"altnames\": {\"jma-bosai\": \"sun10m\"}, \"unit\": \"minute\"}"
+                  },
+                  {
+                    "name": "sun10m_qc_flag",
+                    "type": [
+                      "int",
+                      "null"
+                    ],
+                    "doc": "JMA quality-control flag accompanying the measurement tuple in the Bosai AMeDAS map payload. A value of 0 indicates normal data; values 1 through 9 indicate JMA error, correction, missing, estimated, or other non-normal quality states as represented by the Bosai web application."
+                  },
+                  {
+                    "name": "sun1h",
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "doc": "Sunshine duration for the previous 1 hour, expressed in hours as published by the Bosai AMeDAS map. JMA publishes this hourly field in hours, so its unit intentionally differs from the ten-minute sun10m field. JSON Structure annotations: {\"altnames\": {\"jma-bosai\": \"sun1h\"}, \"unit\": \"hour\"}"
+                  },
+                  {
+                    "name": "sun1h_qc_flag",
+                    "type": [
+                      "int",
+                      "null"
+                    ],
+                    "doc": "JMA quality-control flag accompanying the measurement tuple in the Bosai AMeDAS map payload. A value of 0 indicates normal data; values 1 through 9 indicate JMA error, correction, missing, estimated, or other non-normal quality states as represented by the Bosai web application."
+                  },
+                  {
+                    "name": "snow",
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "doc": "Snow depth, the height of snow on the ground, expressed in centimeters. JMA documents snow depth as the height from the ground surface to the top of accumulated snow. JSON Structure annotations: {\"altnames\": {\"jma-bosai\": \"snow\"}, \"unit\": \"centimeter\"}"
+                  },
+                  {
+                    "name": "snow_qc_flag",
+                    "type": [
+                      "int",
+                      "null"
+                    ],
+                    "doc": "JMA quality-control flag accompanying the measurement tuple in the Bosai AMeDAS map payload. A value of 0 indicates normal data; values 1 through 9 indicate JMA error, correction, missing, estimated, or other non-normal quality states as represented by the Bosai web application."
+                  },
+                  {
+                    "name": "snow1h",
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "doc": "Change in snow depth over the previous 1 hour, expressed in centimeters. JSON Structure annotations: {\"altnames\": {\"jma-bosai\": \"snow1h\"}, \"unit\": \"centimeter\"}"
+                  },
+                  {
+                    "name": "snow1h_qc_flag",
+                    "type": [
+                      "int",
+                      "null"
+                    ],
+                    "doc": "JMA quality-control flag accompanying the measurement tuple in the Bosai AMeDAS map payload. A value of 0 indicates normal data; values 1 through 9 indicate JMA error, correction, missing, estimated, or other non-normal quality states as represented by the Bosai web application."
+                  },
+                  {
+                    "name": "snow6h",
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "doc": "Change in snow depth over the previous 6 hours, expressed in centimeters. JSON Structure annotations: {\"altnames\": {\"jma-bosai\": \"snow6h\"}, \"unit\": \"centimeter\"}"
+                  },
+                  {
+                    "name": "snow6h_qc_flag",
+                    "type": [
+                      "int",
+                      "null"
+                    ],
+                    "doc": "JMA quality-control flag accompanying the measurement tuple in the Bosai AMeDAS map payload. A value of 0 indicates normal data; values 1 through 9 indicate JMA error, correction, missing, estimated, or other non-normal quality states as represented by the Bosai web application."
+                  },
+                  {
+                    "name": "snow12h",
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "doc": "Change in snow depth over the previous 12 hours, expressed in centimeters. JSON Structure annotations: {\"altnames\": {\"jma-bosai\": \"snow12h\"}, \"unit\": \"centimeter\"}"
+                  },
+                  {
+                    "name": "snow12h_qc_flag",
+                    "type": [
+                      "int",
+                      "null"
+                    ],
+                    "doc": "JMA quality-control flag accompanying the measurement tuple in the Bosai AMeDAS map payload. A value of 0 indicates normal data; values 1 through 9 indicate JMA error, correction, missing, estimated, or other non-normal quality states as represented by the Bosai web application."
+                  },
+                  {
+                    "name": "snow24h",
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "doc": "Change in snow depth over the previous 24 hours, expressed in centimeters. JSON Structure annotations: {\"altnames\": {\"jma-bosai\": \"snow24h\"}, \"unit\": \"centimeter\"}"
+                  },
+                  {
+                    "name": "snow24h_qc_flag",
+                    "type": [
+                      "int",
+                      "null"
+                    ],
+                    "doc": "JMA quality-control flag accompanying the measurement tuple in the Bosai AMeDAS map payload. A value of 0 indicates normal data; values 1 through 9 indicate JMA error, correction, missing, estimated, or other non-normal quality states as represented by the Bosai web application."
+                  },
+                  {
+                    "name": "visibility",
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "doc": "Horizontal visibility where published by JMA Bosai AMeDAS, expressed in meters. JSON Structure annotations: {\"altnames\": {\"jma-bosai\": \"visibility\"}, \"unit\": \"meter\"}"
+                  },
+                  {
+                    "name": "visibility_qc_flag",
+                    "type": [
+                      "int",
+                      "null"
+                    ],
+                    "doc": "JMA quality-control flag accompanying the measurement tuple in the Bosai AMeDAS map payload. A value of 0 indicates normal data; values 1 through 9 indicate JMA error, correction, missing, estimated, or other non-normal quality states as represented by the Bosai web application."
+                  },
+                  {
+                    "name": "cloud",
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "doc": "Cloud amount code from JMA Bosai AMeDAS where available. The Bosai map exposes this as a numeric measurement tuple for stations that publish cloud information. JSON Structure annotations: {\"altnames\": {\"jma-bosai\": \"cloud\"}}"
+                  },
+                  {
+                    "name": "cloud_qc_flag",
+                    "type": [
+                      "int",
+                      "null"
+                    ],
+                    "doc": "JMA quality-control flag accompanying the measurement tuple in the Bosai AMeDAS map payload. A value of 0 indicates normal data; values 1 through 9 indicate JMA error, correction, missing, estimated, or other non-normal quality states as represented by the Bosai web application."
+                  },
+                  {
+                    "name": "weather",
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "doc": "Present weather code from JMA Bosai AMeDAS where available. The Bosai map exposes this as a numeric measurement tuple for stations that publish weather information. JSON Structure annotations: {\"altnames\": {\"jma-bosai\": \"weather\"}}"
+                  },
+                  {
+                    "name": "weather_qc_flag",
+                    "type": [
+                      "int",
+                      "null"
+                    ],
+                    "doc": "JMA quality-control flag accompanying the measurement tuple in the Bosai AMeDAS map payload. A value of 0 indicates normal data; values 1 through 9 indicate JMA error, correction, missing, estimated, or other non-normal quality states as represented by the Bosai web application."
+                  },
+                  {
+                    "name": "prefecture",
+                    "type": "string",
+                    "doc": "ASCII-safe Japanese prefecture or region slug used as a MQTT and AMQP routing axis. The bridge derives this from JMA station/volcano metadata when available, otherwise emits unknown. JSON Structure annotations: {\"pattern\": \"^[a-z0-9][a-z0-9-]*$\"}"
+                  },
+                  {
+                    "name": "event",
+                    "type": {
+                      "type": "enum",
+                      "name": "JP.JMA.Amedas.Observation_types.event",
+                      "symbols": [
+                        "observation"
+                      ]
+                    },
+                    "doc": "Fixed topic event segment for Observation messages. JSON Structure annotations: {\"enum\": [\"observation\"], \"name\": \"ObservationEventEnum\"}"
+                  }
+                ],
+                "doc": "Telemetry event for one JMA AMeDAS station observation in a ten-minute Bosai map snapshot. Each measurement value is nullable because JMA publishes different fields by station capability and by observation availability."
+              }
             }
           },
-          "format": "Avro/1.11.3"
+          "format": "Avro/1.11.3",
+          "defaultversionid": "2"
         }
       }
     }

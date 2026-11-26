@@ -1,13 +1,14 @@
-# Mode-S feeder Events
+# Mode-S Events
 
-MQTT/5.0 non-retained per-record Mode-S firehose. Each Downlink Format family (DF17/18 ADS-B, DF4 altitude reply, DF5 identity reply, DF11 all-call/acquisition reply, DF20/21 Comm-B) gets a dedicated topic so subscribers can wildcard per family. QoS 0, retain=false.
+<sub>ADS-B via dump1090 receivers · Kafka · MQTT · AMQP · <a href="https://opensky-network.org/">upstream</a> · <a href="https://opensky-network.org/apidoc/">API docs</a></sub>
 
 ## At a glance
 
-- **Event types:** 12 documented event types (18 transport bindings in the manifest).
+- **Event types:** 18 documented event types (72 transport bindings in the manifest).
 - **Transports:** KAFKA, MQTT/5.0, AMQP/1.0
-- **Reference vs telemetry:** 0 reference/catalog event types and 12 telemetry event types.
+- **Reference vs telemetry:** 0 reference/catalog event types and 18 telemetry event types.
 - **Identity:** `{icao24}/{receiver_id}` identifies the resource each event is about.
+- **Operations:** The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
 - **Read next:** [Quick start](#quick-start--how-to-consume), [Event catalog](#event-catalog), [Conventions](#conventions), [Operational notes](#operational-notes), [References](#references).
 
 ## Quick start — how to consume
@@ -16,7 +17,7 @@ These examples show the smallest useful consumer for each transport declared by 
 
 ### Kafka
 
-Subscribe to `mode-s`. The record key is `{stationid}`. In plain language, `{stationid}` is the stable identity of the resource described by the event. Kafka uses the key for partition routing: events with the same key go to the same partition and keep per-key order, but consumers still receive an interleaved stream.
+Subscribe to `mode-s`. The record key is `{icao24}/{receiver_id}`. In plain language, `{icao24}/{receiver_id}` is the stable identity of the resource described by the event. Kafka uses the key for partition routing: events with the same key go to the same partition and keep per-key order, but consumers still receive an interleaved stream.
 
 ```python
 from confluent_kafka import Consumer
@@ -30,14 +31,14 @@ while True:
 Use different `group.id` values when every consumer should see every event; use the same group id to share partitions. Disable auto-commit and commit after processing for at-least-once application handling.
 ### MQTT 5
 
-Connect to `mqtt://localhost:1883` and subscribe to the topic filters documented per event below. In MQTT filters, `+` matches exactly one topic level and `#` matches the remaining levels only when it is the final segment. Messages published with the RETAIN flag are delivered once per matching topic at subscribe time as Last Known Value; non-retained messages are live stream updates only.
+Connect to `mqtt://localhost:1883` and subscribe to `aviation/intl/mode-s/mode-s/+/+/df17-adsb`, `aviation/intl/mode-s/mode-s/+/+/df4-altitude`, `aviation/intl/mode-s/mode-s/+/+/df5-identity`, `aviation/intl/mode-s/mode-s/+/+/df11-acquisition`, `aviation/intl/mode-s/mode-s/+/+/df20-comm-b`, `aviation/intl/mode-s/mode-s/+/+/df21-comm-b`. In MQTT filters, `+` matches exactly one topic level and `#` matches the remaining levels only when it is the final segment. Messages published with the RETAIN flag are delivered once per matching topic at subscribe time as Last Known Value; non-retained messages are live stream updates only.
 
 ```python
 import paho.mqtt.client as mqtt
 c=mqtt.Client(mqtt.CallbackAPIVersion.VERSION2, protocol=mqtt.MQTTv5)
 c.on_message=lambda c,u,m: print(m.topic, getattr(m.properties,'UserProperty',None), m.payload)
 c.connect('localhost',1883)
-c.subscribe(('#', 1))
+c.subscribe(('aviation/intl/mode-s/mode-s/+/+/df17-adsb', 1))
 c.loop_forever()
 ```
 
@@ -75,8 +76,7 @@ Each event identifies the real-world resource with `{icao24}/{receiver_id}`. `{i
 
 | Transport | Location |
 | --- | --- |
-| `KAFKA` | topic `mode-s`, key `{stationid}` |
-| `AMQP/1.0` | source address `amqps://localhost:5671/mode-s`, message subject `{icao24}/{receiver_id}`; application properties msg_type `{msg_type}` |
+| `KAFKA` | topic `mode-s`, key `{icao24}/{receiver_id}` |
 
 #### Payload
 
@@ -143,8 +143,7 @@ Each event identifies the real-world resource with `{icao24}/{receiver_id}`. `{i
 
 | Transport | Location |
 | --- | --- |
-| `KAFKA` | topic `mode-s`, key `{stationid}` |
-| `AMQP/1.0` | source address `amqps://localhost:5671/mode-s`, message subject `{icao24}/{receiver_id}`; application properties msg_type `{msg_type}` |
+| `KAFKA` | topic `mode-s`, key `{icao24}/{receiver_id}` |
 
 #### Payload
 
@@ -211,8 +210,7 @@ Each event identifies the real-world resource with `{icao24}/{receiver_id}`. `{i
 
 | Transport | Location |
 | --- | --- |
-| `KAFKA` | topic `mode-s`, key `{stationid}` |
-| `AMQP/1.0` | source address `amqps://localhost:5671/mode-s`, message subject `{icao24}/{receiver_id}`; application properties msg_type `{msg_type}` |
+| `KAFKA` | topic `mode-s`, key `{icao24}/{receiver_id}` |
 
 #### Payload
 
@@ -279,8 +277,7 @@ Each event identifies the real-world resource with `{icao24}/{receiver_id}`. `{i
 
 | Transport | Location |
 | --- | --- |
-| `KAFKA` | topic `mode-s`, key `{stationid}` |
-| `AMQP/1.0` | source address `amqps://localhost:5671/mode-s`, message subject `{icao24}/{receiver_id}`; application properties msg_type `{msg_type}` |
+| `KAFKA` | topic `mode-s`, key `{icao24}/{receiver_id}` |
 
 #### Payload
 
@@ -347,8 +344,7 @@ Each event identifies the real-world resource with `{icao24}/{receiver_id}`. `{i
 
 | Transport | Location |
 | --- | --- |
-| `KAFKA` | topic `mode-s`, key `{stationid}` |
-| `AMQP/1.0` | source address `amqps://localhost:5671/mode-s`, message subject `{icao24}/{receiver_id}`; application properties msg_type `{msg_type}` |
+| `KAFKA` | topic `mode-s`, key `{icao24}/{receiver_id}` |
 
 #### Payload
 
@@ -415,8 +411,7 @@ Each event identifies the real-world resource with `{icao24}/{receiver_id}`. `{i
 
 | Transport | Location |
 | --- | --- |
-| `KAFKA` | topic `mode-s`, key `{stationid}` |
-| `AMQP/1.0` | source address `amqps://localhost:5671/mode-s`, message subject `{icao24}/{receiver_id}`; application properties msg_type `{msg_type}` |
+| `KAFKA` | topic `mode-s`, key `{icao24}/{receiver_id}` |
 
 #### Payload
 
@@ -483,11 +478,11 @@ No CloudEvents `subject` template is declared. Use the transport location and pa
 
 | Transport | Location |
 | --- | --- |
-| `MQTT/5.0` | topic `not declared`, retain `not declared`, QoS `not declared` |
+| `MQTT/5.0` | topic `aviation/intl/mode-s/mode-s/{icao24}/{receiver_id}/df17-adsb`, retain `false`, QoS `0` |
 
 #### Payload
 
-`Mqtt` payloads are JSON schema. No required field list is declared.
+`Mqtt` payloads are JSON record. No required field list is declared.
 
 
 #### Example payload
@@ -495,7 +490,7 @@ No CloudEvents `subject` template is declared. Use the transport location and pa
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
 
 ```json
-"string"
+null
 ```
 
 #### Reference vs telemetry
@@ -518,11 +513,11 @@ No CloudEvents `subject` template is declared. Use the transport location and pa
 
 | Transport | Location |
 | --- | --- |
-| `MQTT/5.0` | topic `not declared`, retain `not declared`, QoS `not declared` |
+| `MQTT/5.0` | topic `aviation/intl/mode-s/mode-s/{icao24}/{receiver_id}/df4-altitude`, retain `false`, QoS `0` |
 
 #### Payload
 
-`Mqtt` payloads are JSON schema. No required field list is declared.
+`Mqtt` payloads are JSON record. No required field list is declared.
 
 
 #### Example payload
@@ -530,7 +525,7 @@ No CloudEvents `subject` template is declared. Use the transport location and pa
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
 
 ```json
-"string"
+null
 ```
 
 #### Reference vs telemetry
@@ -553,11 +548,11 @@ No CloudEvents `subject` template is declared. Use the transport location and pa
 
 | Transport | Location |
 | --- | --- |
-| `MQTT/5.0` | topic `not declared`, retain `not declared`, QoS `not declared` |
+| `MQTT/5.0` | topic `aviation/intl/mode-s/mode-s/{icao24}/{receiver_id}/df5-identity`, retain `false`, QoS `0` |
 
 #### Payload
 
-`Mqtt` payloads are JSON schema. No required field list is declared.
+`Mqtt` payloads are JSON record. No required field list is declared.
 
 
 #### Example payload
@@ -565,7 +560,7 @@ No CloudEvents `subject` template is declared. Use the transport location and pa
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
 
 ```json
-"string"
+null
 ```
 
 #### Reference vs telemetry
@@ -588,11 +583,11 @@ No CloudEvents `subject` template is declared. Use the transport location and pa
 
 | Transport | Location |
 | --- | --- |
-| `MQTT/5.0` | topic `not declared`, retain `not declared`, QoS `not declared` |
+| `MQTT/5.0` | topic `aviation/intl/mode-s/mode-s/{icao24}/{receiver_id}/df11-acquisition`, retain `false`, QoS `0` |
 
 #### Payload
 
-`Mqtt` payloads are JSON schema. No required field list is declared.
+`Mqtt` payloads are JSON record. No required field list is declared.
 
 
 #### Example payload
@@ -600,7 +595,7 @@ No CloudEvents `subject` template is declared. Use the transport location and pa
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
 
 ```json
-"string"
+null
 ```
 
 #### Reference vs telemetry
@@ -623,11 +618,11 @@ No CloudEvents `subject` template is declared. Use the transport location and pa
 
 | Transport | Location |
 | --- | --- |
-| `MQTT/5.0` | topic `not declared`, retain `not declared`, QoS `not declared` |
+| `MQTT/5.0` | topic `aviation/intl/mode-s/mode-s/{icao24}/{receiver_id}/df20-comm-b`, retain `false`, QoS `0` |
 
 #### Payload
 
-`Mqtt` payloads are JSON schema. No required field list is declared.
+`Mqtt` payloads are JSON record. No required field list is declared.
 
 
 #### Example payload
@@ -635,7 +630,7 @@ No CloudEvents `subject` template is declared. Use the transport location and pa
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
 
 ```json
-"string"
+null
 ```
 
 #### Reference vs telemetry
@@ -658,11 +653,11 @@ No CloudEvents `subject` template is declared. Use the transport location and pa
 
 | Transport | Location |
 | --- | --- |
-| `MQTT/5.0` | topic `not declared`, retain `not declared`, QoS `not declared` |
+| `MQTT/5.0` | topic `aviation/intl/mode-s/mode-s/{icao24}/{receiver_id}/df21-comm-b`, retain `false`, QoS `0` |
 
 #### Payload
 
-`Mqtt` payloads are JSON schema. No required field list is declared.
+`Mqtt` payloads are JSON record. No required field list is declared.
 
 
 #### Example payload
@@ -670,7 +665,217 @@ No CloudEvents `subject` template is declared. Use the transport location and pa
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
 
 ```json
-"string"
+null
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
+### ADSB
+
+CloudEvents type: `Mode_S.amqp.ADSB`
+
+#### What it tells you
+
+This event carries adsb data for this source. The payload fields below are the authoritative reference for the fields currently documented in the xRegistry manifest.
+
+#### Identity
+
+No CloudEvents `subject` template is declared. Use the transport location and payload identifiers documented below.
+
+#### Where to find it
+
+| Transport | Location |
+| --- | --- |
+| `AMQP/1.0` | source address `amqps://localhost:5671/mode-s`, message subject `{icao24}/{receiver_id}` |
+
+#### Payload
+
+`ADSB` payloads are JSON record. No required field list is declared.
+
+
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+null
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
+### Altitude Reply
+
+CloudEvents type: `Mode_S.amqp.AltitudeReply`
+
+#### What it tells you
+
+This event carries altitude reply data for this source. The payload fields below are the authoritative reference for the fields currently documented in the xRegistry manifest.
+
+#### Identity
+
+No CloudEvents `subject` template is declared. Use the transport location and payload identifiers documented below.
+
+#### Where to find it
+
+| Transport | Location |
+| --- | --- |
+| `AMQP/1.0` | source address `amqps://localhost:5671/mode-s`, message subject `{icao24}/{receiver_id}` |
+
+#### Payload
+
+`Altitude Reply` payloads are JSON record. No required field list is declared.
+
+
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+null
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
+### Identity Reply
+
+CloudEvents type: `Mode_S.amqp.IdentityReply`
+
+#### What it tells you
+
+This event carries identity reply data for this source. The payload fields below are the authoritative reference for the fields currently documented in the xRegistry manifest.
+
+#### Identity
+
+No CloudEvents `subject` template is declared. Use the transport location and payload identifiers documented below.
+
+#### Where to find it
+
+| Transport | Location |
+| --- | --- |
+| `AMQP/1.0` | source address `amqps://localhost:5671/mode-s`, message subject `{icao24}/{receiver_id}` |
+
+#### Payload
+
+`Identity Reply` payloads are JSON record. No required field list is declared.
+
+
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+null
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
+### Acquisition Reply
+
+CloudEvents type: `Mode_S.amqp.AcquisitionReply`
+
+#### What it tells you
+
+This event carries acquisition reply data for this source. The payload fields below are the authoritative reference for the fields currently documented in the xRegistry manifest.
+
+#### Identity
+
+No CloudEvents `subject` template is declared. Use the transport location and payload identifiers documented below.
+
+#### Where to find it
+
+| Transport | Location |
+| --- | --- |
+| `AMQP/1.0` | source address `amqps://localhost:5671/mode-s`, message subject `{icao24}/{receiver_id}` |
+
+#### Payload
+
+`Acquisition Reply` payloads are JSON record. No required field list is declared.
+
+
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+null
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
+### Comm Baltitude
+
+CloudEvents type: `Mode_S.amqp.CommBAltitude`
+
+#### What it tells you
+
+This event carries comm baltitude data for this source. The payload fields below are the authoritative reference for the fields currently documented in the xRegistry manifest.
+
+#### Identity
+
+No CloudEvents `subject` template is declared. Use the transport location and payload identifiers documented below.
+
+#### Where to find it
+
+| Transport | Location |
+| --- | --- |
+| `AMQP/1.0` | source address `amqps://localhost:5671/mode-s`, message subject `{icao24}/{receiver_id}` |
+
+#### Payload
+
+`Comm Baltitude` payloads are JSON record. No required field list is declared.
+
+
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+null
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
+### Comm Bidentity
+
+CloudEvents type: `Mode_S.amqp.CommBIdentity`
+
+#### What it tells you
+
+This event carries comm bidentity data for this source. The payload fields below are the authoritative reference for the fields currently documented in the xRegistry manifest.
+
+#### Identity
+
+No CloudEvents `subject` template is declared. Use the transport location and payload identifiers documented below.
+
+#### Where to find it
+
+| Transport | Location |
+| --- | --- |
+| `AMQP/1.0` | source address `amqps://localhost:5671/mode-s`, message subject `{icao24}/{receiver_id}` |
+
+#### Payload
+
+`Comm Bidentity` payloads are JSON record. No required field list is declared.
+
+
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+null
 ```
 
 #### Reference vs telemetry
@@ -690,14 +895,19 @@ Transport bindings carry CloudEvents metadata differently:
 | MQTT 5 binary mode | MQTT 5 user properties named by the CloudEvents attribute (`id`, `source`, `type`, `subject`, ...), as defined by the CloudEvents MQTT binding; no `ce_` prefix | PUBLISH payload |
 | AMQP 1.0 binary mode | Application properties named `cloudEvents:<attribute>` except `datacontenttype`; `datacontenttype` maps to AMQP `content-type` and must not be duplicated as an application property | AMQP message body |
 
-All payloads documented here are JSON. MQTT retained messages are Last Known Value snapshots: the broker stores the most recent retained message per exact topic and delivers it to new subscribers when their subscription matches that topic. Schema evolution is additive where possible; incompatible semantic or structural changes are published as a new CloudEvents type so existing consumers can keep running.
+The default payload remains JSON with a JSON Structure schema. The manifest also declares inherited `.avro` groups with Avro schemas and unchanged `application/json` payloads, and `.avro.binary` groups with `application/vnd.apache.org.avro+avro` payloads. These encoding variants retain the same event identities and transport routing. Binary Avro bytes inside structured JSON CloudEvents belong in `data_base64`; payload encoding is independent of the CloudEvents envelope mode.
+
+Binary Avro is declared by the contract but is not yet a supported feeder output. [xregistry/codegen#670](https://github.com/xregistry/codegen/issues/670) tracks the producer-generation defect. The checked-in feeders continue to use their existing JSON producers. Avro schemas preserve RFC3339 strings as strings where no native timestamp mapping was already declared; optional JSON properties without a declared default use null defaults in Avro records.
+
+MQTT retained messages are Last Known Value snapshots: the broker stores the most recent retained message per exact topic and delivers it to new subscribers when their subscription matches that topic. Schema evolution is additive where possible; incompatible semantic or structural changes are published as a new CloudEvents type so existing consumers can keep running.
 
 ## Operational notes
 
-No source-specific polling cadence, rate limit, or stream characteristic is documented in the checked-in README or CONTAINER guide.
+- The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
 
 ## References
 
 - xRegistry manifest: [`xreg/mode-s.xreg.json`](xreg/mode-s.xreg.json)
 - Source README: [`README.md`](README.md)
 - Container deployment guide: [`CONTAINER.md`](CONTAINER.md)
+- Azure Service Bus Standard namespace: <https://learn.microsoft.com/azure/service-bus-messaging/service-bus-messaging-overview>

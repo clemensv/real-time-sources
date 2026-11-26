@@ -18,7 +18,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/be.issep.airquality.Sensors"
+        "#/messagegroups/be.issep.airquality.Sensors",
+        "#/messagegroups/be.issep.airquality.Sensors.avro",
+        "#/messagegroups/be.issep.airquality.Sensors.avro.binary"
       ],
       "description": "Kafka producer endpoint for Wallonia ISSeP Air Quality CloudEvents on the `wallonia-issep` topic keyed by `{configuration_id}`."
     },
@@ -40,7 +42,9 @@
         ]
       },
       "messagegroups": [
-        "#/messagegroups/be.issep.airquality.Sensors.mqtt"
+        "#/messagegroups/be.issep.airquality.Sensors.mqtt",
+        "#/messagegroups/be.issep.airquality.Sensors.mqtt.avro",
+        "#/messagegroups/be.issep.airquality.Sensors.mqtt.avro.binary"
       ],
       "description": "MQTT 5 producer endpoint for Wallonia ISSeP Air Quality CloudEvents using the source topic hierarchy and retain settings declared in this manifest."
     },
@@ -62,7 +66,9 @@
         ]
       },
       "messagegroups": [
-        "#/messagegroups/be.issep.airquality.Sensors.amqp"
+        "#/messagegroups/be.issep.airquality.Sensors.amqp",
+        "#/messagegroups/be.issep.airquality.Sensors.amqp.avro",
+        "#/messagegroups/be.issep.airquality.Sensors.amqp.avro.binary"
       ],
       "description": "AMQP 1.0 producer endpoint for wallonia-issep CloudEvents on the configured broker address."
     }
@@ -83,6 +89,10 @@
             "subject": {
               "value": "{configuration_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -102,6 +112,10 @@
             "subject": {
               "value": "{configuration_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -178,6 +192,144 @@
                 "value": "{province}",
                 "description": "Routing property copied from the source catalog for AMQP subscription filters and broker-side routing (province)."
               }
+            }
+          }
+        }
+      }
+    },
+    "be.issep.airquality.Sensors.avro": {
+      "messagegroupid": "be.issep.airquality.Sensors.avro",
+      "messages": {
+        "be.issep.airquality.SensorConfiguration": {
+          "messageid": "be.issep.airquality.SensorConfiguration",
+          "basemessage": "/messagegroups/be.issep.airquality.Sensors/messages/be.issep.airquality.SensorConfiguration",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/be.issep.airquality.avro/schemas/be.issep.airquality.SensorConfiguration"
+        },
+        "be.issep.airquality.Observation": {
+          "messageid": "be.issep.airquality.Observation",
+          "basemessage": "/messagegroups/be.issep.airquality.Sensors/messages/be.issep.airquality.Observation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/be.issep.airquality.avro/schemas/be.issep.airquality.Observation"
+        }
+      }
+    },
+    "be.issep.airquality.Sensors.avro.binary": {
+      "messagegroupid": "be.issep.airquality.Sensors.avro.binary",
+      "messages": {
+        "be.issep.airquality.SensorConfiguration": {
+          "messageid": "be.issep.airquality.SensorConfiguration",
+          "basemessage": "/messagegroups/be.issep.airquality.Sensors/messages/be.issep.airquality.SensorConfiguration",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/be.issep.airquality.avro/schemas/be.issep.airquality.SensorConfiguration",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "be.issep.airquality.Observation": {
+          "messageid": "be.issep.airquality.Observation",
+          "basemessage": "/messagegroups/be.issep.airquality.Sensors/messages/be.issep.airquality.Observation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/be.issep.airquality.avro/schemas/be.issep.airquality.Observation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "be.issep.airquality.Sensors.mqtt.avro": {
+      "messagegroupid": "be.issep.airquality.Sensors.mqtt.avro",
+      "messages": {
+        "be.issep.airquality.Sensors.mqtt.SensorConfiguration": {
+          "messageid": "be.issep.airquality.Sensors.mqtt.SensorConfiguration",
+          "basemessage": "/messagegroups/be.issep.airquality.Sensors.mqtt/messages/be.issep.airquality.Sensors.mqtt.SensorConfiguration",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/be.issep.airquality.avro/schemas/be.issep.airquality.SensorConfiguration"
+        },
+        "be.issep.airquality.Sensors.mqtt.Observation": {
+          "messageid": "be.issep.airquality.Sensors.mqtt.Observation",
+          "basemessage": "/messagegroups/be.issep.airquality.Sensors.mqtt/messages/be.issep.airquality.Sensors.mqtt.Observation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/be.issep.airquality.avro/schemas/be.issep.airquality.Observation"
+        }
+      }
+    },
+    "be.issep.airquality.Sensors.mqtt.avro.binary": {
+      "messagegroupid": "be.issep.airquality.Sensors.mqtt.avro.binary",
+      "messages": {
+        "be.issep.airquality.Sensors.mqtt.SensorConfiguration": {
+          "messageid": "be.issep.airquality.Sensors.mqtt.SensorConfiguration",
+          "basemessage": "/messagegroups/be.issep.airquality.Sensors.mqtt/messages/be.issep.airquality.Sensors.mqtt.SensorConfiguration",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/be.issep.airquality.avro/schemas/be.issep.airquality.SensorConfiguration",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "be.issep.airquality.Sensors.mqtt.Observation": {
+          "messageid": "be.issep.airquality.Sensors.mqtt.Observation",
+          "basemessage": "/messagegroups/be.issep.airquality.Sensors.mqtt/messages/be.issep.airquality.Sensors.mqtt.Observation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/be.issep.airquality.avro/schemas/be.issep.airquality.Observation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "be.issep.airquality.Sensors.amqp.avro": {
+      "messagegroupid": "be.issep.airquality.Sensors.amqp.avro",
+      "messages": {
+        "be.issep.airquality.Sensors.amqp.SensorConfiguration": {
+          "messageid": "be.issep.airquality.Sensors.amqp.SensorConfiguration",
+          "basemessage": "/messagegroups/be.issep.airquality.Sensors.amqp/messages/be.issep.airquality.Sensors.amqp.SensorConfiguration",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/be.issep.airquality.avro/schemas/be.issep.airquality.SensorConfiguration"
+        },
+        "be.issep.airquality.Sensors.amqp.Observation": {
+          "messageid": "be.issep.airquality.Sensors.amqp.Observation",
+          "basemessage": "/messagegroups/be.issep.airquality.Sensors.amqp/messages/be.issep.airquality.Sensors.amqp.Observation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/be.issep.airquality.avro/schemas/be.issep.airquality.Observation"
+        }
+      }
+    },
+    "be.issep.airquality.Sensors.amqp.avro.binary": {
+      "messagegroupid": "be.issep.airquality.Sensors.amqp.avro.binary",
+      "messages": {
+        "be.issep.airquality.Sensors.amqp.SensorConfiguration": {
+          "messageid": "be.issep.airquality.Sensors.amqp.SensorConfiguration",
+          "basemessage": "/messagegroups/be.issep.airquality.Sensors.amqp/messages/be.issep.airquality.Sensors.amqp.SensorConfiguration",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/be.issep.airquality.avro/schemas/be.issep.airquality.SensorConfiguration",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "be.issep.airquality.Sensors.amqp.Observation": {
+          "messageid": "be.issep.airquality.Sensors.amqp.Observation",
+          "basemessage": "/messagegroups/be.issep.airquality.Sensors.amqp/messages/be.issep.airquality.Sensors.amqp.Observation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/be.issep.airquality.avro/schemas/be.issep.airquality.Observation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
             }
           }
         }
@@ -682,6 +834,429 @@
                   "JSONStructureAlternateNames",
                   "JSONStructureUnits"
                 ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "be.issep.airquality.avro": {
+      "schemas": {
+        "be.issep.airquality.SensorConfiguration": {
+          "name": "SensorConfiguration",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "be.issep.airquality.SensorConfiguration",
+                "fields": [
+                  {
+                    "name": "configuration_id",
+                    "type": "string",
+                    "doc": "Stable numeric identifier of the sensor configuration from the upstream id_configuration field. Converted to string because it serves as the CloudEvents subject and Kafka key. JSON Structure annotations: {\"pattern\": \"^[0-9]+$\"}"
+                  },
+                  {
+                    "name": "province",
+                    "type": "string",
+                    "doc": "Slug of the Walloon province where the sensor is located (e.g. brabant-wallon, hainaut, liege, luxembourg, namur, or \"unknown\" sentinel if location is not yet mapped). Matches the {province} MQTT topic axis."
+                  }
+                ],
+                "doc": "A current environmental measurement from Wallonia's Institut Scientifique de Service Public (ISSeP). It carries pollutant concentration measurements when the upstream feed reports a new or refreshed value."
+              }
+            }
+          }
+        },
+        "be.issep.airquality.Observation": {
+          "name": "Observation",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "be.issep.airquality.Observation",
+                "fields": [
+                  {
+                    "name": "configuration_id",
+                    "type": "string",
+                    "doc": "Stable numeric sensor configuration identifier from id_configuration. Matches the CloudEvents subject and Kafka key. JSON Structure annotations: {\"pattern\": \"^[0-9]+$\"}"
+                  },
+                  {
+                    "name": "province",
+                    "type": "string",
+                    "doc": "Slug of the Walloon province where the sensor is located (e.g. brabant-wallon, hainaut, liege, luxembourg, namur, or \"unknown\" sentinel if location is not yet mapped). Matches the {province} MQTT topic axis."
+                  },
+                  {
+                    "name": "moment",
+                    "type": "string",
+                    "doc": "ISO 8601 observation timestamp from the upstream moment field, e.g. '2026-04-08T09:09:13+02:00'. Preserved as-is from the API response. JSON Structure annotations: {\"altnames\": {\"issep\": \"moment\"}}"
+                  },
+                  {
+                    "name": "co",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Raw carbon monoxide electrochemical sensor reading in internal units. JSON Structure annotations: {\"altnames\": {\"issep\": \"co\"}} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "no",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Raw nitric oxide electrochemical sensor reading in internal units. JSON Structure annotations: {\"altnames\": {\"issep\": \"no\"}} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "no2",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Raw nitrogen dioxide electrochemical sensor reading in internal units. Negative values are valid. JSON Structure annotations: {\"altnames\": {\"issep\": \"no2\"}} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "o3no2",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Raw combined ozone and nitrogen dioxide electrochemical sensor reading in internal units. Negative values are valid. JSON Structure annotations: {\"altnames\": {\"issep\": \"o3no2\"}} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "ppbno",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Calibrated nitric oxide concentration in parts per billion (ppb). JSON Structure annotations: {\"altnames\": {\"issep\": \"ppbno\"}, \"unit\": \"ppb\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "ppbno_statut",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Quality status flag for ppbno. 100 indicates valid, 0 indicates invalid or unavailable. JSON Structure annotations: {\"altnames\": {\"issep\": \"ppbno_statut\"}} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "ppbno2",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Calibrated nitrogen dioxide concentration in parts per billion (ppb). JSON Structure annotations: {\"altnames\": {\"issep\": \"ppbno2\"}, \"unit\": \"ppb\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "ppbno2_statut",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Quality status flag for ppbno2. 100 indicates valid, 0 indicates invalid or unavailable. JSON Structure annotations: {\"altnames\": {\"issep\": \"ppbno2_statut\"}} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "ppbo3",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Calibrated ozone concentration in parts per billion (ppb). JSON Structure annotations: {\"altnames\": {\"issep\": \"ppbo3\"}, \"unit\": \"ppb\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "ppbo3_statut",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Quality status flag for ppbo3. 100 indicates valid, 0 indicates invalid or unavailable. JSON Structure annotations: {\"altnames\": {\"issep\": \"ppbo3_statut\"}} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "ugpcmno",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Calibrated nitric oxide concentration in micrograms per cubic meter (µg/m³). JSON Structure annotations: {\"altnames\": {\"issep\": \"ugpcmno\"}, \"unit\": \"µg/m³\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "ugpcmno_statut",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Quality status flag for ugpcmno. 100 indicates valid, 0 indicates invalid or unavailable. JSON Structure annotations: {\"altnames\": {\"issep\": \"ugpcmno_statut\"}} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "ugpcmno2",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Calibrated nitrogen dioxide concentration in micrograms per cubic meter (µg/m³). JSON Structure annotations: {\"altnames\": {\"issep\": \"ugpcmno2\"}, \"unit\": \"µg/m³\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "ugpcmno2_statut",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Quality status flag for ugpcmno2. 100 indicates valid, 0 indicates invalid or unavailable. JSON Structure annotations: {\"altnames\": {\"issep\": \"ugpcmno2_statut\"}} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "ugpcmo3",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Calibrated ozone concentration in micrograms per cubic meter (µg/m³). JSON Structure annotations: {\"altnames\": {\"issep\": \"ugpcmo3\"}, \"unit\": \"µg/m³\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "ugpcmo3_statut",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Quality status flag for ugpcmo3. 100 indicates valid, 0 indicates invalid or unavailable. JSON Structure annotations: {\"altnames\": {\"issep\": \"ugpcmo3_statut\"}} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "bme_t",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Temperature reading from the BME280 environmental sensor in degrees Celsius. JSON Structure annotations: {\"altnames\": {\"issep\": \"bme_t\"}, \"unit\": \"°C\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "bme_t_statut",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Quality status flag for bme_t. 100 indicates valid, 0 indicates invalid or unavailable. JSON Structure annotations: {\"altnames\": {\"issep\": \"bme_t_statut\"}} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "bme_pres",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Atmospheric pressure reading from the BME280 sensor in Pascals. JSON Structure annotations: {\"altnames\": {\"issep\": \"bme_pres\"}, \"unit\": \"Pa\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "bme_pres_statut",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Quality status flag for bme_pres. 100 indicates valid, 0 indicates invalid or unavailable. JSON Structure annotations: {\"altnames\": {\"issep\": \"bme_pres_statut\"}} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "bme_rh",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Relative humidity reading from the BME280 sensor as a percentage. JSON Structure annotations: {\"altnames\": {\"issep\": \"bme_rh\"}, \"unit\": \"%\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "bme_rh_statut",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Quality status flag for bme_rh. 100 indicates valid, 0 indicates invalid or unavailable. JSON Structure annotations: {\"altnames\": {\"issep\": \"bme_rh_statut\"}} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "pm1",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Particulate matter concentration for particles under 1 micrometer in µg/m³. JSON Structure annotations: {\"altnames\": {\"issep\": \"pm1\"}, \"unit\": \"µg/m³\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "pm1_statut",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Quality status flag for pm1. 100 indicates valid, 0 indicates invalid or unavailable. JSON Structure annotations: {\"altnames\": {\"issep\": \"pm1_statut\"}} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "pm25",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Particulate matter concentration for particles under 2.5 micrometers in µg/m³. JSON Structure annotations: {\"altnames\": {\"issep\": \"pm25\"}, \"unit\": \"µg/m³\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "pm25_statut",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Quality status flag for pm25. 100 indicates valid, 0 indicates invalid or unavailable. JSON Structure annotations: {\"altnames\": {\"issep\": \"pm25_statut\"}} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "pm4",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Particulate matter concentration for particles under 4 micrometers in µg/m³. JSON Structure annotations: {\"altnames\": {\"issep\": \"pm4\"}, \"unit\": \"µg/m³\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "pm4_statut",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Quality status flag for pm4. 100 indicates valid, 0 indicates invalid or unavailable. JSON Structure annotations: {\"altnames\": {\"issep\": \"pm4_statut\"}} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "pm10",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Particulate matter concentration for particles under 10 micrometers in µg/m³. JSON Structure annotations: {\"altnames\": {\"issep\": \"pm10\"}, \"unit\": \"µg/m³\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "pm10_statut",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Quality status flag for pm10. 100 indicates valid, 0 indicates invalid or unavailable. JSON Structure annotations: {\"altnames\": {\"issep\": \"pm10_statut\"}} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "vbat",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Battery voltage of the sensor unit in Volts. JSON Structure annotations: {\"altnames\": {\"issep\": \"vbat\"}, \"unit\": \"V\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "vbat_statut",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Quality status flag for vbat. 100 indicates valid, 0 indicates invalid or unavailable. JSON Structure annotations: {\"altnames\": {\"issep\": \"vbat_statut\"}} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "mwh_bat",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Battery energy level in milliwatt-hours. Negative values indicate discharge. JSON Structure annotations: {\"altnames\": {\"issep\": \"mwh_bat\"}, \"unit\": \"mWh\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "mwh_pv",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Photovoltaic energy generation in milliwatt-hours. JSON Structure annotations: {\"altnames\": {\"issep\": \"mwh_pv\"}, \"unit\": \"mWh\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "co_rf",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Carbon monoxide reference station comparison value. JSON Structure annotations: {\"altnames\": {\"issep\": \"co_rf\"}} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "no_rf",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Nitric oxide reference station comparison value. JSON Structure annotations: {\"altnames\": {\"issep\": \"no_rf\"}} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "no2_rf",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Nitrogen dioxide reference station comparison value. JSON Structure annotations: {\"altnames\": {\"issep\": \"no2_rf\"}} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "o3no2_rf",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Combined ozone and nitrogen dioxide reference station comparison value. JSON Structure annotations: {\"altnames\": {\"issep\": \"o3no2_rf\"}} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "o3_rf",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Ozone reference station comparison value. JSON Structure annotations: {\"altnames\": {\"issep\": \"o3_rf\"}} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "pm10_rf",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "PM10 reference station comparison value. JSON Structure annotations: {\"altnames\": {\"issep\": \"pm10_rf\"}} An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "A current environmental measurement from Wallonia's Institut Scientifique de Service Public (ISSeP). It carries pollutant concentration measurements when the upstream feed reports a new or refreshed value."
               }
             }
           }

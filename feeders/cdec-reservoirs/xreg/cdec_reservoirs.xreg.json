@@ -18,7 +18,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/gov.ca.water.cdec"
+        "#/messagegroups/gov.ca.water.cdec",
+        "#/messagegroups/gov.ca.water.cdec.avro",
+        "#/messagegroups/gov.ca.water.cdec.avro.binary"
       ],
       "description": "Kafka producer endpoint for CDEC California Reservoirs CloudEvents on the `cdec-reservoirs` topic keyed by `{station_id}/{sensor_num}`."
     },
@@ -40,7 +42,9 @@
         ]
       },
       "messagegroups": [
-        "#/messagegroups/gov.ca.water.cdec.mqtt"
+        "#/messagegroups/gov.ca.water.cdec.mqtt",
+        "#/messagegroups/gov.ca.water.cdec.mqtt.avro",
+        "#/messagegroups/gov.ca.water.cdec.mqtt.avro.binary"
       ],
       "description": "MQTT 5 producer endpoint for cdec-reservoirs CloudEvents using the documented UNS topic hierarchy."
     },
@@ -62,7 +66,9 @@
         ]
       },
       "messagegroups": [
-        "#/messagegroups/gov.ca.water.cdec.amqp"
+        "#/messagegroups/gov.ca.water.cdec.amqp",
+        "#/messagegroups/gov.ca.water.cdec.amqp.avro",
+        "#/messagegroups/gov.ca.water.cdec.amqp.avro.binary"
       ],
       "description": "AMQP 1.0 producer endpoint for cdec-reservoirs CloudEvents on the configured broker address."
     }
@@ -85,6 +91,10 @@
             "subject": {
               "value": "{station_id}/{sensor_num}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -141,6 +151,90 @@
                 "value": "{station_id}/{sensor_num}",
                 "description": "Service Bus/Event Hubs partition key matching the stable CloudEvent subject."
               }
+            }
+          }
+        }
+      }
+    },
+    "gov.ca.water.cdec.avro": {
+      "messagegroupid": "gov.ca.water.cdec.avro",
+      "messages": {
+        "gov.ca.water.cdec.ReservoirReading": {
+          "messageid": "gov.ca.water.cdec.ReservoirReading",
+          "basemessage": "/messagegroups/gov.ca.water.cdec/messages/gov.ca.water.cdec.ReservoirReading",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/gov.ca.water.cdec.avro/schemas/gov.ca.water.cdec.ReservoirReading"
+        }
+      }
+    },
+    "gov.ca.water.cdec.avro.binary": {
+      "messagegroupid": "gov.ca.water.cdec.avro.binary",
+      "messages": {
+        "gov.ca.water.cdec.ReservoirReading": {
+          "messageid": "gov.ca.water.cdec.ReservoirReading",
+          "basemessage": "/messagegroups/gov.ca.water.cdec/messages/gov.ca.water.cdec.ReservoirReading",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/gov.ca.water.cdec.avro/schemas/gov.ca.water.cdec.ReservoirReading",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "gov.ca.water.cdec.mqtt.avro": {
+      "messagegroupid": "gov.ca.water.cdec.mqtt.avro",
+      "messages": {
+        "gov.ca.water.cdec.mqtt.ReservoirReading": {
+          "messageid": "gov.ca.water.cdec.mqtt.ReservoirReading",
+          "basemessage": "/messagegroups/gov.ca.water.cdec.mqtt/messages/gov.ca.water.cdec.mqtt.ReservoirReading",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/gov.ca.water.cdec.avro/schemas/gov.ca.water.cdec.ReservoirReading"
+        }
+      }
+    },
+    "gov.ca.water.cdec.mqtt.avro.binary": {
+      "messagegroupid": "gov.ca.water.cdec.mqtt.avro.binary",
+      "messages": {
+        "gov.ca.water.cdec.mqtt.ReservoirReading": {
+          "messageid": "gov.ca.water.cdec.mqtt.ReservoirReading",
+          "basemessage": "/messagegroups/gov.ca.water.cdec.mqtt/messages/gov.ca.water.cdec.mqtt.ReservoirReading",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/gov.ca.water.cdec.avro/schemas/gov.ca.water.cdec.ReservoirReading",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "gov.ca.water.cdec.amqp.avro": {
+      "messagegroupid": "gov.ca.water.cdec.amqp.avro",
+      "messages": {
+        "gov.ca.water.cdec.amqp.ReservoirReading": {
+          "messageid": "gov.ca.water.cdec.amqp.ReservoirReading",
+          "basemessage": "/messagegroups/gov.ca.water.cdec.amqp/messages/gov.ca.water.cdec.amqp.ReservoirReading",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/gov.ca.water.cdec.avro/schemas/gov.ca.water.cdec.ReservoirReading"
+        }
+      }
+    },
+    "gov.ca.water.cdec.amqp.avro.binary": {
+      "messagegroupid": "gov.ca.water.cdec.amqp.avro.binary",
+      "messages": {
+        "gov.ca.water.cdec.amqp.ReservoirReading": {
+          "messageid": "gov.ca.water.cdec.amqp.ReservoirReading",
+          "basemessage": "/messagegroups/gov.ca.water.cdec.amqp/messages/gov.ca.water.cdec.amqp.ReservoirReading",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/gov.ca.water.cdec.avro/schemas/gov.ca.water.cdec.ReservoirReading",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
             }
           }
         }
@@ -208,7 +302,10 @@
                                 "description": "Quality flag character applied to the observation by CDEC. A single space ' ' means no flag (normal data). Other values indicate provisional, edited, or suspect data."
                               },
                               "basin": {
-                                "type": ["string", "null"],
+                                "type": [
+                                  "string",
+                                  "null"
+                                ],
                                 "description": "Stable routing axis used by MQTT and AMQP transport templates for cdec-reservoirs."
                               }
                             },
@@ -293,9 +390,72 @@
                 ],
                 "description": "Reservoir status record from the CDEC California Reservoirs source."
               }
+            },
+            "2": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "gov.ca.water.cdec.ReservoirReading",
+                "fields": [
+                  {
+                    "name": "station_id",
+                    "type": "string",
+                    "doc": "Three-letter CDEC station identifier (e.g. SHA for Shasta Dam, ORO for Oroville Dam, FOL for Folsom Dam). This is the primary key for the monitoring station and is immutable."
+                  },
+                  {
+                    "name": "sensor_num",
+                    "type": "int",
+                    "doc": "CDEC numeric sensor identifier. Standard sensor numbers: 15=STORAGE (acre-feet), 6=RESERVOIR ELEVATION (feet), 76=INFLOW (cubic feet per second), 23=OUTFLOW (cubic feet per second), 1=RIVER STAGE (feet)."
+                  },
+                  {
+                    "name": "sensor_type",
+                    "type": "string",
+                    "doc": "Human-readable sensor type label as returned by the CDEC API (e.g. 'STORAGE', 'RES ELE', 'INFLOW', 'OUTFLOW', 'STAGE')."
+                  },
+                  {
+                    "name": "value",
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "doc": "Observed measurement value in the units specified by the 'units' field. Null when no observation is available or when the upstream reports the sentinel value -9999."
+                  },
+                  {
+                    "name": "units",
+                    "type": "string",
+                    "doc": "Engineering units of the measurement as reported by CDEC (e.g. 'AF' for acre-feet, 'FEET' for feet, 'CFS' for cubic feet per second)."
+                  },
+                  {
+                    "name": "date",
+                    "type": "string",
+                    "doc": "Observation timestamp as reported by CDEC in PST (Pacific Standard Time, UTC-8). Format from the API is 'YYYY-M-D H:MM' and is normalized to ISO 8601 format 'YYYY-MM-DDTHH:MM:SS-08:00'. CDEC always reports in PST regardless of daylight saving time."
+                  },
+                  {
+                    "name": "dur_code",
+                    "type": "string",
+                    "doc": "Duration code indicating the measurement interval. 'H' for hourly observations, 'D' for daily observations, 'E' for event-based (15-minute or irregular)."
+                  },
+                  {
+                    "name": "data_flag",
+                    "type": "string",
+                    "doc": "Quality flag character applied to the observation by CDEC. A single space ' ' means no flag (normal data). Other values indicate provisional, edited, or suspect data."
+                  },
+                  {
+                    "name": "basin",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Stable routing axis used by MQTT and AMQP transport templates for cdec-reservoirs. An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "A single sensor reading from a CDEC reservoir station. The California Data Exchange Center (CDEC) publishes hourly and sub-hourly observations for over 2,600 stations across California. Each reading captures one measurement for a specific station, sensor type, and timestamp."
+              }
             }
           },
-          "format": "Avro/1.11.3"
+          "format": "Avro/1.11.3",
+          "defaultversionid": "2"
         }
       }
     }

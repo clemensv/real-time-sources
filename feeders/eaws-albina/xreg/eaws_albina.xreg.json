@@ -18,7 +18,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/org.EAWS.ALBINA.Bulletins"
+        "#/messagegroups/org.EAWS.ALBINA.Bulletins",
+        "#/messagegroups/org.EAWS.ALBINA.Bulletins.avro",
+        "#/messagegroups/org.EAWS.ALBINA.Bulletins.avro.binary"
       ],
       "description": "Kafka producer endpoint for EAWS ALBINA CloudEvents on the `eaws-albina` topic keyed by `{region_id}`."
     },
@@ -38,7 +40,9 @@
         }
       ],
       "messagegroups": [
-        "#/messagegroups/org.EAWS.ALBINA.mqtt"
+        "#/messagegroups/org.EAWS.ALBINA.mqtt",
+        "#/messagegroups/org.EAWS.ALBINA.mqtt.avro",
+        "#/messagegroups/org.EAWS.ALBINA.mqtt.avro.binary"
       ],
       "description": "MQTT 5 producer endpoint for EAWS ALBINA CloudEvents using the alert topic hierarchy and retain settings declared in this manifest."
     },
@@ -64,7 +68,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/org.EAWS.ALBINA.amqp"
+        "#/messagegroups/org.EAWS.ALBINA.amqp",
+        "#/messagegroups/org.EAWS.ALBINA.amqp.avro",
+        "#/messagegroups/org.EAWS.ALBINA.amqp.avro.binary"
       ]
     }
   },
@@ -85,6 +91,10 @@
             "subject": {
               "value": "{region_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -103,6 +113,10 @@
             "subject": {
               "value": "{region_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -163,6 +177,108 @@
             }
           },
           "messageid": "org.EAWS.ALBINA.amqp.AvalancheBulletin"
+        }
+      }
+    },
+    "org.EAWS.ALBINA.Bulletins.avro": {
+      "messagegroupid": "org.EAWS.ALBINA.Bulletins.avro",
+      "messages": {
+        "org.EAWS.ALBINA.AvalancheRegion": {
+          "messageid": "org.EAWS.ALBINA.AvalancheRegion",
+          "basemessage": "/messagegroups/org.EAWS.ALBINA.Bulletins/messages/org.EAWS.ALBINA.AvalancheRegion",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.EAWS.ALBINA.avro/schemas/org.EAWS.ALBINA.AvalancheRegion"
+        },
+        "org.EAWS.ALBINA.AvalancheBulletin": {
+          "messageid": "org.EAWS.ALBINA.AvalancheBulletin",
+          "basemessage": "/messagegroups/org.EAWS.ALBINA.Bulletins/messages/org.EAWS.ALBINA.AvalancheBulletin",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.EAWS.ALBINA.avro/schemas/org.EAWS.ALBINA.AvalancheBulletin"
+        }
+      }
+    },
+    "org.EAWS.ALBINA.Bulletins.avro.binary": {
+      "messagegroupid": "org.EAWS.ALBINA.Bulletins.avro.binary",
+      "messages": {
+        "org.EAWS.ALBINA.AvalancheRegion": {
+          "messageid": "org.EAWS.ALBINA.AvalancheRegion",
+          "basemessage": "/messagegroups/org.EAWS.ALBINA.Bulletins/messages/org.EAWS.ALBINA.AvalancheRegion",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.EAWS.ALBINA.avro/schemas/org.EAWS.ALBINA.AvalancheRegion",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "org.EAWS.ALBINA.AvalancheBulletin": {
+          "messageid": "org.EAWS.ALBINA.AvalancheBulletin",
+          "basemessage": "/messagegroups/org.EAWS.ALBINA.Bulletins/messages/org.EAWS.ALBINA.AvalancheBulletin",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.EAWS.ALBINA.avro/schemas/org.EAWS.ALBINA.AvalancheBulletin",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "org.EAWS.ALBINA.mqtt.avro": {
+      "messagegroupid": "org.EAWS.ALBINA.mqtt.avro",
+      "messages": {
+        "org.EAWS.ALBINA.mqtt.AvalancheBulletin": {
+          "messageid": "org.EAWS.ALBINA.mqtt.AvalancheBulletin",
+          "basemessage": "/messagegroups/org.EAWS.ALBINA.mqtt/messages/org.EAWS.ALBINA.mqtt.AvalancheBulletin",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.EAWS.ALBINA.avro/schemas/org.EAWS.ALBINA.AvalancheBulletin"
+        }
+      }
+    },
+    "org.EAWS.ALBINA.mqtt.avro.binary": {
+      "messagegroupid": "org.EAWS.ALBINA.mqtt.avro.binary",
+      "messages": {
+        "org.EAWS.ALBINA.mqtt.AvalancheBulletin": {
+          "messageid": "org.EAWS.ALBINA.mqtt.AvalancheBulletin",
+          "basemessage": "/messagegroups/org.EAWS.ALBINA.mqtt/messages/org.EAWS.ALBINA.mqtt.AvalancheBulletin",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.EAWS.ALBINA.avro/schemas/org.EAWS.ALBINA.AvalancheBulletin",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "org.EAWS.ALBINA.amqp.avro": {
+      "messagegroupid": "org.EAWS.ALBINA.amqp.avro",
+      "messages": {
+        "org.EAWS.ALBINA.amqp.AvalancheBulletin": {
+          "messageid": "org.EAWS.ALBINA.amqp.AvalancheBulletin",
+          "basemessage": "/messagegroups/org.EAWS.ALBINA.amqp/messages/org.EAWS.ALBINA.amqp.AvalancheBulletin",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.EAWS.ALBINA.avro/schemas/org.EAWS.ALBINA.AvalancheBulletin"
+        }
+      }
+    },
+    "org.EAWS.ALBINA.amqp.avro.binary": {
+      "messagegroupid": "org.EAWS.ALBINA.amqp.avro.binary",
+      "messages": {
+        "org.EAWS.ALBINA.amqp.AvalancheBulletin": {
+          "messageid": "org.EAWS.ALBINA.amqp.AvalancheBulletin",
+          "basemessage": "/messagegroups/org.EAWS.ALBINA.amqp/messages/org.EAWS.ALBINA.amqp.AvalancheBulletin",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.EAWS.ALBINA.avro/schemas/org.EAWS.ALBINA.AvalancheBulletin",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
         }
       }
     }
@@ -344,6 +460,187 @@
                     "description": "Base URL used by the bridge to fetch CAAMLv6 bulletins for this region (typically https://avalanche.report/albina_files). Null when not provided."
                   }
                 }
+              }
+            }
+          }
+        }
+      }
+    },
+    "org.EAWS.ALBINA.avro": {
+      "schemas": {
+        "org.EAWS.ALBINA.AvalancheRegion": {
+          "name": "AvalancheRegion",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "org.EAWS.ALBINA.AvalancheRegion",
+                "fields": [
+                  {
+                    "name": "region_id",
+                    "type": "string",
+                    "doc": "EAWS region identifier (country prefix plus warning service code), e.g. AT-07 for Tirol, IT-32-BZ for South Tyrol. Matches the regionID used in CAAMLv6 bulletins."
+                  },
+                  {
+                    "name": "lang",
+                    "type": "string",
+                    "doc": "ISO 639-1 language code used by the bridge when requesting bulletins for this region (de, en, it, fr, etc.)."
+                  },
+                  {
+                    "name": "configured_at",
+                    "type": "string",
+                    "doc": "ISO 8601 UTC timestamp when this region was registered in the bridge configuration. Updated whenever the bridge starts and re-emits its catalog."
+                  },
+                  {
+                    "name": "bulletin_base_url",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Base URL used by the bridge to fetch CAAMLv6 bulletins for this region (typically https://avalanche.report/albina_files). Null when not provided. An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "Reference event describing an EAWS region (or super-region) that the bridge is configured to observe. Emitted at bridge startup and whenever the configured region set changes. Acts as the catalog backbone for downstream consumers, ensuring the regional context is available even outside the avalanche season when no bulletins are being published."
+              }
+            }
+          }
+        },
+        "org.EAWS.ALBINA.AvalancheBulletin": {
+          "name": "AvalancheBulletin",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "org.EAWS.ALBINA.AvalancheBulletin",
+                "fields": [
+                  {
+                    "name": "region_id",
+                    "type": "string",
+                    "doc": "EAWS micro-region identifier from the CAAMLv6 regions array, e.g. AT-07-04-02 for Karwendel Mountains East."
+                  },
+                  {
+                    "name": "region_name",
+                    "type": "string",
+                    "doc": "Human-readable name of the EAWS micro-region, e.g. 'Karwendel Mountains East'."
+                  },
+                  {
+                    "name": "bulletin_id",
+                    "type": "string",
+                    "doc": "Unique UUID assigned to this bulletin by the ALBINA system, from the CAAMLv6 bulletinID field."
+                  },
+                  {
+                    "name": "publication_time",
+                    "type": "string",
+                    "doc": "ISO 8601 timestamp when this bulletin was published by the avalanche warning service."
+                  },
+                  {
+                    "name": "valid_time_start",
+                    "type": "string",
+                    "doc": "ISO 8601 start of the validity period for this bulletin."
+                  },
+                  {
+                    "name": "valid_time_end",
+                    "type": "string",
+                    "doc": "ISO 8601 end of the validity period for this bulletin."
+                  },
+                  {
+                    "name": "lang",
+                    "type": "string",
+                    "doc": "ISO 639-1 language code of the bulletin text, e.g. 'en', 'de', 'it'."
+                  },
+                  {
+                    "name": "max_danger_rating",
+                    "default": null,
+                    "type": [
+                      "null",
+                      {
+                        "type": "enum",
+                        "name": "org.EAWS.ALBINA.AvalancheBulletin_types.max_danger_rating",
+                        "symbols": [
+                          "low",
+                          "moderate",
+                          "considerable",
+                          "high",
+                          "very_high"
+                        ]
+                      }
+                    ],
+                    "doc": "Highest EAWS danger rating across all elevation bands and time periods in this bulletin. One of: low, moderate, considerable, high, very_high, or null if no ratings are present. JSON Structure annotations: {\"descriptions\": {\"considerable\": \"Provider value `considerable` for this coded alert field.\", \"high\": \"Provider value `high` for this coded alert field.\", \"low\": \"Provider value `low` for this coded alert field.\", \"moderate\": \"Provider value `moderate` for this coded alert field.\", \"very_high\": \"Provider value `very_high` for this coded alert field.\"}, \"enum\": [\"low\", \"moderate\", \"considerable\", \"high\", \"very_high\"]} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "max_danger_rating_value",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Numeric value (1-5) of the highest EAWS danger rating: 1=low, 2=moderate, 3=considerable, 4=high, 5=very_high. Null if no ratings are present. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "danger_ratings_json",
+                    "type": "string",
+                    "doc": "JSON-encoded array of CAAMLv6 dangerRatings objects, each with mainValue (string), optional elevation (object with upperBound/lowerBound), and validTimePeriod (string: all_day, earlier, later)."
+                  },
+                  {
+                    "name": "avalanche_problems_json",
+                    "type": "string",
+                    "doc": "JSON-encoded array of CAAMLv6 avalancheProblems objects, each with problemType (e.g. wet_snow, persistent_weak_layers, wind_slab, new_snow, gliding_snow), snowpackStability, frequency, avalancheSize (1-5), aspects array, and optional elevation bounds."
+                  },
+                  {
+                    "name": "tendency_type",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Overall tendency of avalanche danger from the first tendency entry: decreasing, steady, or increasing. Null if no tendency data is present. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "danger_patterns_json",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "JSON-encoded array of LWD Tyrol danger pattern codes from customData.LWD_Tyrol.dangerPatterns, e.g. [\"DP10\",\"DP4\"]. Null if not present (non-Tyrol regions). An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "avalanche_activity_highlights",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Summary of current avalanche activity conditions from avalancheActivity.highlights. May contain HTML markup. Null if not provided. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "snowpack_structure_comment",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Description of current snowpack structure and layering from snowpackStructure.comment. May contain HTML markup. Null if not provided. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "country",
+                    "type": "string",
+                    "doc": "Lowercase ISO 3166-1 alpha-2 country code derived from the CAAML region_id prefix, e.g. at or it."
+                  },
+                  {
+                    "name": "danger_level",
+                    "type": "string",
+                    "doc": "Topic-safe EAWS danger level derived from the highest danger rating, or 'unknown' when no rating is present."
+                  }
+                ],
+                "doc": "An official alert or bulletin from the European Avalanche Warning Services ALBINA feed. It carries avalanche bulletins and danger ratings for the affected area and validity period published by the upstream source."
               }
             }
           }

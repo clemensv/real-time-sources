@@ -18,7 +18,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/eu.jrc.eurdep"
+        "#/messagegroups/eu.jrc.eurdep",
+        "#/messagegroups/eu.jrc.eurdep.avro",
+        "#/messagegroups/eu.jrc.eurdep.avro.binary"
       ]
     },
     "eu.jrc.eurdep.Mqtt": {
@@ -39,7 +41,9 @@
         ]
       },
       "messagegroups": [
-        "#/messagegroups/eu.jrc.eurdep.mqtt"
+        "#/messagegroups/eu.jrc.eurdep.mqtt",
+        "#/messagegroups/eu.jrc.eurdep.mqtt.avro",
+        "#/messagegroups/eu.jrc.eurdep.mqtt.avro.binary"
       ],
       "description": "MQTT 5 producer endpoint for EURDEP radiation CloudEvents using radiation/intl/eurdep/eurdep-radiation/{country}/{station_id}/{event} topics."
     },
@@ -61,7 +65,9 @@
         ]
       },
       "messagegroups": [
-        "#/messagegroups/eu.jrc.eurdep.amqp"
+        "#/messagegroups/eu.jrc.eurdep.amqp",
+        "#/messagegroups/eu.jrc.eurdep.amqp.avro",
+        "#/messagegroups/eu.jrc.eurdep.amqp.avro.binary"
       ],
       "description": "AMQP 1.0 producer endpoint for EURDEP radiation CloudEvents."
     }
@@ -84,6 +90,10 @@
             "subject": {
               "value": "{station_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -104,6 +114,10 @@
             "subject": {
               "value": "{station_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -178,6 +192,144 @@
                 "value": "{country}",
                 "description": "ISO 3166-1 alpha-2 country code used for broker-side filtering."
               }
+            }
+          }
+        }
+      }
+    },
+    "eu.jrc.eurdep.avro": {
+      "messagegroupid": "eu.jrc.eurdep.avro",
+      "messages": {
+        "eu.jrc.eurdep.Station": {
+          "messageid": "eu.jrc.eurdep.Station",
+          "basemessage": "/messagegroups/eu.jrc.eurdep/messages/eu.jrc.eurdep.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/eu.jrc.eurdep.avro/schemas/eu.jrc.eurdep.Station"
+        },
+        "eu.jrc.eurdep.DoseRateReading": {
+          "messageid": "eu.jrc.eurdep.DoseRateReading",
+          "basemessage": "/messagegroups/eu.jrc.eurdep/messages/eu.jrc.eurdep.DoseRateReading",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/eu.jrc.eurdep.avro/schemas/eu.jrc.eurdep.DoseRateReading"
+        }
+      }
+    },
+    "eu.jrc.eurdep.avro.binary": {
+      "messagegroupid": "eu.jrc.eurdep.avro.binary",
+      "messages": {
+        "eu.jrc.eurdep.Station": {
+          "messageid": "eu.jrc.eurdep.Station",
+          "basemessage": "/messagegroups/eu.jrc.eurdep/messages/eu.jrc.eurdep.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/eu.jrc.eurdep.avro/schemas/eu.jrc.eurdep.Station",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "eu.jrc.eurdep.DoseRateReading": {
+          "messageid": "eu.jrc.eurdep.DoseRateReading",
+          "basemessage": "/messagegroups/eu.jrc.eurdep/messages/eu.jrc.eurdep.DoseRateReading",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/eu.jrc.eurdep.avro/schemas/eu.jrc.eurdep.DoseRateReading",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "eu.jrc.eurdep.mqtt.avro": {
+      "messagegroupid": "eu.jrc.eurdep.mqtt.avro",
+      "messages": {
+        "eu.jrc.eurdep.mqtt.Station": {
+          "messageid": "eu.jrc.eurdep.mqtt.Station",
+          "basemessage": "/messagegroups/eu.jrc.eurdep.mqtt/messages/eu.jrc.eurdep.mqtt.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/eu.jrc.eurdep.avro/schemas/eu.jrc.eurdep.Station"
+        },
+        "eu.jrc.eurdep.mqtt.DoseRateReading": {
+          "messageid": "eu.jrc.eurdep.mqtt.DoseRateReading",
+          "basemessage": "/messagegroups/eu.jrc.eurdep.mqtt/messages/eu.jrc.eurdep.mqtt.DoseRateReading",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/eu.jrc.eurdep.avro/schemas/eu.jrc.eurdep.DoseRateReading"
+        }
+      }
+    },
+    "eu.jrc.eurdep.mqtt.avro.binary": {
+      "messagegroupid": "eu.jrc.eurdep.mqtt.avro.binary",
+      "messages": {
+        "eu.jrc.eurdep.mqtt.Station": {
+          "messageid": "eu.jrc.eurdep.mqtt.Station",
+          "basemessage": "/messagegroups/eu.jrc.eurdep.mqtt/messages/eu.jrc.eurdep.mqtt.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/eu.jrc.eurdep.avro/schemas/eu.jrc.eurdep.Station",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "eu.jrc.eurdep.mqtt.DoseRateReading": {
+          "messageid": "eu.jrc.eurdep.mqtt.DoseRateReading",
+          "basemessage": "/messagegroups/eu.jrc.eurdep.mqtt/messages/eu.jrc.eurdep.mqtt.DoseRateReading",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/eu.jrc.eurdep.avro/schemas/eu.jrc.eurdep.DoseRateReading",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "eu.jrc.eurdep.amqp.avro": {
+      "messagegroupid": "eu.jrc.eurdep.amqp.avro",
+      "messages": {
+        "eu.jrc.eurdep.amqp.Station": {
+          "messageid": "eu.jrc.eurdep.amqp.Station",
+          "basemessage": "/messagegroups/eu.jrc.eurdep.amqp/messages/eu.jrc.eurdep.amqp.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/eu.jrc.eurdep.avro/schemas/eu.jrc.eurdep.Station"
+        },
+        "eu.jrc.eurdep.amqp.DoseRateReading": {
+          "messageid": "eu.jrc.eurdep.amqp.DoseRateReading",
+          "basemessage": "/messagegroups/eu.jrc.eurdep.amqp/messages/eu.jrc.eurdep.amqp.DoseRateReading",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/eu.jrc.eurdep.avro/schemas/eu.jrc.eurdep.DoseRateReading"
+        }
+      }
+    },
+    "eu.jrc.eurdep.amqp.avro.binary": {
+      "messagegroupid": "eu.jrc.eurdep.amqp.avro.binary",
+      "messages": {
+        "eu.jrc.eurdep.amqp.Station": {
+          "messageid": "eu.jrc.eurdep.amqp.Station",
+          "basemessage": "/messagegroups/eu.jrc.eurdep.amqp/messages/eu.jrc.eurdep.amqp.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/eu.jrc.eurdep.avro/schemas/eu.jrc.eurdep.Station",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "eu.jrc.eurdep.amqp.DoseRateReading": {
+          "messageid": "eu.jrc.eurdep.amqp.DoseRateReading",
+          "basemessage": "/messagegroups/eu.jrc.eurdep.amqp/messages/eu.jrc.eurdep.amqp.DoseRateReading",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/eu.jrc.eurdep.avro/schemas/eu.jrc.eurdep.DoseRateReading",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
             }
           }
         }
@@ -423,9 +575,63 @@
                   }
                 ]
               }
+            },
+            "2": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "eu.jrc.eurdep.Station",
+                "fields": [
+                  {
+                    "name": "station_id",
+                    "type": "string",
+                    "doc": "Alphanumeric station identifier assigned within the EURDEP network. The first two characters are the ISO 3166-1 alpha-2 country code of the operating country, followed by a numeric station sequence. Example: 'AT0001' (Austria), 'DE0123' (Germany), 'FR0456' (France). This is the stable key used for data retrieval and cross-referencing."
+                  },
+                  {
+                    "name": "name",
+                    "type": "string",
+                    "doc": "Human-readable name of the station location, typically a city or locality name. Example: 'Laa/ThayaAMS'."
+                  },
+                  {
+                    "name": "latitude",
+                    "type": "double",
+                    "doc": "Latitude of the station in WGS84 decimal degrees. Extracted from the GeoJSON geometry coordinates returned by the WFS endpoint. JSON Structure annotations: {\"symbol\": \"°\", \"unit\": \"deg\"}"
+                  },
+                  {
+                    "name": "longitude",
+                    "type": "double",
+                    "doc": "Longitude of the station in WGS84 decimal degrees. Extracted from the GeoJSON geometry coordinates returned by the WFS endpoint. JSON Structure annotations: {\"symbol\": \"°\", \"unit\": \"deg\"}"
+                  },
+                  {
+                    "name": "height_above_sea",
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "doc": "Elevation of the station above mean sea level in meters. Determines the cosmic radiation component contribution. Null if the elevation is not reported by the national network. JSON Structure annotations: {\"symbol\": \"m\", \"unit\": \"m\"}"
+                  },
+                  {
+                    "name": "site_status",
+                    "type": "int",
+                    "doc": "Numeric operational status code of the station. 1 = active and reporting, other values indicate the station is inactive, under maintenance, or decommissioned."
+                  },
+                  {
+                    "name": "site_status_text",
+                    "type": "string",
+                    "doc": "Human-readable text describing the operational status of the station. Language depends on the reporting country. Example: 'in Betrieb' (German for 'in operation')."
+                  },
+                  {
+                    "name": "country",
+                    "type": "string",
+                    "doc": "ISO 3166-1 alpha-2 country code for the station, derived from the first two characters of station_id and used as the {country} routing axis."
+                  }
+                ],
+                "doc": "Reference metadata for an ambient gamma dose rate monitoring station in the EURDEP network. EURDEP (European Radiological Data Exchange Platform) is operated by the European Commission's Joint Research Centre (JRC) and aggregates real-time radiological monitoring data from national networks across 39 European countries. Each station is identified by a country-prefixed alphanumeric code (e.g. 'AT0001' for Austria, 'DE0123' for Germany)."
+              }
             }
           },
-          "format": "Avro/1.11.3"
+          "format": "Avro/1.11.3",
+          "defaultversionid": "2"
         },
         "eu.jrc.eurdep.DoseRateReading": {
           "versions": {
@@ -496,9 +702,73 @@
                   "JSONStructureUnits"
                 ]
               }
+            },
+            "2": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "eu.jrc.eurdep.DoseRateReading",
+                "fields": [
+                  {
+                    "name": "station_id",
+                    "type": "string",
+                    "doc": "Alphanumeric station identifier from the EURDEP network. Matches the station_id in the Station schema. Example: 'AT0001'."
+                  },
+                  {
+                    "name": "name",
+                    "type": "string",
+                    "doc": "Human-readable name of the station location. Included for convenience so readings are self-describing without a Station reference join."
+                  },
+                  {
+                    "name": "value",
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "doc": "Gross ambient gamma dose rate averaged over the measurement period in microsieverts per hour (µSv/h). Null if the station did not report a valid measurement for this interval. JSON Structure annotations: {\"symbol\": \"µSv/h\", \"unit\": \"uSv/h\"}"
+                  },
+                  {
+                    "name": "unit",
+                    "type": "string",
+                    "doc": "Unit of the dose rate value as reported by the upstream EURDEP system. Typically 'µSv/h' (microsieverts per hour), though encoding artifacts may appear in the raw API response."
+                  },
+                  {
+                    "name": "start_measure",
+                    "type": "string",
+                    "doc": "Start of the one-hour measurement period in ISO 8601 UTC format. Example: '2026-04-08T19:00:00Z'."
+                  },
+                  {
+                    "name": "end_measure",
+                    "type": "string",
+                    "doc": "End of the one-hour measurement period in ISO 8601 UTC format. Example: '2026-04-08T20:00:00Z'."
+                  },
+                  {
+                    "name": "nuclide",
+                    "type": "string",
+                    "doc": "Nuclide identifier describing the type of radiation measured. For standard gamma dose rate probes this is 'Gamma-ODL-Brutto' (gross gamma ambient dose rate)."
+                  },
+                  {
+                    "name": "duration",
+                    "type": "string",
+                    "doc": "Measurement integration period as reported by the upstream system. Example: '1h' for one hour."
+                  },
+                  {
+                    "name": "validated",
+                    "type": "int",
+                    "doc": "Data validation status flag. 0 = not validated, 1 = validated by national authority, 2 = validated by EURDEP system. Higher values indicate stronger quality assurance."
+                  },
+                  {
+                    "name": "country",
+                    "type": "string",
+                    "doc": "ISO 3166-1 alpha-2 country code for the station, derived from the first two characters of station_id and used as the {country} routing axis."
+                  }
+                ],
+                "doc": "An ambient gamma dose rate reading from a EURDEP monitoring station. The gross dose rate value is the total ambient dose equivalent rate at the station location, expressed in microsieverts per hour (µSv/h). Each reading covers a one-hour measurement window and includes validation status and the nuclide type measured. Normal European background levels range from approximately 0.04 to 0.20 µSv/h depending on local geology and altitude."
+              }
             }
           },
-          "format": "Avro/1.11.3"
+          "format": "Avro/1.11.3",
+          "defaultversionid": "2"
         }
       }
     }

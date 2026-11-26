@@ -18,7 +18,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/Microsoft.OpenData.US.NOAA.SWPC.Alerts"
+        "#/messagegroups/Microsoft.OpenData.US.NOAA.SWPC.Alerts",
+        "#/messagegroups/Microsoft.OpenData.US.NOAA.SWPC.Alerts.avro",
+        "#/messagegroups/Microsoft.OpenData.US.NOAA.SWPC.Alerts.avro.binary"
       ]
     },
     "Microsoft.OpenData.US.NOAA.SWPC.Observations.Kafka": {
@@ -39,7 +41,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/Microsoft.OpenData.US.NOAA.SWPC.Observations"
+        "#/messagegroups/Microsoft.OpenData.US.NOAA.SWPC.Observations",
+        "#/messagegroups/Microsoft.OpenData.US.NOAA.SWPC.Observations.avro",
+        "#/messagegroups/Microsoft.OpenData.US.NOAA.SWPC.Observations.avro.binary"
       ]
     },
     "Microsoft.OpenData.US.NOAA.SWPC.GOESParticleFlux.Kafka": {
@@ -60,7 +64,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/Microsoft.OpenData.US.NOAA.SWPC.GOESParticleFlux"
+        "#/messagegroups/Microsoft.OpenData.US.NOAA.SWPC.GOESParticleFlux",
+        "#/messagegroups/Microsoft.OpenData.US.NOAA.SWPC.GOESParticleFlux.avro",
+        "#/messagegroups/Microsoft.OpenData.US.NOAA.SWPC.GOESParticleFlux.avro.binary"
       ]
     },
     "Microsoft.OpenData.US.NOAA.SWPC.GOESMagnetometer.Kafka": {
@@ -81,7 +87,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/Microsoft.OpenData.US.NOAA.SWPC.GOESMagnetometer"
+        "#/messagegroups/Microsoft.OpenData.US.NOAA.SWPC.GOESMagnetometer",
+        "#/messagegroups/Microsoft.OpenData.US.NOAA.SWPC.GOESMagnetometer.avro",
+        "#/messagegroups/Microsoft.OpenData.US.NOAA.SWPC.GOESMagnetometer.avro.binary"
       ]
     },
     "Microsoft.OpenData.US.NOAA.SWPC.SolarFlares.Kafka": {
@@ -102,7 +110,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/Microsoft.OpenData.US.NOAA.SWPC.SolarFlares"
+        "#/messagegroups/Microsoft.OpenData.US.NOAA.SWPC.SolarFlares",
+        "#/messagegroups/Microsoft.OpenData.US.NOAA.SWPC.SolarFlares.avro",
+        "#/messagegroups/Microsoft.OpenData.US.NOAA.SWPC.SolarFlares.avro.binary"
       ]
     },
     "Microsoft.OpenData.US.NOAA.SWPC.GOES.Mqtt": {
@@ -123,7 +133,9 @@
         ]
       },
       "messagegroups": [
-        "#/messagegroups/Microsoft.OpenData.US.NOAA.SWPC.GOES.mqtt"
+        "#/messagegroups/Microsoft.OpenData.US.NOAA.SWPC.GOES.mqtt",
+        "#/messagegroups/Microsoft.OpenData.US.NOAA.SWPC.GOES.mqtt.avro",
+        "#/messagegroups/Microsoft.OpenData.US.NOAA.SWPC.GOES.mqtt.avro.binary"
       ],
       "description": "MQTT 5 producer endpoint for noaa-goes CloudEvents."
     },
@@ -145,7 +157,9 @@
         ]
       },
       "messagegroups": [
-        "#/messagegroups/Microsoft.OpenData.US.NOAA.SWPC.GOES.amqp"
+        "#/messagegroups/Microsoft.OpenData.US.NOAA.SWPC.GOES.amqp",
+        "#/messagegroups/Microsoft.OpenData.US.NOAA.SWPC.GOES.amqp.avro",
+        "#/messagegroups/Microsoft.OpenData.US.NOAA.SWPC.GOES.amqp.avro.binary"
       ],
       "description": "AMQP 1.0 producer endpoint for noaa-goes CloudEvents."
     }
@@ -166,6 +180,10 @@
             "subject": {
               "value": "{product_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -188,6 +206,10 @@
             "subject": {
               "value": "{observation_time}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -206,6 +228,10 @@
             "subject": {
               "value": "{observation_time}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -224,6 +250,10 @@
             "subject": {
               "value": "{observation_time}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -242,6 +272,10 @@
             "subject": {
               "value": "{observation_time}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -264,6 +298,10 @@
             "subject": {
               "value": "{satellite}/{energy}/{time_tag}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -282,6 +320,10 @@
             "subject": {
               "value": "{satellite}/{energy}/{time_tag}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -300,6 +342,10 @@
             "subject": {
               "value": "{satellite}/{energy}/{time_tag}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -322,6 +368,10 @@
             "subject": {
               "value": "{satellite}/{time_tag}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -344,6 +394,10 @@
             "subject": {
               "value": "{satellite}/{begin_time}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -536,6 +590,472 @@
                 "value": "{flare_class}",
                 "description": "Routing property flare_class copied from the event payload or derived routing context."
               }
+            }
+          }
+        }
+      }
+    },
+    "Microsoft.OpenData.US.NOAA.SWPC.Alerts.avro": {
+      "messagegroupid": "Microsoft.OpenData.US.NOAA.SWPC.Alerts.avro",
+      "messages": {
+        "Microsoft.OpenData.US.NOAA.SWPC.SpaceWeatherAlert": {
+          "messageid": "Microsoft.OpenData.US.NOAA.SWPC.SpaceWeatherAlert",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.SWPC.Alerts/messages/Microsoft.OpenData.US.NOAA.SWPC.SpaceWeatherAlert",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.SWPC.avro/schemas/Microsoft.OpenData.US.NOAA.SWPC.SpaceWeatherAlert"
+        }
+      }
+    },
+    "Microsoft.OpenData.US.NOAA.SWPC.Alerts.avro.binary": {
+      "messagegroupid": "Microsoft.OpenData.US.NOAA.SWPC.Alerts.avro.binary",
+      "messages": {
+        "Microsoft.OpenData.US.NOAA.SWPC.SpaceWeatherAlert": {
+          "messageid": "Microsoft.OpenData.US.NOAA.SWPC.SpaceWeatherAlert",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.SWPC.Alerts/messages/Microsoft.OpenData.US.NOAA.SWPC.SpaceWeatherAlert",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.SWPC.avro/schemas/Microsoft.OpenData.US.NOAA.SWPC.SpaceWeatherAlert",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "Microsoft.OpenData.US.NOAA.SWPC.Observations.avro": {
+      "messagegroupid": "Microsoft.OpenData.US.NOAA.SWPC.Observations.avro",
+      "messages": {
+        "Microsoft.OpenData.US.NOAA.SWPC.PlanetaryKIndex": {
+          "messageid": "Microsoft.OpenData.US.NOAA.SWPC.PlanetaryKIndex",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.SWPC.Observations/messages/Microsoft.OpenData.US.NOAA.SWPC.PlanetaryKIndex",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.SWPC.avro/schemas/Microsoft.OpenData.US.NOAA.SWPC.PlanetaryKIndex"
+        },
+        "Microsoft.OpenData.US.NOAA.SWPC.SolarWindSummary": {
+          "messageid": "Microsoft.OpenData.US.NOAA.SWPC.SolarWindSummary",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.SWPC.Observations/messages/Microsoft.OpenData.US.NOAA.SWPC.SolarWindSummary",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.SWPC.avro/schemas/Microsoft.OpenData.US.NOAA.SWPC.SolarWindSummary"
+        },
+        "Microsoft.OpenData.US.NOAA.SWPC.SolarWindPlasma": {
+          "messageid": "Microsoft.OpenData.US.NOAA.SWPC.SolarWindPlasma",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.SWPC.Observations/messages/Microsoft.OpenData.US.NOAA.SWPC.SolarWindPlasma",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.SWPC.avro/schemas/Microsoft.OpenData.US.NOAA.SWPC.SolarWindPlasma"
+        },
+        "Microsoft.OpenData.US.NOAA.SWPC.SolarWindMagField": {
+          "messageid": "Microsoft.OpenData.US.NOAA.SWPC.SolarWindMagField",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.SWPC.Observations/messages/Microsoft.OpenData.US.NOAA.SWPC.SolarWindMagField",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.SWPC.avro/schemas/Microsoft.OpenData.US.NOAA.SWPC.SolarWindMagField"
+        }
+      }
+    },
+    "Microsoft.OpenData.US.NOAA.SWPC.Observations.avro.binary": {
+      "messagegroupid": "Microsoft.OpenData.US.NOAA.SWPC.Observations.avro.binary",
+      "messages": {
+        "Microsoft.OpenData.US.NOAA.SWPC.PlanetaryKIndex": {
+          "messageid": "Microsoft.OpenData.US.NOAA.SWPC.PlanetaryKIndex",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.SWPC.Observations/messages/Microsoft.OpenData.US.NOAA.SWPC.PlanetaryKIndex",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.SWPC.avro/schemas/Microsoft.OpenData.US.NOAA.SWPC.PlanetaryKIndex",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.SWPC.SolarWindSummary": {
+          "messageid": "Microsoft.OpenData.US.NOAA.SWPC.SolarWindSummary",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.SWPC.Observations/messages/Microsoft.OpenData.US.NOAA.SWPC.SolarWindSummary",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.SWPC.avro/schemas/Microsoft.OpenData.US.NOAA.SWPC.SolarWindSummary",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.SWPC.SolarWindPlasma": {
+          "messageid": "Microsoft.OpenData.US.NOAA.SWPC.SolarWindPlasma",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.SWPC.Observations/messages/Microsoft.OpenData.US.NOAA.SWPC.SolarWindPlasma",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.SWPC.avro/schemas/Microsoft.OpenData.US.NOAA.SWPC.SolarWindPlasma",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.SWPC.SolarWindMagField": {
+          "messageid": "Microsoft.OpenData.US.NOAA.SWPC.SolarWindMagField",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.SWPC.Observations/messages/Microsoft.OpenData.US.NOAA.SWPC.SolarWindMagField",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.SWPC.avro/schemas/Microsoft.OpenData.US.NOAA.SWPC.SolarWindMagField",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "Microsoft.OpenData.US.NOAA.SWPC.GOESParticleFlux.avro": {
+      "messagegroupid": "Microsoft.OpenData.US.NOAA.SWPC.GOESParticleFlux.avro",
+      "messages": {
+        "Microsoft.OpenData.US.NOAA.SWPC.GoesXrayFlux": {
+          "messageid": "Microsoft.OpenData.US.NOAA.SWPC.GoesXrayFlux",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.SWPC.GOESParticleFlux/messages/Microsoft.OpenData.US.NOAA.SWPC.GoesXrayFlux",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.SWPC.avro/schemas/Microsoft.OpenData.US.NOAA.SWPC.GoesXrayFlux"
+        },
+        "Microsoft.OpenData.US.NOAA.SWPC.GoesProtonFlux": {
+          "messageid": "Microsoft.OpenData.US.NOAA.SWPC.GoesProtonFlux",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.SWPC.GOESParticleFlux/messages/Microsoft.OpenData.US.NOAA.SWPC.GoesProtonFlux",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.SWPC.avro/schemas/Microsoft.OpenData.US.NOAA.SWPC.GoesProtonFlux"
+        },
+        "Microsoft.OpenData.US.NOAA.SWPC.GoesElectronFlux": {
+          "messageid": "Microsoft.OpenData.US.NOAA.SWPC.GoesElectronFlux",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.SWPC.GOESParticleFlux/messages/Microsoft.OpenData.US.NOAA.SWPC.GoesElectronFlux",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.SWPC.avro/schemas/Microsoft.OpenData.US.NOAA.SWPC.GoesElectronFlux"
+        }
+      }
+    },
+    "Microsoft.OpenData.US.NOAA.SWPC.GOESParticleFlux.avro.binary": {
+      "messagegroupid": "Microsoft.OpenData.US.NOAA.SWPC.GOESParticleFlux.avro.binary",
+      "messages": {
+        "Microsoft.OpenData.US.NOAA.SWPC.GoesXrayFlux": {
+          "messageid": "Microsoft.OpenData.US.NOAA.SWPC.GoesXrayFlux",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.SWPC.GOESParticleFlux/messages/Microsoft.OpenData.US.NOAA.SWPC.GoesXrayFlux",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.SWPC.avro/schemas/Microsoft.OpenData.US.NOAA.SWPC.GoesXrayFlux",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.SWPC.GoesProtonFlux": {
+          "messageid": "Microsoft.OpenData.US.NOAA.SWPC.GoesProtonFlux",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.SWPC.GOESParticleFlux/messages/Microsoft.OpenData.US.NOAA.SWPC.GoesProtonFlux",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.SWPC.avro/schemas/Microsoft.OpenData.US.NOAA.SWPC.GoesProtonFlux",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.SWPC.GoesElectronFlux": {
+          "messageid": "Microsoft.OpenData.US.NOAA.SWPC.GoesElectronFlux",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.SWPC.GOESParticleFlux/messages/Microsoft.OpenData.US.NOAA.SWPC.GoesElectronFlux",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.SWPC.avro/schemas/Microsoft.OpenData.US.NOAA.SWPC.GoesElectronFlux",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "Microsoft.OpenData.US.NOAA.SWPC.GOESMagnetometer.avro": {
+      "messagegroupid": "Microsoft.OpenData.US.NOAA.SWPC.GOESMagnetometer.avro",
+      "messages": {
+        "Microsoft.OpenData.US.NOAA.SWPC.GoesMagnetometer": {
+          "messageid": "Microsoft.OpenData.US.NOAA.SWPC.GoesMagnetometer",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.SWPC.GOESMagnetometer/messages/Microsoft.OpenData.US.NOAA.SWPC.GoesMagnetometer",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.SWPC.avro/schemas/Microsoft.OpenData.US.NOAA.SWPC.GoesMagnetometer"
+        }
+      }
+    },
+    "Microsoft.OpenData.US.NOAA.SWPC.GOESMagnetometer.avro.binary": {
+      "messagegroupid": "Microsoft.OpenData.US.NOAA.SWPC.GOESMagnetometer.avro.binary",
+      "messages": {
+        "Microsoft.OpenData.US.NOAA.SWPC.GoesMagnetometer": {
+          "messageid": "Microsoft.OpenData.US.NOAA.SWPC.GoesMagnetometer",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.SWPC.GOESMagnetometer/messages/Microsoft.OpenData.US.NOAA.SWPC.GoesMagnetometer",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.SWPC.avro/schemas/Microsoft.OpenData.US.NOAA.SWPC.GoesMagnetometer",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "Microsoft.OpenData.US.NOAA.SWPC.SolarFlares.avro": {
+      "messagegroupid": "Microsoft.OpenData.US.NOAA.SWPC.SolarFlares.avro",
+      "messages": {
+        "Microsoft.OpenData.US.NOAA.SWPC.XrayFlare": {
+          "messageid": "Microsoft.OpenData.US.NOAA.SWPC.XrayFlare",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.SWPC.SolarFlares/messages/Microsoft.OpenData.US.NOAA.SWPC.XrayFlare",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.SWPC.avro/schemas/Microsoft.OpenData.US.NOAA.SWPC.XrayFlare"
+        }
+      }
+    },
+    "Microsoft.OpenData.US.NOAA.SWPC.SolarFlares.avro.binary": {
+      "messagegroupid": "Microsoft.OpenData.US.NOAA.SWPC.SolarFlares.avro.binary",
+      "messages": {
+        "Microsoft.OpenData.US.NOAA.SWPC.XrayFlare": {
+          "messageid": "Microsoft.OpenData.US.NOAA.SWPC.XrayFlare",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.SWPC.SolarFlares/messages/Microsoft.OpenData.US.NOAA.SWPC.XrayFlare",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.SWPC.avro/schemas/Microsoft.OpenData.US.NOAA.SWPC.XrayFlare",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "Microsoft.OpenData.US.NOAA.SWPC.GOES.mqtt.avro": {
+      "messagegroupid": "Microsoft.OpenData.US.NOAA.SWPC.GOES.mqtt.avro",
+      "messages": {
+        "Microsoft.OpenData.US.NOAA.SWPC.GoesXrayFlux.mqtt": {
+          "messageid": "Microsoft.OpenData.US.NOAA.SWPC.GoesXrayFlux.mqtt",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.SWPC.GOES.mqtt/messages/Microsoft.OpenData.US.NOAA.SWPC.GoesXrayFlux.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.SWPC.avro/schemas/Microsoft.OpenData.US.NOAA.SWPC.GoesXrayFlux"
+        },
+        "Microsoft.OpenData.US.NOAA.SWPC.GoesProtonFlux.mqtt": {
+          "messageid": "Microsoft.OpenData.US.NOAA.SWPC.GoesProtonFlux.mqtt",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.SWPC.GOES.mqtt/messages/Microsoft.OpenData.US.NOAA.SWPC.GoesProtonFlux.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.SWPC.avro/schemas/Microsoft.OpenData.US.NOAA.SWPC.GoesProtonFlux"
+        },
+        "Microsoft.OpenData.US.NOAA.SWPC.GoesElectronFlux.mqtt": {
+          "messageid": "Microsoft.OpenData.US.NOAA.SWPC.GoesElectronFlux.mqtt",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.SWPC.GOES.mqtt/messages/Microsoft.OpenData.US.NOAA.SWPC.GoesElectronFlux.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.SWPC.avro/schemas/Microsoft.OpenData.US.NOAA.SWPC.GoesElectronFlux"
+        },
+        "Microsoft.OpenData.US.NOAA.SWPC.GoesMagnetometer.mqtt": {
+          "messageid": "Microsoft.OpenData.US.NOAA.SWPC.GoesMagnetometer.mqtt",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.SWPC.GOES.mqtt/messages/Microsoft.OpenData.US.NOAA.SWPC.GoesMagnetometer.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.SWPC.avro/schemas/Microsoft.OpenData.US.NOAA.SWPC.GoesMagnetometer"
+        },
+        "Microsoft.OpenData.US.NOAA.SWPC.SpaceWeatherAlert.mqtt": {
+          "messageid": "Microsoft.OpenData.US.NOAA.SWPC.SpaceWeatherAlert.mqtt",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.SWPC.GOES.mqtt/messages/Microsoft.OpenData.US.NOAA.SWPC.SpaceWeatherAlert.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.SWPC.avro/schemas/Microsoft.OpenData.US.NOAA.SWPC.SpaceWeatherAlert"
+        },
+        "Microsoft.OpenData.US.NOAA.SWPC.XrayFlare.mqtt": {
+          "messageid": "Microsoft.OpenData.US.NOAA.SWPC.XrayFlare.mqtt",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.SWPC.GOES.mqtt/messages/Microsoft.OpenData.US.NOAA.SWPC.XrayFlare.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.SWPC.avro/schemas/Microsoft.OpenData.US.NOAA.SWPC.XrayFlare"
+        }
+      }
+    },
+    "Microsoft.OpenData.US.NOAA.SWPC.GOES.mqtt.avro.binary": {
+      "messagegroupid": "Microsoft.OpenData.US.NOAA.SWPC.GOES.mqtt.avro.binary",
+      "messages": {
+        "Microsoft.OpenData.US.NOAA.SWPC.GoesXrayFlux.mqtt": {
+          "messageid": "Microsoft.OpenData.US.NOAA.SWPC.GoesXrayFlux.mqtt",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.SWPC.GOES.mqtt/messages/Microsoft.OpenData.US.NOAA.SWPC.GoesXrayFlux.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.SWPC.avro/schemas/Microsoft.OpenData.US.NOAA.SWPC.GoesXrayFlux",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.SWPC.GoesProtonFlux.mqtt": {
+          "messageid": "Microsoft.OpenData.US.NOAA.SWPC.GoesProtonFlux.mqtt",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.SWPC.GOES.mqtt/messages/Microsoft.OpenData.US.NOAA.SWPC.GoesProtonFlux.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.SWPC.avro/schemas/Microsoft.OpenData.US.NOAA.SWPC.GoesProtonFlux",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.SWPC.GoesElectronFlux.mqtt": {
+          "messageid": "Microsoft.OpenData.US.NOAA.SWPC.GoesElectronFlux.mqtt",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.SWPC.GOES.mqtt/messages/Microsoft.OpenData.US.NOAA.SWPC.GoesElectronFlux.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.SWPC.avro/schemas/Microsoft.OpenData.US.NOAA.SWPC.GoesElectronFlux",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.SWPC.GoesMagnetometer.mqtt": {
+          "messageid": "Microsoft.OpenData.US.NOAA.SWPC.GoesMagnetometer.mqtt",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.SWPC.GOES.mqtt/messages/Microsoft.OpenData.US.NOAA.SWPC.GoesMagnetometer.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.SWPC.avro/schemas/Microsoft.OpenData.US.NOAA.SWPC.GoesMagnetometer",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.SWPC.SpaceWeatherAlert.mqtt": {
+          "messageid": "Microsoft.OpenData.US.NOAA.SWPC.SpaceWeatherAlert.mqtt",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.SWPC.GOES.mqtt/messages/Microsoft.OpenData.US.NOAA.SWPC.SpaceWeatherAlert.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.SWPC.avro/schemas/Microsoft.OpenData.US.NOAA.SWPC.SpaceWeatherAlert",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.SWPC.XrayFlare.mqtt": {
+          "messageid": "Microsoft.OpenData.US.NOAA.SWPC.XrayFlare.mqtt",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.SWPC.GOES.mqtt/messages/Microsoft.OpenData.US.NOAA.SWPC.XrayFlare.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.SWPC.avro/schemas/Microsoft.OpenData.US.NOAA.SWPC.XrayFlare",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "Microsoft.OpenData.US.NOAA.SWPC.GOES.amqp.avro": {
+      "messagegroupid": "Microsoft.OpenData.US.NOAA.SWPC.GOES.amqp.avro",
+      "messages": {
+        "Microsoft.OpenData.US.NOAA.SWPC.GoesXrayFlux.amqp": {
+          "messageid": "Microsoft.OpenData.US.NOAA.SWPC.GoesXrayFlux.amqp",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.SWPC.GOES.amqp/messages/Microsoft.OpenData.US.NOAA.SWPC.GoesXrayFlux.amqp",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.SWPC.avro/schemas/Microsoft.OpenData.US.NOAA.SWPC.GoesXrayFlux"
+        },
+        "Microsoft.OpenData.US.NOAA.SWPC.GoesProtonFlux.amqp": {
+          "messageid": "Microsoft.OpenData.US.NOAA.SWPC.GoesProtonFlux.amqp",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.SWPC.GOES.amqp/messages/Microsoft.OpenData.US.NOAA.SWPC.GoesProtonFlux.amqp",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.SWPC.avro/schemas/Microsoft.OpenData.US.NOAA.SWPC.GoesProtonFlux"
+        },
+        "Microsoft.OpenData.US.NOAA.SWPC.GoesElectronFlux.amqp": {
+          "messageid": "Microsoft.OpenData.US.NOAA.SWPC.GoesElectronFlux.amqp",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.SWPC.GOES.amqp/messages/Microsoft.OpenData.US.NOAA.SWPC.GoesElectronFlux.amqp",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.SWPC.avro/schemas/Microsoft.OpenData.US.NOAA.SWPC.GoesElectronFlux"
+        },
+        "Microsoft.OpenData.US.NOAA.SWPC.GoesMagnetometer.amqp": {
+          "messageid": "Microsoft.OpenData.US.NOAA.SWPC.GoesMagnetometer.amqp",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.SWPC.GOES.amqp/messages/Microsoft.OpenData.US.NOAA.SWPC.GoesMagnetometer.amqp",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.SWPC.avro/schemas/Microsoft.OpenData.US.NOAA.SWPC.GoesMagnetometer"
+        },
+        "Microsoft.OpenData.US.NOAA.SWPC.SpaceWeatherAlert.amqp": {
+          "messageid": "Microsoft.OpenData.US.NOAA.SWPC.SpaceWeatherAlert.amqp",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.SWPC.GOES.amqp/messages/Microsoft.OpenData.US.NOAA.SWPC.SpaceWeatherAlert.amqp",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.SWPC.avro/schemas/Microsoft.OpenData.US.NOAA.SWPC.SpaceWeatherAlert"
+        },
+        "Microsoft.OpenData.US.NOAA.SWPC.XrayFlare.amqp": {
+          "messageid": "Microsoft.OpenData.US.NOAA.SWPC.XrayFlare.amqp",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.SWPC.GOES.amqp/messages/Microsoft.OpenData.US.NOAA.SWPC.XrayFlare.amqp",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.SWPC.avro/schemas/Microsoft.OpenData.US.NOAA.SWPC.XrayFlare"
+        }
+      }
+    },
+    "Microsoft.OpenData.US.NOAA.SWPC.GOES.amqp.avro.binary": {
+      "messagegroupid": "Microsoft.OpenData.US.NOAA.SWPC.GOES.amqp.avro.binary",
+      "messages": {
+        "Microsoft.OpenData.US.NOAA.SWPC.GoesXrayFlux.amqp": {
+          "messageid": "Microsoft.OpenData.US.NOAA.SWPC.GoesXrayFlux.amqp",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.SWPC.GOES.amqp/messages/Microsoft.OpenData.US.NOAA.SWPC.GoesXrayFlux.amqp",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.SWPC.avro/schemas/Microsoft.OpenData.US.NOAA.SWPC.GoesXrayFlux",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.SWPC.GoesProtonFlux.amqp": {
+          "messageid": "Microsoft.OpenData.US.NOAA.SWPC.GoesProtonFlux.amqp",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.SWPC.GOES.amqp/messages/Microsoft.OpenData.US.NOAA.SWPC.GoesProtonFlux.amqp",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.SWPC.avro/schemas/Microsoft.OpenData.US.NOAA.SWPC.GoesProtonFlux",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.SWPC.GoesElectronFlux.amqp": {
+          "messageid": "Microsoft.OpenData.US.NOAA.SWPC.GoesElectronFlux.amqp",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.SWPC.GOES.amqp/messages/Microsoft.OpenData.US.NOAA.SWPC.GoesElectronFlux.amqp",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.SWPC.avro/schemas/Microsoft.OpenData.US.NOAA.SWPC.GoesElectronFlux",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.SWPC.GoesMagnetometer.amqp": {
+          "messageid": "Microsoft.OpenData.US.NOAA.SWPC.GoesMagnetometer.amqp",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.SWPC.GOES.amqp/messages/Microsoft.OpenData.US.NOAA.SWPC.GoesMagnetometer.amqp",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.SWPC.avro/schemas/Microsoft.OpenData.US.NOAA.SWPC.GoesMagnetometer",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.SWPC.SpaceWeatherAlert.amqp": {
+          "messageid": "Microsoft.OpenData.US.NOAA.SWPC.SpaceWeatherAlert.amqp",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.SWPC.GOES.amqp/messages/Microsoft.OpenData.US.NOAA.SWPC.SpaceWeatherAlert.amqp",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.SWPC.avro/schemas/Microsoft.OpenData.US.NOAA.SWPC.SpaceWeatherAlert",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "Microsoft.OpenData.US.NOAA.SWPC.XrayFlare.amqp": {
+          "messageid": "Microsoft.OpenData.US.NOAA.SWPC.XrayFlare.amqp",
+          "basemessage": "/messagegroups/Microsoft.OpenData.US.NOAA.SWPC.GOES.amqp/messages/Microsoft.OpenData.US.NOAA.SWPC.XrayFlare.amqp",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Microsoft.OpenData.US.NOAA.SWPC.avro/schemas/Microsoft.OpenData.US.NOAA.SWPC.XrayFlare",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
             }
           }
         }

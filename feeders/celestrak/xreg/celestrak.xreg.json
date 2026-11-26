@@ -18,7 +18,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/org.celestrak.kafka"
+        "#/messagegroups/org.celestrak.kafka",
+        "#/messagegroups/org.celestrak.kafka.avro",
+        "#/messagegroups/org.celestrak.kafka.avro.binary"
       ],
       "description": "Kafka producer endpoint for CelesTrak CloudEvents on the `celestrak` topic keyed by `{NORAD_CAT_ID}`."
     },
@@ -40,7 +42,9 @@
         ]
       },
       "messagegroups": [
-        "#/messagegroups/org.celestrak.mqtt"
+        "#/messagegroups/org.celestrak.mqtt",
+        "#/messagegroups/org.celestrak.mqtt.avro",
+        "#/messagegroups/org.celestrak.mqtt.avro.binary"
       ],
       "description": "MQTT 5 producer endpoint for CelesTrak CloudEvents on the `space/celestrak/...` topic hierarchy."
     },
@@ -62,7 +66,9 @@
         ]
       },
       "messagegroups": [
-        "#/messagegroups/org.celestrak.amqp"
+        "#/messagegroups/org.celestrak.amqp",
+        "#/messagegroups/org.celestrak.amqp.avro",
+        "#/messagegroups/org.celestrak.amqp.avro.binary"
       ],
       "description": "AMQP 1.0 producer endpoint for CelesTrak CloudEvents on the configured broker address."
     }
@@ -86,6 +92,10 @@
             "subject": {
               "value": "{NORAD_CAT_ID}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -106,6 +116,10 @@
             "subject": {
               "value": "{NORAD_CAT_ID}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -126,6 +140,10 @@
             "subject": {
               "value": "{NORAD_CAT_ID}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -279,6 +297,262 @@
           }
         }
       }
+    },
+    "org.celestrak.avro": {
+      "messagegroupid": "org.celestrak.avro",
+      "messages": {
+        "org.celestrak.SatelliteCatalogEntry": {
+          "messageid": "org.celestrak.SatelliteCatalogEntry",
+          "basemessage": "/messagegroups/org.celestrak/messages/org.celestrak.SatelliteCatalogEntry",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.celestrak.avro/schemas/org.celestrak.SatelliteCatalogEntry"
+        },
+        "org.celestrak.OrbitMeanElements": {
+          "messageid": "org.celestrak.OrbitMeanElements",
+          "basemessage": "/messagegroups/org.celestrak/messages/org.celestrak.OrbitMeanElements",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.celestrak.avro/schemas/org.celestrak.OrbitMeanElements"
+        },
+        "org.celestrak.SupplementalOrbitMeanElements": {
+          "messageid": "org.celestrak.SupplementalOrbitMeanElements",
+          "basemessage": "/messagegroups/org.celestrak/messages/org.celestrak.SupplementalOrbitMeanElements",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.celestrak.avro/schemas/org.celestrak.SupplementalOrbitMeanElements"
+        }
+      }
+    },
+    "org.celestrak.avro.binary": {
+      "messagegroupid": "org.celestrak.avro.binary",
+      "messages": {
+        "org.celestrak.SatelliteCatalogEntry": {
+          "messageid": "org.celestrak.SatelliteCatalogEntry",
+          "basemessage": "/messagegroups/org.celestrak/messages/org.celestrak.SatelliteCatalogEntry",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.celestrak.avro/schemas/org.celestrak.SatelliteCatalogEntry",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "org.celestrak.OrbitMeanElements": {
+          "messageid": "org.celestrak.OrbitMeanElements",
+          "basemessage": "/messagegroups/org.celestrak/messages/org.celestrak.OrbitMeanElements",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.celestrak.avro/schemas/org.celestrak.OrbitMeanElements",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "org.celestrak.SupplementalOrbitMeanElements": {
+          "messageid": "org.celestrak.SupplementalOrbitMeanElements",
+          "basemessage": "/messagegroups/org.celestrak/messages/org.celestrak.SupplementalOrbitMeanElements",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.celestrak.avro/schemas/org.celestrak.SupplementalOrbitMeanElements",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "org.celestrak.kafka.avro": {
+      "messagegroupid": "org.celestrak.kafka.avro",
+      "messages": {
+        "org.celestrak.kafka.SatelliteCatalogEntry": {
+          "messageid": "org.celestrak.kafka.SatelliteCatalogEntry",
+          "basemessage": "/messagegroups/org.celestrak.kafka/messages/org.celestrak.kafka.SatelliteCatalogEntry",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.celestrak.avro/schemas/org.celestrak.SatelliteCatalogEntry"
+        },
+        "org.celestrak.kafka.OrbitMeanElements": {
+          "messageid": "org.celestrak.kafka.OrbitMeanElements",
+          "basemessage": "/messagegroups/org.celestrak.kafka/messages/org.celestrak.kafka.OrbitMeanElements",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.celestrak.avro/schemas/org.celestrak.OrbitMeanElements"
+        },
+        "org.celestrak.kafka.SupplementalOrbitMeanElements": {
+          "messageid": "org.celestrak.kafka.SupplementalOrbitMeanElements",
+          "basemessage": "/messagegroups/org.celestrak.kafka/messages/org.celestrak.kafka.SupplementalOrbitMeanElements",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.celestrak.avro/schemas/org.celestrak.SupplementalOrbitMeanElements"
+        }
+      }
+    },
+    "org.celestrak.kafka.avro.binary": {
+      "messagegroupid": "org.celestrak.kafka.avro.binary",
+      "messages": {
+        "org.celestrak.kafka.SatelliteCatalogEntry": {
+          "messageid": "org.celestrak.kafka.SatelliteCatalogEntry",
+          "basemessage": "/messagegroups/org.celestrak.kafka/messages/org.celestrak.kafka.SatelliteCatalogEntry",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.celestrak.avro/schemas/org.celestrak.SatelliteCatalogEntry",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "org.celestrak.kafka.OrbitMeanElements": {
+          "messageid": "org.celestrak.kafka.OrbitMeanElements",
+          "basemessage": "/messagegroups/org.celestrak.kafka/messages/org.celestrak.kafka.OrbitMeanElements",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.celestrak.avro/schemas/org.celestrak.OrbitMeanElements",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "org.celestrak.kafka.SupplementalOrbitMeanElements": {
+          "messageid": "org.celestrak.kafka.SupplementalOrbitMeanElements",
+          "basemessage": "/messagegroups/org.celestrak.kafka/messages/org.celestrak.kafka.SupplementalOrbitMeanElements",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.celestrak.avro/schemas/org.celestrak.SupplementalOrbitMeanElements",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "org.celestrak.mqtt.avro": {
+      "messagegroupid": "org.celestrak.mqtt.avro",
+      "messages": {
+        "org.celestrak.mqtt.SatelliteCatalogEntry": {
+          "messageid": "org.celestrak.mqtt.SatelliteCatalogEntry",
+          "basemessage": "/messagegroups/org.celestrak.mqtt/messages/org.celestrak.mqtt.SatelliteCatalogEntry",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.celestrak.avro/schemas/org.celestrak.SatelliteCatalogEntry"
+        },
+        "org.celestrak.mqtt.OrbitMeanElements": {
+          "messageid": "org.celestrak.mqtt.OrbitMeanElements",
+          "basemessage": "/messagegroups/org.celestrak.mqtt/messages/org.celestrak.mqtt.OrbitMeanElements",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.celestrak.avro/schemas/org.celestrak.OrbitMeanElements"
+        },
+        "org.celestrak.mqtt.SupplementalOrbitMeanElements": {
+          "messageid": "org.celestrak.mqtt.SupplementalOrbitMeanElements",
+          "basemessage": "/messagegroups/org.celestrak.mqtt/messages/org.celestrak.mqtt.SupplementalOrbitMeanElements",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.celestrak.avro/schemas/org.celestrak.SupplementalOrbitMeanElements"
+        }
+      }
+    },
+    "org.celestrak.mqtt.avro.binary": {
+      "messagegroupid": "org.celestrak.mqtt.avro.binary",
+      "messages": {
+        "org.celestrak.mqtt.SatelliteCatalogEntry": {
+          "messageid": "org.celestrak.mqtt.SatelliteCatalogEntry",
+          "basemessage": "/messagegroups/org.celestrak.mqtt/messages/org.celestrak.mqtt.SatelliteCatalogEntry",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.celestrak.avro/schemas/org.celestrak.SatelliteCatalogEntry",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "org.celestrak.mqtt.OrbitMeanElements": {
+          "messageid": "org.celestrak.mqtt.OrbitMeanElements",
+          "basemessage": "/messagegroups/org.celestrak.mqtt/messages/org.celestrak.mqtt.OrbitMeanElements",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.celestrak.avro/schemas/org.celestrak.OrbitMeanElements",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "org.celestrak.mqtt.SupplementalOrbitMeanElements": {
+          "messageid": "org.celestrak.mqtt.SupplementalOrbitMeanElements",
+          "basemessage": "/messagegroups/org.celestrak.mqtt/messages/org.celestrak.mqtt.SupplementalOrbitMeanElements",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.celestrak.avro/schemas/org.celestrak.SupplementalOrbitMeanElements",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "org.celestrak.amqp.avro": {
+      "messagegroupid": "org.celestrak.amqp.avro",
+      "messages": {
+        "org.celestrak.amqp.SatelliteCatalogEntry": {
+          "messageid": "org.celestrak.amqp.SatelliteCatalogEntry",
+          "basemessage": "/messagegroups/org.celestrak.amqp/messages/org.celestrak.amqp.SatelliteCatalogEntry",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.celestrak.avro/schemas/org.celestrak.SatelliteCatalogEntry"
+        },
+        "org.celestrak.amqp.OrbitMeanElements": {
+          "messageid": "org.celestrak.amqp.OrbitMeanElements",
+          "basemessage": "/messagegroups/org.celestrak.amqp/messages/org.celestrak.amqp.OrbitMeanElements",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.celestrak.avro/schemas/org.celestrak.OrbitMeanElements"
+        },
+        "org.celestrak.amqp.SupplementalOrbitMeanElements": {
+          "messageid": "org.celestrak.amqp.SupplementalOrbitMeanElements",
+          "basemessage": "/messagegroups/org.celestrak.amqp/messages/org.celestrak.amqp.SupplementalOrbitMeanElements",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.celestrak.avro/schemas/org.celestrak.SupplementalOrbitMeanElements"
+        }
+      }
+    },
+    "org.celestrak.amqp.avro.binary": {
+      "messagegroupid": "org.celestrak.amqp.avro.binary",
+      "messages": {
+        "org.celestrak.amqp.SatelliteCatalogEntry": {
+          "messageid": "org.celestrak.amqp.SatelliteCatalogEntry",
+          "basemessage": "/messagegroups/org.celestrak.amqp/messages/org.celestrak.amqp.SatelliteCatalogEntry",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.celestrak.avro/schemas/org.celestrak.SatelliteCatalogEntry",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "org.celestrak.amqp.OrbitMeanElements": {
+          "messageid": "org.celestrak.amqp.OrbitMeanElements",
+          "basemessage": "/messagegroups/org.celestrak.amqp/messages/org.celestrak.amqp.OrbitMeanElements",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.celestrak.avro/schemas/org.celestrak.OrbitMeanElements",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "org.celestrak.amqp.SupplementalOrbitMeanElements": {
+          "messageid": "org.celestrak.amqp.SupplementalOrbitMeanElements",
+          "basemessage": "/messagegroups/org.celestrak.amqp/messages/org.celestrak.amqp.SupplementalOrbitMeanElements",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/org.celestrak.avro/schemas/org.celestrak.SupplementalOrbitMeanElements",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
     }
   },
   "schemagroups": {
@@ -379,9 +653,9 @@
                             "type": [
                               "null",
                               "double"
-                              ],
-                              "minimum": 0,
-                              "description": "Orbital period, in minutes. Null when no current elements are available. From the SATCAT `PERIOD` field."
+                            ],
+                            "minimum": 0,
+                            "description": "Orbital period, in minutes. Null when no current elements are available. From the SATCAT `PERIOD` field."
                           },
                           "INCLINATION": {
                             "type": [
@@ -397,25 +671,25 @@
                             "type": [
                               "null",
                               "int32"
-                              ],
-                              "minimum": 0,
-                              "description": "Apogee altitude above the Earth's surface, in kilometres (the farthest orbital point). Null when no current elements are available. From the SATCAT `APOGEE` field."
+                            ],
+                            "minimum": 0,
+                            "description": "Apogee altitude above the Earth's surface, in kilometres (the farthest orbital point). Null when no current elements are available. From the SATCAT `APOGEE` field."
                           },
                           "PERIGEE": {
                             "type": [
                               "null",
                               "int32"
-                              ],
-                              "minimum": 0,
-                              "description": "Perigee altitude above the Earth's surface, in kilometres (the closest orbital point). Null when no current elements are available. From the SATCAT `PERIGEE` field."
+                            ],
+                            "minimum": 0,
+                            "description": "Perigee altitude above the Earth's surface, in kilometres (the closest orbital point). Null when no current elements are available. From the SATCAT `PERIGEE` field."
                           },
                           "RCS": {
                             "type": [
                               "null",
                               "double"
-                              ],
-                              "minimum": 0,
-                              "description": "Radar Cross Section, in square metres -- a proxy for the object's size as seen by tracking radar. Null when not available. From the SATCAT `RCS` field."
+                            ],
+                            "minimum": 0,
+                            "description": "Radar Cross Section, in square metres -- a proxy for the object's size as seen by tracking radar. Null when not available. From the SATCAT `RCS` field."
                           },
                           "DATA_STATUS_CODE": {
                             "type": [
@@ -827,6 +1101,444 @@
                     }
                   }
                 }
+              }
+            }
+          }
+        }
+      }
+    },
+    "org.celestrak.avro": {
+      "schemas": {
+        "org.celestrak.SatelliteCatalogEntry": {
+          "name": "SatelliteCatalogEntry",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "org.celestrak.SatelliteCatalogEntry",
+                "fields": [
+                  {
+                    "name": "OBJECT_NAME",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Satellite / object name(s). May include alternate names in parentheses, an object-descriptor in brackets (e.g. `BREEZE-M DEB [TANK]`), and `&` to denote two or more attached objects. Mutable; never use as a key. From the SATCAT `OBJECT_NAME` field. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "OBJECT_ID",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "International Designator (COSPAR ID), format `YYYY-NNNAAA`: launch year, launch number of the year, and one-to-three-letter piece designator (excluding I and O). Null for analyst objects with no associated launch. From the SATCAT `OBJECT_ID` field. JSON Structure annotations: {\"pattern\": \"^[0-9]{4}-[0-9]{3}[A-Z]{0,3}$\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "NORAD_CAT_ID",
+                    "type": "int",
+                    "doc": "NORAD Catalog Number: the globally-recognised unique identifier for a tracked resident space object, assigned by the US Space Force 18th Space Defense Squadron. One to nine digits (the five-digit range was exhausted at 100000+ on 2026-07-11; analyst objects use the 7995xxxxx range). Used as the CloudEvents `subject`, the Kafka partition key, the MQTT topic leaf and the AMQP subject. References the same object as the OrbitMeanElements event with the identical `NORAD_CAT_ID`. From the SATCAT `NORAD_CAT_ID` field. JSON Structure annotations: {\"maximum\": 999999999, \"minimum\": 1}"
+                  },
+                  {
+                    "name": "OBJECT_TYPE",
+                    "default": null,
+                    "type": [
+                      "null",
+                      {
+                        "type": "string",
+                        "doc": "Allowed JSON values: [\"PAY\", \"R/B\", \"DEB\", \"UNK\"]"
+                      }
+                    ],
+                    "doc": "Object type: `PAY` payload, `R/B` rocket body, `DEB` other debris, `UNK` unknown. From the SATCAT `OBJECT_TYPE` field. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "OPS_STATUS_CODE",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Operational status code: `+` operational, `-` nonoperational, `P` partially operational, `B` backup/standby, `S` spare, `X` extended mission, `D` decayed, `?` unknown. An object is considered 'active' if its status is one of `+`,`P`,`B`,`S`,`X`. Modelled as a plain string because the code symbols (`+`,`-`,`?`) are not valid enumeration identifiers. From the SATCAT `OPS_STATUS_CODE` field; see https://celestrak.org/satcat/status.php. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "OWNER",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Owner / source: the country or organisation that owns the object, as a CelesTrak source code (e.g. `US`, `CIS`, `PRC`, `ESA`, `ISS`, `TBD`). From the SATCAT `OWNER` field; see https://celestrak.org/satcat/sources.php. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "LAUNCH_DATE",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Launch date as a UTC calendar date, an ISO 8601 `YYYY-MM-DD` string. Null if unknown. From the SATCAT `LAUNCH_DATE` field. JSON Structure annotations: {\"pattern\": \"^[0-9]{4}-[0-9]{2}-[0-9]{2}$\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "LAUNCH_SITE",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Launch site code (e.g. `TYMSC` Baikonur/Tyuratam, `AFETR` Cape Canaveral, `FRGUI` Kourou). Null if unknown. From the SATCAT `LAUNCH_SITE` field; see https://celestrak.org/satcat/launchsites.php. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "DECAY_DATE",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Decay (re-entry) date as a UTC calendar date, an ISO 8601 `YYYY-MM-DD` string. Null while the object is still on orbit. From the SATCAT `DECAY_DATE` field (upstream empty string is mapped to null). JSON Structure annotations: {\"pattern\": \"^[0-9]{4}-[0-9]{2}-[0-9]{2}$\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "PERIOD",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Orbital period, in minutes. Null when no current elements are available. From the SATCAT `PERIOD` field. JSON Structure annotations: {\"minimum\": 0} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "INCLINATION",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Orbital inclination to the equator, in degrees (0-180). Null when no current elements are available. From the SATCAT `INCLINATION` field. JSON Structure annotations: {\"maximum\": 180, \"minimum\": 0, \"symbol\": \"°\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "APOGEE",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Apogee altitude above the Earth's surface, in kilometres (the farthest orbital point). Null when no current elements are available. From the SATCAT `APOGEE` field. JSON Structure annotations: {\"minimum\": 0} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "PERIGEE",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Perigee altitude above the Earth's surface, in kilometres (the closest orbital point). Null when no current elements are available. From the SATCAT `PERIGEE` field. JSON Structure annotations: {\"minimum\": 0} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "RCS",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Radar Cross Section, in square metres -- a proxy for the object's size as seen by tracking radar. Null when not available. From the SATCAT `RCS` field. JSON Structure annotations: {\"minimum\": 0} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "DATA_STATUS_CODE",
+                    "default": null,
+                    "type": [
+                      "null",
+                      {
+                        "type": "enum",
+                        "name": "org.celestrak.DataStatusCodeEnum",
+                        "symbols": [
+                          "NCE",
+                          "NIE",
+                          "NEA"
+                        ]
+                      }
+                    ],
+                    "doc": "Data status: `NCE` no current elements, `NIE` no initial elements, `NEA` no elements available. Null when elements are available. From the SATCAT `DATA_STATUS_CODE` field (upstream empty string is mapped to null). An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "ORBIT_CENTER",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Orbit center: `EA` Earth, `EM` Earth-Moon barycenter, `EL1`/`EL2` Earth-Sun Lagrange points, `MO` Moon, `SU` Sun, `SS` solar-system escape, planetary bodies (`MA` Mars, `JU` Jupiter, `VE` Venus, ...), or a NORAD Catalog Number for an object docked to another catalogued object. Modelled as a plain string because the value space includes numeric catalog numbers. From the SATCAT `ORBIT_CENTER` field. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "ORBIT_TYPE",
+                    "default": null,
+                    "type": [
+                      "null",
+                      {
+                        "type": "string",
+                        "doc": "Allowed JSON values: [\"ORB\", \"LAN\", \"IMP\", \"DOC\", \"R/T\"]"
+                      }
+                    ],
+                    "doc": "Orbit type: `ORB` orbiting, `LAN` landing, `IMP` impact, `DOC` docked to another catalogued object, `R/T` roundtrip. From the SATCAT `ORBIT_TYPE` field. An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "Reference record for one object in the US Space Force satellite catalog (SATCAT), as published by CelesTrak at `satcat/records.php`. Carries the object's identity (name, international designator, NORAD number), classification (type, owner, operational status) and coarse orbital parameters (period, inclination, apogee, perigee). Emitted as reference data at bridge start-up and periodically refreshed, so consumers can resolve the `NORAD_CAT_ID` on every OrbitMeanElements event to a named, described object without an out-of-band lookup. Shares the `NORAD_CAT_ID` key model and Kafka topic with the element-set events for temporal consistency."
+              }
+            }
+          }
+        },
+        "org.celestrak.OrbitMeanElements": {
+          "name": "OrbitMeanElements",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "org.celestrak.OrbitMeanElements",
+                "fields": [
+                  {
+                    "name": "OBJECT_NAME",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Satellite / object name (TLE Line 0). Up to 24 characters in the legacy TLE format; Unicode-capable in OMM. Mutable and not globally unique -- never use as a key. Null for uncatalogued / analyst objects that have no assigned name. From the CCSDS OMM `OBJECT_NAME` keyword. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "OBJECT_ID",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "International Designator (COSPAR ID) of the object, format `YYYY-NNNAAA`: four-digit launch year, three-digit launch number of that year, and one-to-three-letter piece designator (letters I and O are excluded). Null for analyst objects with no associated launch. From the CCSDS OMM `OBJECT_ID` keyword. JSON Structure annotations: {\"pattern\": \"^[0-9]{4}-[0-9]{3}[A-Z]{0,3}$\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "EPOCH",
+                    "type": "string",
+                    "doc": "UTC epoch of the element set: the reference instant to which every mean element below applies and from which an SGP4 propagator integrates. The upstream CCSDS OMM `EPOCH` keyword is an offset-less ISO 8601 value (UTC is implied by `TIME_SYSTEM=UTC`); the feeder normalizes it to a UTC-aware RFC 3339 timestamp with an explicit `+00:00` offset, e.g. `2026-07-15T18:23:37.536288+00:00`. From the CCSDS OMM `EPOCH` keyword."
+                  },
+                  {
+                    "name": "MEAN_MOTION",
+                    "type": "double",
+                    "doc": "Mean motion: the number of orbital revolutions the object completes per solar day, a Brouwer mean element consumed directly by the SGP4 propagator. Larger values correspond to lower orbits (~15.5 for the ISS in LEO, ~1.0 for geostationary objects). From the CCSDS OMM `MEAN_MOTION` keyword. JSON Structure annotations: {\"minimum\": 0, \"unit\": \"rev/day\"}"
+                  },
+                  {
+                    "name": "ECCENTRICITY",
+                    "type": "double",
+                    "doc": "Orbital eccentricity, dimensionless: 0 is a circular orbit and values approaching 1 are highly elliptical. In the legacy TLE this is stored as a leading-decimal integer; the OMM JSON gives the true fractional value. From the CCSDS OMM `ECCENTRICITY` keyword. JSON Structure annotations: {\"maximum\": 1, \"minimum\": 0}"
+                  },
+                  {
+                    "name": "INCLINATION",
+                    "type": "double",
+                    "doc": "Inclination of the orbital plane to Earth's equatorial plane, in degrees (0-180; > 90 indicates a retrograde orbit). From the CCSDS OMM `INCLINATION` keyword. JSON Structure annotations: {\"maximum\": 180, \"minimum\": 0, \"symbol\": \"°\", \"unit\": \"deg\"}"
+                  },
+                  {
+                    "name": "RA_OF_ASC_NODE",
+                    "type": "double",
+                    "doc": "Right Ascension of the Ascending Node (RAAN), in degrees (0-360): the angle from the vernal equinox to the point where the orbit crosses the equatorial plane going north. From the CCSDS OMM `RA_OF_ASC_NODE` keyword. JSON Structure annotations: {\"maximum\": 360, \"minimum\": 0, \"symbol\": \"°\", \"unit\": \"deg\"}"
+                  },
+                  {
+                    "name": "ARG_OF_PERICENTER",
+                    "type": "double",
+                    "doc": "Argument of pericenter (perigee), in degrees (0-360): the angle from the ascending node to the point of closest approach, measured in the orbital plane. From the CCSDS OMM `ARG_OF_PERICENTER` keyword. JSON Structure annotations: {\"maximum\": 360, \"minimum\": 0, \"symbol\": \"°\", \"unit\": \"deg\"}"
+                  },
+                  {
+                    "name": "MEAN_ANOMALY",
+                    "type": "double",
+                    "doc": "Mean anomaly at epoch, in degrees (0-360): the fraction of the orbital period elapsed since pericenter passage expressed as an angle, used with the other elements to locate the object at `EPOCH`. From the CCSDS OMM `MEAN_ANOMALY` keyword. JSON Structure annotations: {\"maximum\": 360, \"minimum\": 0, \"symbol\": \"°\", \"unit\": \"deg\"}"
+                  },
+                  {
+                    "name": "EPHEMERIS_TYPE",
+                    "type": "int",
+                    "doc": "Ephemeris / orbital-model type. `0` denotes the SGP4 (SGP4/SDP4) mean-element theory, the only value distributed in public GP data. From the CCSDS OMM `EPHEMERIS_TYPE` keyword. JSON Structure annotations: {\"minimum\": 0}"
+                  },
+                  {
+                    "name": "CLASSIFICATION_TYPE",
+                    "type": {
+                      "type": "enum",
+                      "name": "org.celestrak.ClassificationTypeEnum",
+                      "symbols": [
+                        "U",
+                        "C",
+                        "S"
+                      ]
+                    },
+                    "doc": "Security classification of the element set (always `U` for public CelesTrak data). From the CCSDS OMM `CLASSIFICATION_TYPE` keyword."
+                  },
+                  {
+                    "name": "NORAD_CAT_ID",
+                    "type": "int",
+                    "doc": "NORAD Catalog Number: the globally-recognised unique identifier for a tracked resident space object, assigned by the US Space Force 18th Space Defense Squadron. One to nine digits -- regular objects exhausted the five-digit range (reaching 100000+) on 2026-07-11, and analyst objects use the 7995xxxxx range -- so this MUST be treated as an up-to-9-digit integer, never a fixed-width field. Used as the CloudEvents `subject`, the Kafka partition key, the MQTT topic leaf and the AMQP message subject for every event this source emits. From the CCSDS OMM `NORAD_CAT_ID` keyword. JSON Structure annotations: {\"maximum\": 999999999, \"minimum\": 1}"
+                  },
+                  {
+                    "name": "ELEMENT_SET_NO",
+                    "type": "int",
+                    "doc": "Element set number: a counter incremented (modulo 1000) each time a new element set is generated for the object; 18 SDS frequently emits the placeholder `999`. From the CCSDS OMM `ELEMENT_SET_NO` keyword. JSON Structure annotations: {\"minimum\": 0}"
+                  },
+                  {
+                    "name": "REV_AT_EPOCH",
+                    "type": "int",
+                    "doc": "Revolution number at epoch: the integer count of orbital revolutions the object has completed since launch, as of `EPOCH`. From the CCSDS OMM `REV_AT_EPOCH` keyword. JSON Structure annotations: {\"minimum\": 0}"
+                  },
+                  {
+                    "name": "BSTAR",
+                    "type": "double",
+                    "doc": "B* (BSTAR) drag term, in inverse Earth radii, used by SGP4 to model the effect of atmospheric drag. Physically meaningful only for low-Earth-orbit objects; may be zero (deep space) or negative. From the CCSDS OMM `BSTAR` keyword. JSON Structure annotations: {\"unit\": \"1/ER\"}"
+                  },
+                  {
+                    "name": "MEAN_MOTION_DOT",
+                    "type": "double",
+                    "doc": "First time-derivative of the mean motion (one half of dn/dt), in revolutions per day squared -- the classical TLE 'ballistic coefficient' term. From the CCSDS OMM `MEAN_MOTION_DOT` keyword. JSON Structure annotations: {\"unit\": \"rev/day^2\"}"
+                  },
+                  {
+                    "name": "MEAN_MOTION_DDOT",
+                    "type": "double",
+                    "doc": "Second time-derivative of the mean motion (one sixth of d2n/dt2), in revolutions per day cubed; almost always 0 under the SGP4 theory. From the CCSDS OMM `MEAN_MOTION_DDOT` keyword. JSON Structure annotations: {\"unit\": \"rev/day^3\"}"
+                  }
+                ],
+                "doc": "A General Perturbations (GP) orbital element set for one catalogued object, as published by CelesTrak at `NORAD/elements/gp.php`. This is a CCSDS Orbit Mean-Elements Message (OMM, CCSDS 502.0-B-3) fit by the US Space Force 18th Space Defense Squadron to Space Surveillance Network observations for use with the SGP4 propagator. The property names are the verbatim OMM keys, so the payload is a drop-in OMM JSON object for SGP4 libraries. Emitted whenever the bridge observes a new or refreshed element set for the object (GP data updates several times per day). Keyed by `NORAD_CAT_ID`."
+              }
+            }
+          }
+        },
+        "org.celestrak.SupplementalOrbitMeanElements": {
+          "name": "SupplementalOrbitMeanElements",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "org.celestrak.SupplementalOrbitMeanElements",
+                "fields": [
+                  {
+                    "name": "OBJECT_NAME",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Satellite / object name as published by the supplemental data provider. May carry provider annotations absent from standard GP data, e.g. an ISS ephemeris segment tag `ISS [Segment 01]` or a CPF prediction-centre tag in brackets. Mutable; never use as a key. From the CCSDS OMM `OBJECT_NAME` keyword. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "OBJECT_ID",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "International Designator (COSPAR ID) of the object, format `YYYY-NNNAAA`: four-digit launch year, three-digit launch number of that year, and one-to-three-letter piece designator (letters I and O are excluded). Null for analyst objects with no associated launch. From the CCSDS OMM `OBJECT_ID` keyword. JSON Structure annotations: {\"pattern\": \"^[0-9]{4}-[0-9]{3}[A-Z]{0,3}$\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "EPOCH",
+                    "type": "string",
+                    "doc": "UTC epoch of the element set: the reference instant to which every mean element below applies and from which an SGP4 propagator integrates. The upstream CCSDS OMM `EPOCH` keyword is an offset-less ISO 8601 value (UTC is implied by `TIME_SYSTEM=UTC`); the feeder normalizes it to a UTC-aware RFC 3339 timestamp with an explicit `+00:00` offset, e.g. `2026-07-15T18:23:37.536288+00:00`. From the CCSDS OMM `EPOCH` keyword."
+                  },
+                  {
+                    "name": "MEAN_MOTION",
+                    "type": "double",
+                    "doc": "Mean motion: the number of orbital revolutions the object completes per solar day, a Brouwer mean element consumed directly by the SGP4 propagator. Larger values correspond to lower orbits (~15.5 for the ISS in LEO, ~1.0 for geostationary objects). From the CCSDS OMM `MEAN_MOTION` keyword. JSON Structure annotations: {\"minimum\": 0, \"unit\": \"rev/day\"}"
+                  },
+                  {
+                    "name": "ECCENTRICITY",
+                    "type": "double",
+                    "doc": "Orbital eccentricity, dimensionless: 0 is a circular orbit and values approaching 1 are highly elliptical. In the legacy TLE this is stored as a leading-decimal integer; the OMM JSON gives the true fractional value. From the CCSDS OMM `ECCENTRICITY` keyword. JSON Structure annotations: {\"maximum\": 1, \"minimum\": 0}"
+                  },
+                  {
+                    "name": "INCLINATION",
+                    "type": "double",
+                    "doc": "Inclination of the orbital plane to Earth's equatorial plane, in degrees (0-180; > 90 indicates a retrograde orbit). From the CCSDS OMM `INCLINATION` keyword. JSON Structure annotations: {\"maximum\": 180, \"minimum\": 0, \"symbol\": \"°\", \"unit\": \"deg\"}"
+                  },
+                  {
+                    "name": "RA_OF_ASC_NODE",
+                    "type": "double",
+                    "doc": "Right Ascension of the Ascending Node (RAAN), in degrees (0-360): the angle from the vernal equinox to the point where the orbit crosses the equatorial plane going north. From the CCSDS OMM `RA_OF_ASC_NODE` keyword. JSON Structure annotations: {\"maximum\": 360, \"minimum\": 0, \"symbol\": \"°\", \"unit\": \"deg\"}"
+                  },
+                  {
+                    "name": "ARG_OF_PERICENTER",
+                    "type": "double",
+                    "doc": "Argument of pericenter (perigee), in degrees (0-360): the angle from the ascending node to the point of closest approach, measured in the orbital plane. From the CCSDS OMM `ARG_OF_PERICENTER` keyword. JSON Structure annotations: {\"maximum\": 360, \"minimum\": 0, \"symbol\": \"°\", \"unit\": \"deg\"}"
+                  },
+                  {
+                    "name": "MEAN_ANOMALY",
+                    "type": "double",
+                    "doc": "Mean anomaly at epoch, in degrees (0-360): the fraction of the orbital period elapsed since pericenter passage expressed as an angle, used with the other elements to locate the object at `EPOCH`. From the CCSDS OMM `MEAN_ANOMALY` keyword. JSON Structure annotations: {\"maximum\": 360, \"minimum\": 0, \"symbol\": \"°\", \"unit\": \"deg\"}"
+                  },
+                  {
+                    "name": "EPHEMERIS_TYPE",
+                    "type": "int",
+                    "doc": "Ephemeris / orbital-model type. `0` denotes the SGP4 (SGP4/SDP4) mean-element theory, the only value distributed in public GP data. From the CCSDS OMM `EPHEMERIS_TYPE` keyword. JSON Structure annotations: {\"minimum\": 0}"
+                  },
+                  {
+                    "name": "CLASSIFICATION_TYPE",
+                    "type": {
+                      "type": "enum",
+                      "name": "org.celestrak.ClassificationTypeEnum",
+                      "symbols": [
+                        "U",
+                        "C",
+                        "S"
+                      ]
+                    },
+                    "doc": "Security classification of the element set (always `U` for public CelesTrak data). From the CCSDS OMM `CLASSIFICATION_TYPE` keyword."
+                  },
+                  {
+                    "name": "NORAD_CAT_ID",
+                    "type": "int",
+                    "doc": "NORAD Catalog Number: the globally-recognised unique identifier for a tracked resident space object, assigned by the US Space Force 18th Space Defense Squadron. One to nine digits -- regular objects exhausted the five-digit range (reaching 100000+) on 2026-07-11, and analyst objects use the 7995xxxxx range -- so this MUST be treated as an up-to-9-digit integer, never a fixed-width field. Used as the CloudEvents `subject`, the Kafka partition key, the MQTT topic leaf and the AMQP message subject for every event this source emits. From the CCSDS OMM `NORAD_CAT_ID` keyword. JSON Structure annotations: {\"maximum\": 999999999, \"minimum\": 1}"
+                  },
+                  {
+                    "name": "ELEMENT_SET_NO",
+                    "type": "int",
+                    "doc": "Element set number: a counter incremented (modulo 1000) each time a new element set is generated for the object; 18 SDS frequently emits the placeholder `999`. From the CCSDS OMM `ELEMENT_SET_NO` keyword. JSON Structure annotations: {\"minimum\": 0}"
+                  },
+                  {
+                    "name": "REV_AT_EPOCH",
+                    "type": "int",
+                    "doc": "Revolution number at epoch: the integer count of orbital revolutions the object has completed since launch, as of `EPOCH`. From the CCSDS OMM `REV_AT_EPOCH` keyword. JSON Structure annotations: {\"minimum\": 0}"
+                  },
+                  {
+                    "name": "BSTAR",
+                    "type": "double",
+                    "doc": "B* (BSTAR) drag term, in inverse Earth radii, used by SGP4 to model the effect of atmospheric drag. Physically meaningful only for low-Earth-orbit objects; may be zero (deep space) or negative. From the CCSDS OMM `BSTAR` keyword. JSON Structure annotations: {\"unit\": \"1/ER\"}"
+                  },
+                  {
+                    "name": "MEAN_MOTION_DOT",
+                    "type": "double",
+                    "doc": "First time-derivative of the mean motion (one half of dn/dt), in revolutions per day squared -- the classical TLE 'ballistic coefficient' term. From the CCSDS OMM `MEAN_MOTION_DOT` keyword. JSON Structure annotations: {\"unit\": \"rev/day^2\"}"
+                  },
+                  {
+                    "name": "MEAN_MOTION_DDOT",
+                    "type": "double",
+                    "doc": "Second time-derivative of the mean motion (one sixth of d2n/dt2), in revolutions per day cubed; almost always 0 under the SGP4 theory. From the CCSDS OMM `MEAN_MOTION_DDOT` keyword. JSON Structure annotations: {\"unit\": \"rev/day^3\"}"
+                  },
+                  {
+                    "name": "RMS",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Root-mean-square of the orbit-determination fit residuals reported by the supplemental data provider -- a quality indicator for this element set. Present only in SupGP data (absent from standard 18 SDS GP data). From the CelesTrak SupGP `RMS` field. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "DATA_SOURCE",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Supplemental data source / provider code identifying who produced this element set and by which technique, e.g. `ISS-E` (ISS ephemeris), `SpaceX-E` (SpaceX ephemeris), `CPF` (consolidated laser-ranging predictions), `GPS-A` (GPS almanac), `Intelsat-E`. Unlike standard GP, a single object may have several SupGP element sets distinguished by `DATA_SOURCE` and `EPOCH`. From the CelesTrak SupGP `DATA_SOURCE` field. An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "A Supplemental GP (SupGP) orbital element set for one catalogued object, as published by CelesTrak at `NORAD/elements/supplemental/sup-gp.php`. Structurally a CCSDS OMM (identical to OrbitMeanElements) plus a fit-quality `RMS` and a `DATA_SOURCE` provenance code. SupGP is provided by satellite operators and analysis centres (SpaceX, ISS, Intelsat, laser-ranging, GPS almanacs, ...), is typically fit forward from the epoch, and -- unlike standard GP -- may carry several element sets per object distinguished by `DATA_SOURCE` and `EPOCH`. Emitted only when supplemental sources are configured. Keyed by `NORAD_CAT_ID`."
               }
             }
           }

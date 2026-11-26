@@ -21,7 +21,13 @@
       "messagegroups": [
         "#/messagegroups/dk.dmi.metObs.kafka",
         "#/messagegroups/dk.dmi.oceanObs.kafka",
-        "#/messagegroups/dk.dmi.lightning.kafka"
+        "#/messagegroups/dk.dmi.lightning.kafka",
+        "#/messagegroups/dk.dmi.metObs.kafka.avro",
+        "#/messagegroups/dk.dmi.metObs.kafka.avro.binary",
+        "#/messagegroups/dk.dmi.oceanObs.kafka.avro",
+        "#/messagegroups/dk.dmi.oceanObs.kafka.avro.binary",
+        "#/messagegroups/dk.dmi.lightning.kafka.avro",
+        "#/messagegroups/dk.dmi.lightning.kafka.avro.binary"
       ]
     },
     "dk.dmi.Mqtt": {
@@ -43,7 +49,11 @@
       },
       "messagegroups": [
         "#/messagegroups/dk.dmi.metObs.mqtt",
-        "#/messagegroups/dk.dmi.oceanObs.mqtt"
+        "#/messagegroups/dk.dmi.oceanObs.mqtt",
+        "#/messagegroups/dk.dmi.metObs.mqtt.avro",
+        "#/messagegroups/dk.dmi.metObs.mqtt.avro.binary",
+        "#/messagegroups/dk.dmi.oceanObs.mqtt.avro",
+        "#/messagegroups/dk.dmi.oceanObs.mqtt.avro.binary"
       ]
     },
     "dk.dmi.Amqp": {
@@ -66,7 +76,13 @@
       "messagegroups": [
         "#/messagegroups/dk.dmi.metObs.amqp",
         "#/messagegroups/dk.dmi.oceanObs.amqp",
-        "#/messagegroups/dk.dmi.lightning.amqp"
+        "#/messagegroups/dk.dmi.lightning.amqp",
+        "#/messagegroups/dk.dmi.metObs.amqp.avro",
+        "#/messagegroups/dk.dmi.metObs.amqp.avro.binary",
+        "#/messagegroups/dk.dmi.oceanObs.amqp.avro",
+        "#/messagegroups/dk.dmi.oceanObs.amqp.avro.binary",
+        "#/messagegroups/dk.dmi.lightning.amqp.avro",
+        "#/messagegroups/dk.dmi.lightning.amqp.avro.binary"
       ]
     }
   },
@@ -88,6 +104,10 @@
             "subject": {
               "value": "{station_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -108,6 +128,10 @@
             "subject": {
               "value": "{station_id}/{parameter_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -132,6 +156,10 @@
             "subject": {
               "value": "{station_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -152,6 +180,10 @@
             "subject": {
               "value": "{station_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -172,6 +204,10 @@
             "subject": {
               "value": "{station_id}/{parameter_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -192,6 +228,10 @@
             "subject": {
               "value": "{station_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -216,6 +256,10 @@
             "subject": {
               "value": "{sensor_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -236,6 +280,10 @@
             "subject": {
               "value": "{strike_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -507,6 +555,656 @@
                 "value": "{strike_id}",
                 "description": "AMQP message subject — stable lightning strike identifier matching the CloudEvent subject and Kafka key."
               }
+            }
+          }
+        }
+      }
+    },
+    "dk.dmi.metObs.avro": {
+      "messagegroupid": "dk.dmi.metObs.avro",
+      "messages": {
+        "dk.dmi.metObs.MetObsStation": {
+          "messageid": "dk.dmi.metObs.MetObsStation",
+          "basemessage": "/messagegroups/dk.dmi.metObs/messages/dk.dmi.metObs.MetObsStation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/dk.dmi.avro/schemas/dk.dmi.metObs.MetObsStation"
+        },
+        "dk.dmi.metObs.MetObsObservation": {
+          "messageid": "dk.dmi.metObs.MetObsObservation",
+          "basemessage": "/messagegroups/dk.dmi.metObs/messages/dk.dmi.metObs.MetObsObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/dk.dmi.avro/schemas/dk.dmi.metObs.MetObsObservation"
+        }
+      }
+    },
+    "dk.dmi.metObs.avro.binary": {
+      "messagegroupid": "dk.dmi.metObs.avro.binary",
+      "messages": {
+        "dk.dmi.metObs.MetObsStation": {
+          "messageid": "dk.dmi.metObs.MetObsStation",
+          "basemessage": "/messagegroups/dk.dmi.metObs/messages/dk.dmi.metObs.MetObsStation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/dk.dmi.avro/schemas/dk.dmi.metObs.MetObsStation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "dk.dmi.metObs.MetObsObservation": {
+          "messageid": "dk.dmi.metObs.MetObsObservation",
+          "basemessage": "/messagegroups/dk.dmi.metObs/messages/dk.dmi.metObs.MetObsObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/dk.dmi.avro/schemas/dk.dmi.metObs.MetObsObservation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "dk.dmi.oceanObs.avro": {
+      "messagegroupid": "dk.dmi.oceanObs.avro",
+      "messages": {
+        "dk.dmi.oceanObs.OceanStation": {
+          "messageid": "dk.dmi.oceanObs.OceanStation",
+          "basemessage": "/messagegroups/dk.dmi.oceanObs/messages/dk.dmi.oceanObs.OceanStation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/dk.dmi.avro/schemas/dk.dmi.oceanObs.OceanStation"
+        },
+        "dk.dmi.oceanObs.TidewaterStation": {
+          "messageid": "dk.dmi.oceanObs.TidewaterStation",
+          "basemessage": "/messagegroups/dk.dmi.oceanObs/messages/dk.dmi.oceanObs.TidewaterStation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/dk.dmi.avro/schemas/dk.dmi.oceanObs.TidewaterStation"
+        },
+        "dk.dmi.oceanObs.OceanObservation": {
+          "messageid": "dk.dmi.oceanObs.OceanObservation",
+          "basemessage": "/messagegroups/dk.dmi.oceanObs/messages/dk.dmi.oceanObs.OceanObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/dk.dmi.avro/schemas/dk.dmi.oceanObs.OceanObservation"
+        },
+        "dk.dmi.oceanObs.TidewaterPrediction": {
+          "messageid": "dk.dmi.oceanObs.TidewaterPrediction",
+          "basemessage": "/messagegroups/dk.dmi.oceanObs/messages/dk.dmi.oceanObs.TidewaterPrediction",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/dk.dmi.avro/schemas/dk.dmi.oceanObs.TidewaterPrediction"
+        }
+      }
+    },
+    "dk.dmi.oceanObs.avro.binary": {
+      "messagegroupid": "dk.dmi.oceanObs.avro.binary",
+      "messages": {
+        "dk.dmi.oceanObs.OceanStation": {
+          "messageid": "dk.dmi.oceanObs.OceanStation",
+          "basemessage": "/messagegroups/dk.dmi.oceanObs/messages/dk.dmi.oceanObs.OceanStation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/dk.dmi.avro/schemas/dk.dmi.oceanObs.OceanStation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "dk.dmi.oceanObs.TidewaterStation": {
+          "messageid": "dk.dmi.oceanObs.TidewaterStation",
+          "basemessage": "/messagegroups/dk.dmi.oceanObs/messages/dk.dmi.oceanObs.TidewaterStation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/dk.dmi.avro/schemas/dk.dmi.oceanObs.TidewaterStation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "dk.dmi.oceanObs.OceanObservation": {
+          "messageid": "dk.dmi.oceanObs.OceanObservation",
+          "basemessage": "/messagegroups/dk.dmi.oceanObs/messages/dk.dmi.oceanObs.OceanObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/dk.dmi.avro/schemas/dk.dmi.oceanObs.OceanObservation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "dk.dmi.oceanObs.TidewaterPrediction": {
+          "messageid": "dk.dmi.oceanObs.TidewaterPrediction",
+          "basemessage": "/messagegroups/dk.dmi.oceanObs/messages/dk.dmi.oceanObs.TidewaterPrediction",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/dk.dmi.avro/schemas/dk.dmi.oceanObs.TidewaterPrediction",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "dk.dmi.lightning.avro": {
+      "messagegroupid": "dk.dmi.lightning.avro",
+      "messages": {
+        "dk.dmi.lightning.LightningSensor": {
+          "messageid": "dk.dmi.lightning.LightningSensor",
+          "basemessage": "/messagegroups/dk.dmi.lightning/messages/dk.dmi.lightning.LightningSensor",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/dk.dmi.avro/schemas/dk.dmi.lightning.LightningSensor"
+        },
+        "dk.dmi.lightning.LightningStrike": {
+          "messageid": "dk.dmi.lightning.LightningStrike",
+          "basemessage": "/messagegroups/dk.dmi.lightning/messages/dk.dmi.lightning.LightningStrike",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/dk.dmi.avro/schemas/dk.dmi.lightning.LightningStrike"
+        }
+      }
+    },
+    "dk.dmi.lightning.avro.binary": {
+      "messagegroupid": "dk.dmi.lightning.avro.binary",
+      "messages": {
+        "dk.dmi.lightning.LightningSensor": {
+          "messageid": "dk.dmi.lightning.LightningSensor",
+          "basemessage": "/messagegroups/dk.dmi.lightning/messages/dk.dmi.lightning.LightningSensor",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/dk.dmi.avro/schemas/dk.dmi.lightning.LightningSensor",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "dk.dmi.lightning.LightningStrike": {
+          "messageid": "dk.dmi.lightning.LightningStrike",
+          "basemessage": "/messagegroups/dk.dmi.lightning/messages/dk.dmi.lightning.LightningStrike",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/dk.dmi.avro/schemas/dk.dmi.lightning.LightningStrike",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "dk.dmi.metObs.kafka.avro": {
+      "messagegroupid": "dk.dmi.metObs.kafka.avro",
+      "messages": {
+        "dk.dmi.metObs.kafka.Station": {
+          "messageid": "dk.dmi.metObs.kafka.Station",
+          "basemessage": "/messagegroups/dk.dmi.metObs.kafka/messages/dk.dmi.metObs.kafka.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/dk.dmi.avro/schemas/dk.dmi.metObs.MetObsStation"
+        },
+        "dk.dmi.metObs.kafka.Observation": {
+          "messageid": "dk.dmi.metObs.kafka.Observation",
+          "basemessage": "/messagegroups/dk.dmi.metObs.kafka/messages/dk.dmi.metObs.kafka.Observation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/dk.dmi.avro/schemas/dk.dmi.metObs.MetObsObservation"
+        }
+      }
+    },
+    "dk.dmi.metObs.kafka.avro.binary": {
+      "messagegroupid": "dk.dmi.metObs.kafka.avro.binary",
+      "messages": {
+        "dk.dmi.metObs.kafka.Station": {
+          "messageid": "dk.dmi.metObs.kafka.Station",
+          "basemessage": "/messagegroups/dk.dmi.metObs.kafka/messages/dk.dmi.metObs.kafka.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/dk.dmi.avro/schemas/dk.dmi.metObs.MetObsStation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "dk.dmi.metObs.kafka.Observation": {
+          "messageid": "dk.dmi.metObs.kafka.Observation",
+          "basemessage": "/messagegroups/dk.dmi.metObs.kafka/messages/dk.dmi.metObs.kafka.Observation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/dk.dmi.avro/schemas/dk.dmi.metObs.MetObsObservation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "dk.dmi.oceanObs.kafka.avro": {
+      "messagegroupid": "dk.dmi.oceanObs.kafka.avro",
+      "messages": {
+        "dk.dmi.oceanObs.kafka.Station": {
+          "messageid": "dk.dmi.oceanObs.kafka.Station",
+          "basemessage": "/messagegroups/dk.dmi.oceanObs.kafka/messages/dk.dmi.oceanObs.kafka.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/dk.dmi.avro/schemas/dk.dmi.oceanObs.OceanStation"
+        },
+        "dk.dmi.oceanObs.kafka.TidewaterStation": {
+          "messageid": "dk.dmi.oceanObs.kafka.TidewaterStation",
+          "basemessage": "/messagegroups/dk.dmi.oceanObs.kafka/messages/dk.dmi.oceanObs.kafka.TidewaterStation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/dk.dmi.avro/schemas/dk.dmi.oceanObs.TidewaterStation"
+        },
+        "dk.dmi.oceanObs.kafka.Observation": {
+          "messageid": "dk.dmi.oceanObs.kafka.Observation",
+          "basemessage": "/messagegroups/dk.dmi.oceanObs.kafka/messages/dk.dmi.oceanObs.kafka.Observation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/dk.dmi.avro/schemas/dk.dmi.oceanObs.OceanObservation"
+        },
+        "dk.dmi.oceanObs.kafka.TidewaterPrediction": {
+          "messageid": "dk.dmi.oceanObs.kafka.TidewaterPrediction",
+          "basemessage": "/messagegroups/dk.dmi.oceanObs.kafka/messages/dk.dmi.oceanObs.kafka.TidewaterPrediction",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/dk.dmi.avro/schemas/dk.dmi.oceanObs.TidewaterPrediction"
+        }
+      }
+    },
+    "dk.dmi.oceanObs.kafka.avro.binary": {
+      "messagegroupid": "dk.dmi.oceanObs.kafka.avro.binary",
+      "messages": {
+        "dk.dmi.oceanObs.kafka.Station": {
+          "messageid": "dk.dmi.oceanObs.kafka.Station",
+          "basemessage": "/messagegroups/dk.dmi.oceanObs.kafka/messages/dk.dmi.oceanObs.kafka.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/dk.dmi.avro/schemas/dk.dmi.oceanObs.OceanStation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "dk.dmi.oceanObs.kafka.TidewaterStation": {
+          "messageid": "dk.dmi.oceanObs.kafka.TidewaterStation",
+          "basemessage": "/messagegroups/dk.dmi.oceanObs.kafka/messages/dk.dmi.oceanObs.kafka.TidewaterStation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/dk.dmi.avro/schemas/dk.dmi.oceanObs.TidewaterStation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "dk.dmi.oceanObs.kafka.Observation": {
+          "messageid": "dk.dmi.oceanObs.kafka.Observation",
+          "basemessage": "/messagegroups/dk.dmi.oceanObs.kafka/messages/dk.dmi.oceanObs.kafka.Observation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/dk.dmi.avro/schemas/dk.dmi.oceanObs.OceanObservation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "dk.dmi.oceanObs.kafka.TidewaterPrediction": {
+          "messageid": "dk.dmi.oceanObs.kafka.TidewaterPrediction",
+          "basemessage": "/messagegroups/dk.dmi.oceanObs.kafka/messages/dk.dmi.oceanObs.kafka.TidewaterPrediction",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/dk.dmi.avro/schemas/dk.dmi.oceanObs.TidewaterPrediction",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "dk.dmi.lightning.kafka.avro": {
+      "messagegroupid": "dk.dmi.lightning.kafka.avro",
+      "messages": {
+        "dk.dmi.lightning.kafka.Sensor": {
+          "messageid": "dk.dmi.lightning.kafka.Sensor",
+          "basemessage": "/messagegroups/dk.dmi.lightning.kafka/messages/dk.dmi.lightning.kafka.Sensor",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/dk.dmi.avro/schemas/dk.dmi.lightning.LightningSensor"
+        },
+        "dk.dmi.lightning.kafka.Strike": {
+          "messageid": "dk.dmi.lightning.kafka.Strike",
+          "basemessage": "/messagegroups/dk.dmi.lightning.kafka/messages/dk.dmi.lightning.kafka.Strike",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/dk.dmi.avro/schemas/dk.dmi.lightning.LightningStrike"
+        }
+      }
+    },
+    "dk.dmi.lightning.kafka.avro.binary": {
+      "messagegroupid": "dk.dmi.lightning.kafka.avro.binary",
+      "messages": {
+        "dk.dmi.lightning.kafka.Sensor": {
+          "messageid": "dk.dmi.lightning.kafka.Sensor",
+          "basemessage": "/messagegroups/dk.dmi.lightning.kafka/messages/dk.dmi.lightning.kafka.Sensor",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/dk.dmi.avro/schemas/dk.dmi.lightning.LightningSensor",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "dk.dmi.lightning.kafka.Strike": {
+          "messageid": "dk.dmi.lightning.kafka.Strike",
+          "basemessage": "/messagegroups/dk.dmi.lightning.kafka/messages/dk.dmi.lightning.kafka.Strike",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/dk.dmi.avro/schemas/dk.dmi.lightning.LightningStrike",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "dk.dmi.metObs.mqtt.avro": {
+      "messagegroupid": "dk.dmi.metObs.mqtt.avro",
+      "messages": {
+        "dk.dmi.metObs.mqtt.Station": {
+          "messageid": "dk.dmi.metObs.mqtt.Station",
+          "basemessage": "/messagegroups/dk.dmi.metObs.mqtt/messages/dk.dmi.metObs.mqtt.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/dk.dmi.avro/schemas/dk.dmi.metObs.MetObsStation"
+        },
+        "dk.dmi.metObs.mqtt.Observation": {
+          "messageid": "dk.dmi.metObs.mqtt.Observation",
+          "basemessage": "/messagegroups/dk.dmi.metObs.mqtt/messages/dk.dmi.metObs.mqtt.Observation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/dk.dmi.avro/schemas/dk.dmi.metObs.MetObsObservation"
+        }
+      }
+    },
+    "dk.dmi.metObs.mqtt.avro.binary": {
+      "messagegroupid": "dk.dmi.metObs.mqtt.avro.binary",
+      "messages": {
+        "dk.dmi.metObs.mqtt.Station": {
+          "messageid": "dk.dmi.metObs.mqtt.Station",
+          "basemessage": "/messagegroups/dk.dmi.metObs.mqtt/messages/dk.dmi.metObs.mqtt.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/dk.dmi.avro/schemas/dk.dmi.metObs.MetObsStation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "dk.dmi.metObs.mqtt.Observation": {
+          "messageid": "dk.dmi.metObs.mqtt.Observation",
+          "basemessage": "/messagegroups/dk.dmi.metObs.mqtt/messages/dk.dmi.metObs.mqtt.Observation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/dk.dmi.avro/schemas/dk.dmi.metObs.MetObsObservation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "dk.dmi.oceanObs.mqtt.avro": {
+      "messagegroupid": "dk.dmi.oceanObs.mqtt.avro",
+      "messages": {
+        "dk.dmi.oceanObs.mqtt.Station": {
+          "messageid": "dk.dmi.oceanObs.mqtt.Station",
+          "basemessage": "/messagegroups/dk.dmi.oceanObs.mqtt/messages/dk.dmi.oceanObs.mqtt.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/dk.dmi.avro/schemas/dk.dmi.oceanObs.OceanStation"
+        },
+        "dk.dmi.oceanObs.mqtt.TidewaterStation": {
+          "messageid": "dk.dmi.oceanObs.mqtt.TidewaterStation",
+          "basemessage": "/messagegroups/dk.dmi.oceanObs.mqtt/messages/dk.dmi.oceanObs.mqtt.TidewaterStation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/dk.dmi.avro/schemas/dk.dmi.oceanObs.TidewaterStation"
+        },
+        "dk.dmi.oceanObs.mqtt.Observation": {
+          "messageid": "dk.dmi.oceanObs.mqtt.Observation",
+          "basemessage": "/messagegroups/dk.dmi.oceanObs.mqtt/messages/dk.dmi.oceanObs.mqtt.Observation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/dk.dmi.avro/schemas/dk.dmi.oceanObs.OceanObservation"
+        },
+        "dk.dmi.oceanObs.mqtt.TidewaterPrediction": {
+          "messageid": "dk.dmi.oceanObs.mqtt.TidewaterPrediction",
+          "basemessage": "/messagegroups/dk.dmi.oceanObs.mqtt/messages/dk.dmi.oceanObs.mqtt.TidewaterPrediction",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/dk.dmi.avro/schemas/dk.dmi.oceanObs.TidewaterPrediction"
+        }
+      }
+    },
+    "dk.dmi.oceanObs.mqtt.avro.binary": {
+      "messagegroupid": "dk.dmi.oceanObs.mqtt.avro.binary",
+      "messages": {
+        "dk.dmi.oceanObs.mqtt.Station": {
+          "messageid": "dk.dmi.oceanObs.mqtt.Station",
+          "basemessage": "/messagegroups/dk.dmi.oceanObs.mqtt/messages/dk.dmi.oceanObs.mqtt.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/dk.dmi.avro/schemas/dk.dmi.oceanObs.OceanStation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "dk.dmi.oceanObs.mqtt.TidewaterStation": {
+          "messageid": "dk.dmi.oceanObs.mqtt.TidewaterStation",
+          "basemessage": "/messagegroups/dk.dmi.oceanObs.mqtt/messages/dk.dmi.oceanObs.mqtt.TidewaterStation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/dk.dmi.avro/schemas/dk.dmi.oceanObs.TidewaterStation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "dk.dmi.oceanObs.mqtt.Observation": {
+          "messageid": "dk.dmi.oceanObs.mqtt.Observation",
+          "basemessage": "/messagegroups/dk.dmi.oceanObs.mqtt/messages/dk.dmi.oceanObs.mqtt.Observation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/dk.dmi.avro/schemas/dk.dmi.oceanObs.OceanObservation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "dk.dmi.oceanObs.mqtt.TidewaterPrediction": {
+          "messageid": "dk.dmi.oceanObs.mqtt.TidewaterPrediction",
+          "basemessage": "/messagegroups/dk.dmi.oceanObs.mqtt/messages/dk.dmi.oceanObs.mqtt.TidewaterPrediction",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/dk.dmi.avro/schemas/dk.dmi.oceanObs.TidewaterPrediction",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "dk.dmi.metObs.amqp.avro": {
+      "messagegroupid": "dk.dmi.metObs.amqp.avro",
+      "messages": {
+        "dk.dmi.metObs.amqp.Station": {
+          "messageid": "dk.dmi.metObs.amqp.Station",
+          "basemessage": "/messagegroups/dk.dmi.metObs.amqp/messages/dk.dmi.metObs.amqp.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/dk.dmi.avro/schemas/dk.dmi.metObs.MetObsStation"
+        },
+        "dk.dmi.metObs.amqp.Observation": {
+          "messageid": "dk.dmi.metObs.amqp.Observation",
+          "basemessage": "/messagegroups/dk.dmi.metObs.amqp/messages/dk.dmi.metObs.amqp.Observation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/dk.dmi.avro/schemas/dk.dmi.metObs.MetObsObservation"
+        }
+      }
+    },
+    "dk.dmi.metObs.amqp.avro.binary": {
+      "messagegroupid": "dk.dmi.metObs.amqp.avro.binary",
+      "messages": {
+        "dk.dmi.metObs.amqp.Station": {
+          "messageid": "dk.dmi.metObs.amqp.Station",
+          "basemessage": "/messagegroups/dk.dmi.metObs.amqp/messages/dk.dmi.metObs.amqp.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/dk.dmi.avro/schemas/dk.dmi.metObs.MetObsStation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "dk.dmi.metObs.amqp.Observation": {
+          "messageid": "dk.dmi.metObs.amqp.Observation",
+          "basemessage": "/messagegroups/dk.dmi.metObs.amqp/messages/dk.dmi.metObs.amqp.Observation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/dk.dmi.avro/schemas/dk.dmi.metObs.MetObsObservation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "dk.dmi.oceanObs.amqp.avro": {
+      "messagegroupid": "dk.dmi.oceanObs.amqp.avro",
+      "messages": {
+        "dk.dmi.oceanObs.amqp.Station": {
+          "messageid": "dk.dmi.oceanObs.amqp.Station",
+          "basemessage": "/messagegroups/dk.dmi.oceanObs.amqp/messages/dk.dmi.oceanObs.amqp.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/dk.dmi.avro/schemas/dk.dmi.oceanObs.OceanStation"
+        },
+        "dk.dmi.oceanObs.amqp.TidewaterStation": {
+          "messageid": "dk.dmi.oceanObs.amqp.TidewaterStation",
+          "basemessage": "/messagegroups/dk.dmi.oceanObs.amqp/messages/dk.dmi.oceanObs.amqp.TidewaterStation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/dk.dmi.avro/schemas/dk.dmi.oceanObs.TidewaterStation"
+        },
+        "dk.dmi.oceanObs.amqp.Observation": {
+          "messageid": "dk.dmi.oceanObs.amqp.Observation",
+          "basemessage": "/messagegroups/dk.dmi.oceanObs.amqp/messages/dk.dmi.oceanObs.amqp.Observation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/dk.dmi.avro/schemas/dk.dmi.oceanObs.OceanObservation"
+        },
+        "dk.dmi.oceanObs.amqp.TidewaterPrediction": {
+          "messageid": "dk.dmi.oceanObs.amqp.TidewaterPrediction",
+          "basemessage": "/messagegroups/dk.dmi.oceanObs.amqp/messages/dk.dmi.oceanObs.amqp.TidewaterPrediction",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/dk.dmi.avro/schemas/dk.dmi.oceanObs.TidewaterPrediction"
+        }
+      }
+    },
+    "dk.dmi.oceanObs.amqp.avro.binary": {
+      "messagegroupid": "dk.dmi.oceanObs.amqp.avro.binary",
+      "messages": {
+        "dk.dmi.oceanObs.amqp.Station": {
+          "messageid": "dk.dmi.oceanObs.amqp.Station",
+          "basemessage": "/messagegroups/dk.dmi.oceanObs.amqp/messages/dk.dmi.oceanObs.amqp.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/dk.dmi.avro/schemas/dk.dmi.oceanObs.OceanStation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "dk.dmi.oceanObs.amqp.TidewaterStation": {
+          "messageid": "dk.dmi.oceanObs.amqp.TidewaterStation",
+          "basemessage": "/messagegroups/dk.dmi.oceanObs.amqp/messages/dk.dmi.oceanObs.amqp.TidewaterStation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/dk.dmi.avro/schemas/dk.dmi.oceanObs.TidewaterStation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "dk.dmi.oceanObs.amqp.Observation": {
+          "messageid": "dk.dmi.oceanObs.amqp.Observation",
+          "basemessage": "/messagegroups/dk.dmi.oceanObs.amqp/messages/dk.dmi.oceanObs.amqp.Observation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/dk.dmi.avro/schemas/dk.dmi.oceanObs.OceanObservation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "dk.dmi.oceanObs.amqp.TidewaterPrediction": {
+          "messageid": "dk.dmi.oceanObs.amqp.TidewaterPrediction",
+          "basemessage": "/messagegroups/dk.dmi.oceanObs.amqp/messages/dk.dmi.oceanObs.amqp.TidewaterPrediction",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/dk.dmi.avro/schemas/dk.dmi.oceanObs.TidewaterPrediction",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "dk.dmi.lightning.amqp.avro": {
+      "messagegroupid": "dk.dmi.lightning.amqp.avro",
+      "messages": {
+        "dk.dmi.lightning.amqp.Sensor": {
+          "messageid": "dk.dmi.lightning.amqp.Sensor",
+          "basemessage": "/messagegroups/dk.dmi.lightning.amqp/messages/dk.dmi.lightning.amqp.Sensor",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/dk.dmi.avro/schemas/dk.dmi.lightning.LightningSensor"
+        },
+        "dk.dmi.lightning.amqp.Strike": {
+          "messageid": "dk.dmi.lightning.amqp.Strike",
+          "basemessage": "/messagegroups/dk.dmi.lightning.amqp/messages/dk.dmi.lightning.amqp.Strike",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/dk.dmi.avro/schemas/dk.dmi.lightning.LightningStrike"
+        }
+      }
+    },
+    "dk.dmi.lightning.amqp.avro.binary": {
+      "messagegroupid": "dk.dmi.lightning.amqp.avro.binary",
+      "messages": {
+        "dk.dmi.lightning.amqp.Sensor": {
+          "messageid": "dk.dmi.lightning.amqp.Sensor",
+          "basemessage": "/messagegroups/dk.dmi.lightning.amqp/messages/dk.dmi.lightning.amqp.Sensor",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/dk.dmi.avro/schemas/dk.dmi.lightning.LightningSensor",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "dk.dmi.lightning.amqp.Strike": {
+          "messageid": "dk.dmi.lightning.amqp.Strike",
+          "basemessage": "/messagegroups/dk.dmi.lightning.amqp/messages/dk.dmi.lightning.amqp.Strike",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/dk.dmi.avro/schemas/dk.dmi.lightning.LightningStrike",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
             }
           }
         }
@@ -1350,6 +2048,835 @@
           },
           "defaultversionid": "1",
           "name": "LightningStrike"
+        }
+      }
+    },
+    "dk.dmi.avro": {
+      "schemas": {
+        "dk.dmi.metObs.MetObsStation": {
+          "name": "MetObsStation",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "dk.dmi.metObs.MetObsStation",
+                "fields": [
+                  {
+                    "name": "station_id",
+                    "type": "string",
+                    "doc": "Stable DMI station identifier (e.g. '06030', '04202' for Pituffik in Greenland). Used as the Kafka partition key and CloudEvent subject."
+                  },
+                  {
+                    "name": "wmo_station_id",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "World Meteorological Organization (WMO) station identifier when registered with WMO. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "wmo_country_code",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "WMO country code as an integer string (e.g. '06' for Denmark). An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "name",
+                    "type": "string",
+                    "doc": "Human-readable station name."
+                  },
+                  {
+                    "name": "country",
+                    "type": {
+                      "type": "enum",
+                      "name": "dk.dmi.metObs.MetObsStation_types.country",
+                      "symbols": [
+                        "DNK",
+                        "GRL",
+                        "FRO"
+                      ]
+                    },
+                    "doc": "ISO 3166-1 alpha-3 country code: 'DNK' (Denmark), 'GRL' (Greenland), 'FRO' (Faroe Islands). JSON Structure annotations: {\"altenums\": {\"lang:en\": {\"DNK\": \"Denmark\", \"FRO\": \"Faroe Islands\", \"GRL\": \"Greenland\"}}, \"enum\": [\"DNK\", \"GRL\", \"FRO\"]}"
+                  },
+                  {
+                    "name": "owner",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Organisation that owns/operates the station (typically 'DMI'). An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "region_id",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "DMI region identifier within the country. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "type",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Station type as classified by DMI (e.g. 'Synop', 'PluvioSync'). An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "status",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Operational status (e.g. 'Active', 'Inactive'). An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "parameter_id",
+                    "default": null,
+                    "type": [
+                      "null",
+                      {
+                        "type": "array",
+                        "items": "string"
+                      }
+                    ],
+                    "doc": "List of DMI parameterId values this station reports (e.g. ['temp_dry','wind_speed','humidity']). An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "latitude",
+                    "type": "double",
+                    "doc": "Station latitude in decimal degrees (WGS84). Derived from GeoJSON geometry.coordinates[1]. JSON Structure annotations: {\"maximum\": 90, \"minimum\": -90, \"unit\": \"deg\"}"
+                  },
+                  {
+                    "name": "longitude",
+                    "type": "double",
+                    "doc": "Station longitude in decimal degrees (WGS84). Derived from GeoJSON geometry.coordinates[0]. JSON Structure annotations: {\"maximum\": 180, \"minimum\": -180, \"unit\": \"deg\"}"
+                  },
+                  {
+                    "name": "station_height",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Height of the station above mean sea level. JSON Structure annotations: {\"unit\": \"m\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "barometer_height",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Height of the barometer above mean sea level. JSON Structure annotations: {\"unit\": \"m\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "anemometer_height",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Height of the anemometer above ground level. JSON Structure annotations: {\"unit\": \"m\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "valid_from",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Timestamp from which this station-metadata version is valid. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "valid_to",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Timestamp after which this station-metadata version is no longer valid; null while current. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "operation_from",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Timestamp from which the station began operating. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "operation_to",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Timestamp at which the station stopped operating; null while operational. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "created",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Timestamp when this metadata row was created by DMI. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "updated",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Timestamp when this metadata row was last updated by DMI. An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "A meteorological observation station owned and operated by (or on behalf of) DMI. See https://opendatadocs.dmi.govcloud.dk/en/Data/Meteorological_Observation_Data for the canonical field list. Identity is stable per stationId; metadata is slowly-changing via validFrom/validTo."
+              }
+            }
+          }
+        },
+        "dk.dmi.metObs.MetObsObservation": {
+          "name": "MetObsObservation",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "dk.dmi.metObs.MetObsObservation",
+                "fields": [
+                  {
+                    "name": "observation_id",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "DMI-assigned per-row identifier. Not stable across re-ingestions; use (station_id, parameter_id, observed) for idempotency. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "station_id",
+                    "type": "string",
+                    "doc": "Reporting station identifier (foreign key to Station)."
+                  },
+                  {
+                    "name": "parameter_id",
+                    "type": {
+                      "type": "enum",
+                      "name": "dk.dmi.metObs.MetObsObservation_types.parameter_id",
+                      "symbols": [
+                        "temp_dry",
+                        "temp_dew",
+                        "temp_grass",
+                        "temp_soil_10cm",
+                        "temp_mean_past1h",
+                        "temp_max_past1h",
+                        "temp_min_past1h",
+                        "humidity",
+                        "humidity_past1h",
+                        "pressure",
+                        "pressure_at_sea",
+                        "wind_dir",
+                        "wind_dir_past1h",
+                        "wind_speed",
+                        "wind_speed_past1h",
+                        "wind_max",
+                        "wind_min",
+                        "wind_max_per10min_past1h",
+                        "wind_min_past1h",
+                        "gust_always_past1h",
+                        "precip_past1h",
+                        "precip_past10min",
+                        "precip_past24h",
+                        "snow_depth_man",
+                        "snow_cover_man",
+                        "visibility",
+                        "visib_mean_last10min",
+                        "cloud_cover",
+                        "cloud_height",
+                        "weather",
+                        "leav_hum_dur_past10min",
+                        "radia_glob",
+                        "radia_glob_past1h",
+                        "sun_last10min_glob",
+                        "sun_last1h_glob"
+                      ]
+                    },
+                    "doc": "DMI parameter identifier (e.g. 'temp_dry', 'wind_speed', 'humidity', 'pressure_at_sea'). JSON Structure annotations: {\"enum\": [\"temp_dry\", \"temp_dew\", \"temp_grass\", \"temp_soil_10cm\", \"temp_mean_past1h\", \"temp_max_past1h\", \"temp_min_past1h\", \"humidity\", \"humidity_past1h\", \"pressure\", \"pressure_at_sea\", \"wind_dir\", \"wind_dir_past1h\", \"wind_speed\", \"wind_speed_past1h\", \"wind_max\", \"wind_min\", \"wind_max_per10min_past1h\", \"wind_min_past1h\", \"gust_always_past1h\", \"precip_past1h\", \"precip_past10min\", \"precip_past24h\", \"snow_depth_man\", \"snow_cover_man\", \"visibility\", \"visib_mean_last10min\", \"cloud_cover\", \"cloud_height\", \"weather\", \"leav_hum_dur_past10min\", \"radia_glob\", \"radia_glob_past1h\", \"sun_last10min_glob\", \"sun_last1h_glob\"]}"
+                  },
+                  {
+                    "name": "observed",
+                    "type": "string",
+                    "doc": "Timestamp at which the value was observed (UTC, ISO 8601)."
+                  },
+                  {
+                    "name": "value",
+                    "type": "double",
+                    "doc": "Numeric measurement value. Units depend on parameter_id (see DMI documentation)."
+                  },
+                  {
+                    "name": "latitude",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Station latitude (decimal degrees, WGS84) at observation time. JSON Structure annotations: {\"maximum\": 90, \"minimum\": -90, \"unit\": \"deg\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "longitude",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Station longitude (decimal degrees, WGS84) at observation time. JSON Structure annotations: {\"maximum\": 180, \"minimum\": -180, \"unit\": \"deg\"} An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "A single meteorological observation: one parameter, one station, one timestamp. Units are SI: degC, hPa, m/s, %, m, mm, degrees. wind_dir=0 means calm (not north)."
+              }
+            }
+          }
+        },
+        "dk.dmi.oceanObs.OceanStation": {
+          "name": "OceanStation",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "dk.dmi.oceanObs.OceanStation",
+                "fields": [
+                  {
+                    "name": "station_id",
+                    "type": "string",
+                    "doc": "Stable DMI ocean station identifier."
+                  },
+                  {
+                    "name": "name",
+                    "type": "string",
+                    "doc": "Human-readable station name."
+                  },
+                  {
+                    "name": "country",
+                    "default": null,
+                    "type": [
+                      "null",
+                      {
+                        "type": "enum",
+                        "name": "dk.dmi.oceanObs.OceanStation_types.country",
+                        "symbols": [
+                          "DNK",
+                          "GRL",
+                          "FRO"
+                        ]
+                      }
+                    ],
+                    "doc": "ISO 3166-1 alpha-3 country code (DNK, GRL, FRO). JSON Structure annotations: {\"altenums\": {\"lang:en\": {\"DNK\": \"Denmark\", \"FRO\": \"Faroe Islands\", \"GRL\": \"Greenland\"}}, \"enum\": [\"DNK\", \"GRL\", \"FRO\"]} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "owner",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Operating agency (e.g. 'DMI', 'Kystdirektoratet'). An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "type",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Station type (e.g. 'Tide-gauge-primary'). An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "status",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Operational status. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "parameter_id",
+                    "default": null,
+                    "type": [
+                      "null",
+                      {
+                        "type": "array",
+                        "items": "string"
+                      }
+                    ],
+                    "doc": "Parameter IDs supported by this station (subset of {sealev_dvr, sealev_ln, sea_reg, tw}). An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "latitude",
+                    "type": "double",
+                    "doc": "Station latitude (decimal degrees, WGS84). JSON Structure annotations: {\"maximum\": 90, \"minimum\": -90, \"unit\": \"deg\"}"
+                  },
+                  {
+                    "name": "longitude",
+                    "type": "double",
+                    "doc": "Station longitude (decimal degrees, WGS84). JSON Structure annotations: {\"maximum\": 180, \"minimum\": -180, \"unit\": \"deg\"}"
+                  },
+                  {
+                    "name": "valid_from",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Metadata-validity start. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "valid_to",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Metadata-validity end. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "operation_from",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "operation_to",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "created",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "updated",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "An oceanographic observation station (typically a tide gauge). Owners include DMI and Kystdirektoratet (Danish Coastal Authority). See https://opendatadocs.dmi.govcloud.dk/en/Data/Oceanographic_Observation_Data."
+              }
+            }
+          }
+        },
+        "dk.dmi.oceanObs.TidewaterStation": {
+          "name": "TidewaterStation",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "dk.dmi.oceanObs.TidewaterStation",
+                "fields": [
+                  {
+                    "name": "station_id",
+                    "type": "string",
+                    "doc": "Stable identifier of the tidewater prediction station/grid-point."
+                  },
+                  {
+                    "name": "name",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Human-readable station name where available. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "country",
+                    "default": null,
+                    "type": [
+                      "null",
+                      {
+                        "type": "enum",
+                        "name": "dk.dmi.oceanObs.TidewaterStation_types.country",
+                        "symbols": [
+                          "DNK",
+                          "GRL",
+                          "FRO"
+                        ]
+                      }
+                    ],
+                    "doc": "ISO 3166-1 alpha-3 country code. JSON Structure annotations: {\"altenums\": {\"lang:en\": {\"DNK\": \"Denmark\", \"FRO\": \"Faroe Islands\", \"GRL\": \"Greenland\"}}, \"enum\": [\"DNK\", \"GRL\", \"FRO\"]} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "owner",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Operating agency. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "latitude",
+                    "type": "double",
+                    "doc": "Prediction-point latitude (decimal degrees, WGS84). JSON Structure annotations: {\"maximum\": 90, \"minimum\": -90, \"unit\": \"deg\"}"
+                  },
+                  {
+                    "name": "longitude",
+                    "type": "double",
+                    "doc": "Prediction-point longitude (decimal degrees, WGS84). JSON Structure annotations: {\"maximum\": 180, \"minimum\": -180, \"unit\": \"deg\"}"
+                  },
+                  {
+                    "name": "valid_from",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "valid_to",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "A station or virtual grid point at which DMI publishes tidewater (sea-level) predictions. The catalog includes both physical tide gauges and prediction-only points."
+              }
+            }
+          }
+        },
+        "dk.dmi.oceanObs.OceanObservation": {
+          "name": "OceanObservation",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "dk.dmi.oceanObs.OceanObservation",
+                "fields": [
+                  {
+                    "name": "observation_id",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "DMI-assigned row identifier (not stable across re-ingestions). An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "station_id",
+                    "type": "string"
+                  },
+                  {
+                    "name": "parameter_id",
+                    "type": "string",
+                    "doc": "DMI oceanographic parameter identifier: sealev_dvr (sea level relative to DVR90 datum, cm), sealev_ln (sea level relative to local zero, cm), sea_reg (sea-level registration by Kystdirektoratet, cm), or tw (water temperature, deg C)."
+                  },
+                  {
+                    "name": "observed",
+                    "type": "string"
+                  },
+                  {
+                    "name": "value",
+                    "type": "double",
+                    "doc": "Numeric value. cm for sealev_*/sea_reg, deg C for tw."
+                  },
+                  {
+                    "name": "latitude",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "JSON Structure annotations: {\"maximum\": 90, \"minimum\": -90, \"unit\": \"deg\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "longitude",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "JSON Structure annotations: {\"maximum\": 180, \"minimum\": -180, \"unit\": \"deg\"} An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "A single oceanographic measurement. parameter_id is one of: sealev_dvr (sea level vs DVR90 datum, cm; preferred since 1997), sealev_ln (sea level vs local zero, cm; preferred before 1997), sea_reg (sea-level registration by Kystdirektoratet, cm), tw (water temperature, deg C; indicative)."
+              }
+            }
+          }
+        },
+        "dk.dmi.oceanObs.TidewaterPrediction": {
+          "name": "TidewaterPrediction",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "dk.dmi.oceanObs.TidewaterPrediction",
+                "fields": [
+                  {
+                    "name": "prediction_id",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "DMI-assigned row identifier. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "station_id",
+                    "type": "string"
+                  },
+                  {
+                    "name": "prediction_type",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Granularity of the prediction series (typically '10minutes'). An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "prediction_time",
+                    "type": "string",
+                    "doc": "Target time for which the value is predicted."
+                  },
+                  {
+                    "name": "value",
+                    "type": "double",
+                    "doc": "Predicted sea level (cm vs DVR90 unless otherwise noted). JSON Structure annotations: {\"symbol\": \"cm\", \"unit\": \"cm\"}"
+                  },
+                  {
+                    "name": "latitude",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "JSON Structure annotations: {\"maximum\": 90, \"minimum\": -90, \"unit\": \"deg\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "longitude",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "JSON Structure annotations: {\"maximum\": 180, \"minimum\": -180, \"unit\": \"deg\"} An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "A deterministic tidewater (sea-level) prediction for one station and one forecast horizon. Predictions are issued every model cycle and span ~30 days at 10-minute granularity."
+              }
+            }
+          }
+        },
+        "dk.dmi.lightning.LightningSensor": {
+          "name": "LightningSensor",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "dk.dmi.lightning.LightningSensor",
+                "fields": [
+                  {
+                    "name": "sensor_id",
+                    "type": "string",
+                    "doc": "Stable sensor identifier (1..6 for DMI-owned sensors)."
+                  },
+                  {
+                    "name": "name",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Human-readable sensor site name. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "owner",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Operating agency (typically 'DMI'). An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "country",
+                    "default": null,
+                    "type": [
+                      "null",
+                      {
+                        "type": "enum",
+                        "name": "dk.dmi.lightning.LightningSensor_types.country",
+                        "symbols": [
+                          "DNK",
+                          "GRL",
+                          "FRO"
+                        ]
+                      }
+                    ],
+                    "doc": "ISO 3166-1 alpha-3 country code (typically 'DNK'). JSON Structure annotations: {\"altenums\": {\"lang:en\": {\"DNK\": \"Denmark\", \"FRO\": \"Faroe Islands\", \"GRL\": \"Greenland\"}}, \"enum\": [\"DNK\", \"GRL\", \"FRO\"]} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "latitude",
+                    "type": "double",
+                    "doc": "JSON Structure annotations: {\"maximum\": 90, \"minimum\": -90, \"unit\": \"deg\"}"
+                  },
+                  {
+                    "name": "longitude",
+                    "type": "double",
+                    "doc": "JSON Structure annotations: {\"maximum\": 180, \"minimum\": -180, \"unit\": \"deg\"}"
+                  },
+                  {
+                    "name": "active_from",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "active_to",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "A DMI lightning detection sensor site. Six DMI-owned sensors cover Denmark; third-party sensors that contribute to triangulation are not catalogued here but their IDs appear in Strike.sensors."
+              }
+            }
+          }
+        },
+        "dk.dmi.lightning.LightningStrike": {
+          "name": "LightningStrike",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "dk.dmi.lightning.LightningStrike",
+                "fields": [
+                  {
+                    "name": "strike_id",
+                    "type": "string",
+                    "doc": "Stable DMI-assigned strike identifier (e.g. 'u1xrxj10262553824830001-03')."
+                  },
+                  {
+                    "name": "observed",
+                    "type": "string",
+                    "doc": "Strike timestamp (UTC, microsecond precision)."
+                  },
+                  {
+                    "name": "created",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Timestamp when DMI ingested the strike. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "type",
+                    "type": "int",
+                    "doc": "Strike type code published by the DMI lightning API: 0 = cloud-to-ground negative (CG-), 1 = cloud-to-ground positive (CG+), and 2 = cloud-to-cloud (CC)."
+                  },
+                  {
+                    "name": "amp",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Signed peak current. JSON Structure annotations: {\"unit\": \"kA\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "strokes",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Number of return strokes. JSON Structure annotations: {\"minimum\": 1} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "sensors",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Comma-separated list of sensor IDs that contributed to triangulation (may include third-party sensors not in the Sensor catalog). An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "latitude",
+                    "type": "double",
+                    "doc": "Strike latitude (decimal degrees, WGS84). JSON Structure annotations: {\"maximum\": 90, \"minimum\": -90, \"unit\": \"deg\"}"
+                  },
+                  {
+                    "name": "longitude",
+                    "type": "double",
+                    "doc": "Strike longitude (decimal degrees, WGS84). JSON Structure annotations: {\"maximum\": 180, \"minimum\": -180, \"unit\": \"deg\"}"
+                  }
+                ],
+                "doc": "A single triangulated lightning strike. See https://opendatadocs.dmi.govcloud.dk/en/Data/Lightning_Data. observed timestamps have microsecond precision; location accuracy is approximately +/- 500-2000 m."
+              }
+            }
+          }
         }
       }
     }

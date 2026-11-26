@@ -18,7 +18,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/US.WA.Seattle.Fire911"
+        "#/messagegroups/US.WA.Seattle.Fire911",
+        "#/messagegroups/US.WA.Seattle.Fire911.avro",
+        "#/messagegroups/US.WA.Seattle.Fire911.avro.binary"
       ]
     },
     "US.WA.Seattle.Fire911.Mqtt": {
@@ -39,7 +41,9 @@
         ]
       },
       "messagegroups": [
-        "#/messagegroups/US.WA.Seattle.Fire911.mqtt"
+        "#/messagegroups/US.WA.Seattle.Fire911.mqtt",
+        "#/messagegroups/US.WA.Seattle.Fire911.mqtt.avro",
+        "#/messagegroups/US.WA.Seattle.Fire911.mqtt.avro.binary"
       ]
     },
     "US.WA.Seattle.Fire911.Amqp": {
@@ -64,7 +68,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/US.WA.Seattle.Fire911.amqp"
+        "#/messagegroups/US.WA.Seattle.Fire911.amqp",
+        "#/messagegroups/US.WA.Seattle.Fire911.amqp.avro",
+        "#/messagegroups/US.WA.Seattle.Fire911.amqp.avro.binary"
       ]
     }
   },
@@ -88,6 +94,10 @@
             "time": {
               "value": "{incident_datetime_utc}",
               "type": "timestamp"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -142,6 +152,90 @@
             }
           },
           "messageid": "US.WA.Seattle.Fire911.amqp.Incident"
+        }
+      }
+    },
+    "US.WA.Seattle.Fire911.avro": {
+      "messagegroupid": "US.WA.Seattle.Fire911.avro",
+      "messages": {
+        "US.WA.Seattle.Fire911.Incident": {
+          "messageid": "US.WA.Seattle.Fire911.Incident",
+          "basemessage": "/messagegroups/US.WA.Seattle.Fire911/messages/US.WA.Seattle.Fire911.Incident",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/US.WA.Seattle.Fire911.avro/schemas/US.WA.Seattle.Fire911.Incident"
+        }
+      }
+    },
+    "US.WA.Seattle.Fire911.avro.binary": {
+      "messagegroupid": "US.WA.Seattle.Fire911.avro.binary",
+      "messages": {
+        "US.WA.Seattle.Fire911.Incident": {
+          "messageid": "US.WA.Seattle.Fire911.Incident",
+          "basemessage": "/messagegroups/US.WA.Seattle.Fire911/messages/US.WA.Seattle.Fire911.Incident",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/US.WA.Seattle.Fire911.avro/schemas/US.WA.Seattle.Fire911.Incident",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "US.WA.Seattle.Fire911.mqtt.avro": {
+      "messagegroupid": "US.WA.Seattle.Fire911.mqtt.avro",
+      "messages": {
+        "US.WA.Seattle.Fire911.mqtt.Incident": {
+          "messageid": "US.WA.Seattle.Fire911.mqtt.Incident",
+          "basemessage": "/messagegroups/US.WA.Seattle.Fire911.mqtt/messages/US.WA.Seattle.Fire911.mqtt.Incident",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/US.WA.Seattle.Fire911.avro/schemas/US.WA.Seattle.Fire911.Incident"
+        }
+      }
+    },
+    "US.WA.Seattle.Fire911.mqtt.avro.binary": {
+      "messagegroupid": "US.WA.Seattle.Fire911.mqtt.avro.binary",
+      "messages": {
+        "US.WA.Seattle.Fire911.mqtt.Incident": {
+          "messageid": "US.WA.Seattle.Fire911.mqtt.Incident",
+          "basemessage": "/messagegroups/US.WA.Seattle.Fire911.mqtt/messages/US.WA.Seattle.Fire911.mqtt.Incident",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/US.WA.Seattle.Fire911.avro/schemas/US.WA.Seattle.Fire911.Incident",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "US.WA.Seattle.Fire911.amqp.avro": {
+      "messagegroupid": "US.WA.Seattle.Fire911.amqp.avro",
+      "messages": {
+        "US.WA.Seattle.Fire911.amqp.Incident": {
+          "messageid": "US.WA.Seattle.Fire911.amqp.Incident",
+          "basemessage": "/messagegroups/US.WA.Seattle.Fire911.amqp/messages/US.WA.Seattle.Fire911.amqp.Incident",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/US.WA.Seattle.Fire911.avro/schemas/US.WA.Seattle.Fire911.Incident"
+        }
+      }
+    },
+    "US.WA.Seattle.Fire911.amqp.avro.binary": {
+      "messagegroupid": "US.WA.Seattle.Fire911.amqp.avro.binary",
+      "messages": {
+        "US.WA.Seattle.Fire911.amqp.Incident": {
+          "messageid": "US.WA.Seattle.Fire911.amqp.Incident",
+          "basemessage": "/messagegroups/US.WA.Seattle.Fire911.amqp/messages/US.WA.Seattle.Fire911.amqp.Incident",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/US.WA.Seattle.Fire911.avro/schemas/US.WA.Seattle.Fire911.Incident",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
         }
       }
     }
@@ -249,6 +343,79 @@
                     "description": "Incident timestamp normalized to RFC 3339 UTC using America/Los_Angeles for the upstream local dataset timestamp."
                   }
                 }
+              }
+            }
+          }
+        }
+      }
+    },
+    "US.WA.Seattle.Fire911.avro": {
+      "schemas": {
+        "US.WA.Seattle.Fire911.Incident": {
+          "name": "Incident",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "US.WA.Seattle.Fire911.Incident",
+                "fields": [
+                  {
+                    "name": "incident_number",
+                    "type": "string",
+                    "doc": "Stable Seattle Fire Department incident identifier for the dispatch record. JSON Structure annotations: {\"alternates\": [{\"description\": \"Original field name in the Seattle Open Data dataset.\", \"name\": \"incident_number\"}]}"
+                  },
+                  {
+                    "name": "incident_type",
+                    "type": "string",
+                    "doc": "Seattle Fire Department response type display string for the incident, such as Aid Response or Medic Response. JSON Structure annotations: {\"alternates\": [{\"description\": \"Original field name in the Seattle Open Data dataset.\", \"name\": \"type\"}]}"
+                  },
+                  {
+                    "name": "incident_datetime",
+                    "type": "string",
+                    "doc": "Date and time of the call as published by the Seattle Open Data dataset, in local dataset timestamp form without an explicit UTC offset. JSON Structure annotations: {\"alternates\": [{\"description\": \"Original field name in the Seattle Open Data dataset.\", \"name\": \"datetime\"}]}"
+                  },
+                  {
+                    "name": "address",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Incident location text as published by the dataset. JSON Structure annotations: {\"alternates\": [{\"description\": \"Original field name in the Seattle Open Data dataset.\", \"name\": \"address\"}]} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "latitude",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Latitude of the incident location in decimal degrees north. JSON Structure annotations: {\"alternates\": [{\"description\": \"Original field name in the Seattle Open Data dataset.\", \"name\": \"latitude\"}]} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "longitude",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Longitude of the incident location in decimal degrees east of Greenwich; Seattle values are negative because they lie west of Greenwich. JSON Structure annotations: {\"alternates\": [{\"description\": \"Original field name in the Seattle Open Data dataset.\", \"name\": \"longitude\"}]} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "incident_type_slug",
+                    "type": "string",
+                    "doc": "Deterministic lowercase kebab-case routing slug derived from incident_type by lowercasing ASCII alphanumerics, replacing every run of non-alphanumeric characters with a single hyphen, and trimming leading/trailing hyphens (example: Aid Response - 7 per Unit -> aid-response-7-per-unit). JSON Structure annotations: {\"pattern\": \"^[a-z0-9]+(-[a-z0-9]+)*$\"}"
+                  },
+                  {
+                    "name": "incident_datetime_utc",
+                    "type": "string",
+                    "doc": "Incident timestamp normalized to RFC 3339 UTC using America/Los_Angeles for the upstream local dataset timestamp."
+                  }
+                ],
+                "doc": "Seattle Fire Department 911 dispatch record from the City of Seattle real-time fire calls dataset."
               }
             }
           }

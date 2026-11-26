@@ -18,7 +18,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/PL.Gov.IMGW.Hydro"
+        "#/messagegroups/PL.Gov.IMGW.Hydro",
+        "#/messagegroups/PL.Gov.IMGW.Hydro.avro",
+        "#/messagegroups/PL.Gov.IMGW.Hydro.avro.binary"
       ],
       "description": "Kafka producer endpoint for IMGW-PIB Hydrological Data CloudEvents on the `imgw-hydro` topic keyed by `{station_id}`."
     },
@@ -40,7 +42,9 @@
         ]
       },
       "messagegroups": [
-        "#/messagegroups/PL.Gov.IMGW.Hydro.mqtt"
+        "#/messagegroups/PL.Gov.IMGW.Hydro.mqtt",
+        "#/messagegroups/PL.Gov.IMGW.Hydro.mqtt.avro",
+        "#/messagegroups/PL.Gov.IMGW.Hydro.mqtt.avro.binary"
       ],
       "description": "MQTT 5 producer endpoint for imgw-hydro CloudEvents using the documented UNS topic hierarchy."
     },
@@ -62,7 +66,9 @@
         ]
       },
       "messagegroups": [
-        "#/messagegroups/PL.Gov.IMGW.Hydro.amqp"
+        "#/messagegroups/PL.Gov.IMGW.Hydro.amqp",
+        "#/messagegroups/PL.Gov.IMGW.Hydro.amqp.avro",
+        "#/messagegroups/PL.Gov.IMGW.Hydro.amqp.avro.binary"
       ],
       "description": "AMQP 1.0 producer endpoint for imgw-hydro CloudEvents on the configured broker address."
     }
@@ -83,6 +89,10 @@
             "subject": {
               "value": "{station_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -102,6 +112,10 @@
             "subject": {
               "value": "{station_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -192,6 +206,144 @@
                 "value": "{station_id}",
                 "description": "Service Bus/Event Hubs partition key matching the stable CloudEvent subject."
               }
+            }
+          }
+        }
+      }
+    },
+    "PL.Gov.IMGW.Hydro.avro": {
+      "messagegroupid": "PL.Gov.IMGW.Hydro.avro",
+      "messages": {
+        "PL.Gov.IMGW.Hydro.Station": {
+          "messageid": "PL.Gov.IMGW.Hydro.Station",
+          "basemessage": "/messagegroups/PL.Gov.IMGW.Hydro/messages/PL.Gov.IMGW.Hydro.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/PL.Gov.IMGW.Hydro.avro/schemas/PL.Gov.IMGW.Hydro.Station"
+        },
+        "PL.Gov.IMGW.Hydro.WaterLevelObservation": {
+          "messageid": "PL.Gov.IMGW.Hydro.WaterLevelObservation",
+          "basemessage": "/messagegroups/PL.Gov.IMGW.Hydro/messages/PL.Gov.IMGW.Hydro.WaterLevelObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/PL.Gov.IMGW.Hydro.avro/schemas/PL.Gov.IMGW.Hydro.WaterLevelObservation"
+        }
+      }
+    },
+    "PL.Gov.IMGW.Hydro.avro.binary": {
+      "messagegroupid": "PL.Gov.IMGW.Hydro.avro.binary",
+      "messages": {
+        "PL.Gov.IMGW.Hydro.Station": {
+          "messageid": "PL.Gov.IMGW.Hydro.Station",
+          "basemessage": "/messagegroups/PL.Gov.IMGW.Hydro/messages/PL.Gov.IMGW.Hydro.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/PL.Gov.IMGW.Hydro.avro/schemas/PL.Gov.IMGW.Hydro.Station",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "PL.Gov.IMGW.Hydro.WaterLevelObservation": {
+          "messageid": "PL.Gov.IMGW.Hydro.WaterLevelObservation",
+          "basemessage": "/messagegroups/PL.Gov.IMGW.Hydro/messages/PL.Gov.IMGW.Hydro.WaterLevelObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/PL.Gov.IMGW.Hydro.avro/schemas/PL.Gov.IMGW.Hydro.WaterLevelObservation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "PL.Gov.IMGW.Hydro.mqtt.avro": {
+      "messagegroupid": "PL.Gov.IMGW.Hydro.mqtt.avro",
+      "messages": {
+        "PL.Gov.IMGW.Hydro.mqtt.Station": {
+          "messageid": "PL.Gov.IMGW.Hydro.mqtt.Station",
+          "basemessage": "/messagegroups/PL.Gov.IMGW.Hydro.mqtt/messages/PL.Gov.IMGW.Hydro.mqtt.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/PL.Gov.IMGW.Hydro.avro/schemas/PL.Gov.IMGW.Hydro.Station"
+        },
+        "PL.Gov.IMGW.Hydro.mqtt.WaterLevelObservation": {
+          "messageid": "PL.Gov.IMGW.Hydro.mqtt.WaterLevelObservation",
+          "basemessage": "/messagegroups/PL.Gov.IMGW.Hydro.mqtt/messages/PL.Gov.IMGW.Hydro.mqtt.WaterLevelObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/PL.Gov.IMGW.Hydro.avro/schemas/PL.Gov.IMGW.Hydro.WaterLevelObservation"
+        }
+      }
+    },
+    "PL.Gov.IMGW.Hydro.mqtt.avro.binary": {
+      "messagegroupid": "PL.Gov.IMGW.Hydro.mqtt.avro.binary",
+      "messages": {
+        "PL.Gov.IMGW.Hydro.mqtt.Station": {
+          "messageid": "PL.Gov.IMGW.Hydro.mqtt.Station",
+          "basemessage": "/messagegroups/PL.Gov.IMGW.Hydro.mqtt/messages/PL.Gov.IMGW.Hydro.mqtt.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/PL.Gov.IMGW.Hydro.avro/schemas/PL.Gov.IMGW.Hydro.Station",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "PL.Gov.IMGW.Hydro.mqtt.WaterLevelObservation": {
+          "messageid": "PL.Gov.IMGW.Hydro.mqtt.WaterLevelObservation",
+          "basemessage": "/messagegroups/PL.Gov.IMGW.Hydro.mqtt/messages/PL.Gov.IMGW.Hydro.mqtt.WaterLevelObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/PL.Gov.IMGW.Hydro.avro/schemas/PL.Gov.IMGW.Hydro.WaterLevelObservation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "PL.Gov.IMGW.Hydro.amqp.avro": {
+      "messagegroupid": "PL.Gov.IMGW.Hydro.amqp.avro",
+      "messages": {
+        "PL.Gov.IMGW.Hydro.amqp.Station": {
+          "messageid": "PL.Gov.IMGW.Hydro.amqp.Station",
+          "basemessage": "/messagegroups/PL.Gov.IMGW.Hydro.amqp/messages/PL.Gov.IMGW.Hydro.amqp.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/PL.Gov.IMGW.Hydro.avro/schemas/PL.Gov.IMGW.Hydro.Station"
+        },
+        "PL.Gov.IMGW.Hydro.amqp.WaterLevelObservation": {
+          "messageid": "PL.Gov.IMGW.Hydro.amqp.WaterLevelObservation",
+          "basemessage": "/messagegroups/PL.Gov.IMGW.Hydro.amqp/messages/PL.Gov.IMGW.Hydro.amqp.WaterLevelObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/PL.Gov.IMGW.Hydro.avro/schemas/PL.Gov.IMGW.Hydro.WaterLevelObservation"
+        }
+      }
+    },
+    "PL.Gov.IMGW.Hydro.amqp.avro.binary": {
+      "messagegroupid": "PL.Gov.IMGW.Hydro.amqp.avro.binary",
+      "messages": {
+        "PL.Gov.IMGW.Hydro.amqp.Station": {
+          "messageid": "PL.Gov.IMGW.Hydro.amqp.Station",
+          "basemessage": "/messagegroups/PL.Gov.IMGW.Hydro.amqp/messages/PL.Gov.IMGW.Hydro.amqp.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/PL.Gov.IMGW.Hydro.avro/schemas/PL.Gov.IMGW.Hydro.Station",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "PL.Gov.IMGW.Hydro.amqp.WaterLevelObservation": {
+          "messageid": "PL.Gov.IMGW.Hydro.amqp.WaterLevelObservation",
+          "basemessage": "/messagegroups/PL.Gov.IMGW.Hydro.amqp/messages/PL.Gov.IMGW.Hydro.amqp.WaterLevelObservation",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/PL.Gov.IMGW.Hydro.avro/schemas/PL.Gov.IMGW.Hydro.WaterLevelObservation",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
             }
           }
         }
@@ -384,7 +536,7 @@
         "PL.Gov.IMGW.Hydro.Station": {
           "name": "Station",
           "format": "Avro/1.11.3",
-          "defaultversionid": "1",
+          "defaultversionid": "2",
           "versions": {
             "1": {
               "format": "Avro/1.11.3",
@@ -437,13 +589,78 @@
                 "namespace": "PL.Gov.IMGW.Hydro",
                 "description": "Reference details for one monitoring station or site in the IMGW-PIB Hydrological Data source."
               }
+            },
+            "2": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "PL.Gov.IMGW.Hydro.Station",
+                "fields": [
+                  {
+                    "name": "station_id",
+                    "type": "string",
+                    "doc": "Stable identifier assigned by the upstream provider for the monitoring station or site."
+                  },
+                  {
+                    "name": "station_name",
+                    "type": "string",
+                    "doc": "Human-readable name of the monitoring station."
+                  },
+                  {
+                    "name": "river",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Provider-supplied river value for this record. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "voivodeship",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Provider-supplied voivodeship value for this record. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "longitude",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Longitude of the station in WGS 84 coordinates. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "latitude",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Latitude of the station in WGS 84 coordinates. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "basin",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Stable routing axis used by MQTT and AMQP transport templates for imgw-hydro. An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "Reference details for one monitoring station or site in the IMGW-PIB Hydrological Data source."
+              }
             }
           }
         },
         "PL.Gov.IMGW.Hydro.WaterLevelObservation": {
           "name": "WaterLevelObservation",
           "format": "Avro/1.11.3",
-          "defaultversionid": "1",
+          "defaultversionid": "2",
           "versions": {
             "1": {
               "format": "Avro/1.11.3",
@@ -483,8 +700,7 @@
                   {
                     "name": "water_level_timestamp",
                     "type": {
-                      "type": "string",
-                      "logicalType": "timestamp-millis"
+                      "type": "string"
                     }
                   },
                   {
@@ -500,8 +716,7 @@
                     "type": [
                       "null",
                       {
-                        "type": "string",
-                        "logicalType": "timestamp-millis"
+                        "type": "string"
                       }
                     ],
                     "default": null
@@ -519,8 +734,7 @@
                     "type": [
                       "null",
                       {
-                        "type": "string",
-                        "logicalType": "timestamp-millis"
+                        "type": "string"
                       }
                     ],
                     "default": null
@@ -544,6 +758,117 @@
                 ],
                 "namespace": "PL.Gov.IMGW.Hydro",
                 "description": "Measurement payload for observations in the IMGW-PIB Hydrological Data source."
+              }
+            },
+            "2": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "PL.Gov.IMGW.Hydro.WaterLevelObservation",
+                "fields": [
+                  {
+                    "name": "station_id",
+                    "type": "string",
+                    "doc": "Stable identifier assigned by the upstream provider for the monitoring station or site."
+                  },
+                  {
+                    "name": "station_name",
+                    "type": "string",
+                    "doc": "Human-readable name of the monitoring station."
+                  },
+                  {
+                    "name": "river",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Provider-supplied river value for this record. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "voivodeship",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Provider-supplied voivodeship value for this record. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "water_level",
+                    "type": "double",
+                    "doc": "Current water level reported for the station."
+                  },
+                  {
+                    "name": "water_level_timestamp",
+                    "type": "string",
+                    "doc": "Time associated with the water-level measurement."
+                  },
+                  {
+                    "name": "water_temperature",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Current water temperature reported for the station. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "water_temperature_timestamp",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Time associated with the water-temperature measurement. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "discharge",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Current streamflow or discharge reported for the station. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "discharge_timestamp",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Time associated with the discharge measurement. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "ice_phenomenon_code",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Provider code identifying the ice phenomenon. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "overgrowth_code",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Provider code identifying the overgrowth. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "basin",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Stable routing axis used by MQTT and AMQP transport templates for imgw-hydro. An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "Measurement payload for water level and discharge observations in the IMGW-PIB Hydrological Data source."
               }
             }
           }

@@ -18,7 +18,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/BlueskyFirehose"
+        "#/messagegroups/BlueskyFirehose",
+        "#/messagegroups/BlueskyFirehose.avro",
+        "#/messagegroups/BlueskyFirehose.avro.binary"
       ]
     },
     "BlueskyFirehose.Mqtt": {
@@ -39,7 +41,9 @@
         ]
       },
       "messagegroups": [
-        "#/messagegroups/BlueskyFirehose.mqtt"
+        "#/messagegroups/BlueskyFirehose.mqtt",
+        "#/messagegroups/BlueskyFirehose.mqtt.avro",
+        "#/messagegroups/BlueskyFirehose.mqtt.avro.binary"
       ]
     },
     "BlueskyFirehose.Amqp": {
@@ -60,7 +64,9 @@
         ]
       },
       "messagegroups": [
-        "#/messagegroups/BlueskyFirehose.amqp"
+        "#/messagegroups/BlueskyFirehose.amqp",
+        "#/messagegroups/BlueskyFirehose.amqp.avro",
+        "#/messagegroups/BlueskyFirehose.amqp.avro.binary"
       ],
       "description": "AMQP 1.0 producer endpoint for bluesky CloudEvents on the configured broker address."
     }
@@ -79,6 +85,10 @@
           "epoch": 0,
           "modifiedat": "2024-11-14T12:00:00",
           "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
+            },
             "specversion": {
               "type": "string",
               "required": true,
@@ -115,6 +125,10 @@
           "epoch": 0,
           "modifiedat": "2024-11-14T12:00:01",
           "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
+            },
             "specversion": {
               "type": "string",
               "required": true,
@@ -151,6 +165,10 @@
           "epoch": 0,
           "modifiedat": "2024-11-14T12:00:02",
           "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
+            },
             "specversion": {
               "type": "string",
               "required": true,
@@ -187,6 +205,10 @@
           "epoch": 0,
           "modifiedat": "2024-11-14T12:00:03",
           "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
+            },
             "specversion": {
               "type": "string",
               "required": true,
@@ -223,6 +245,10 @@
           "epoch": 0,
           "modifiedat": "2024-11-14T12:00:04",
           "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
+            },
             "specversion": {
               "type": "string",
               "required": true,
@@ -259,6 +285,10 @@
           "epoch": 0,
           "modifiedat": "2024-11-14T12:00:05",
           "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
+            },
             "specversion": {
               "type": "string",
               "required": true,
@@ -289,6 +319,124 @@
       "createdat": "2024-11-14T12:00:00",
       "epoch": 0,
       "modifiedat": "2024-11-14T12:00:00"
+    },
+    "BlueskyFirehose.avro": {
+      "messagegroupid": "BlueskyFirehose.avro",
+      "messages": {
+        "Bluesky.Feed.Post": {
+          "messageid": "Bluesky.Feed.Post",
+          "basemessage": "/messagegroups/BlueskyFirehose/messages/Bluesky.Feed.Post",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/BlueskyFirehose.avro/schemas/Bluesky.Feed.Post"
+        },
+        "Bluesky.Feed.Like": {
+          "messageid": "Bluesky.Feed.Like",
+          "basemessage": "/messagegroups/BlueskyFirehose/messages/Bluesky.Feed.Like",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/BlueskyFirehose.avro/schemas/Bluesky.Feed.Like"
+        },
+        "Bluesky.Feed.Repost": {
+          "messageid": "Bluesky.Feed.Repost",
+          "basemessage": "/messagegroups/BlueskyFirehose/messages/Bluesky.Feed.Repost",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/BlueskyFirehose.avro/schemas/Bluesky.Feed.Repost"
+        },
+        "Bluesky.Graph.Follow": {
+          "messageid": "Bluesky.Graph.Follow",
+          "basemessage": "/messagegroups/BlueskyFirehose/messages/Bluesky.Graph.Follow",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/BlueskyFirehose.avro/schemas/Bluesky.Graph.Follow"
+        },
+        "Bluesky.Graph.Block": {
+          "messageid": "Bluesky.Graph.Block",
+          "basemessage": "/messagegroups/BlueskyFirehose/messages/Bluesky.Graph.Block",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/BlueskyFirehose.avro/schemas/Bluesky.Graph.Block"
+        },
+        "Bluesky.Actor.Profile": {
+          "messageid": "Bluesky.Actor.Profile",
+          "basemessage": "/messagegroups/BlueskyFirehose/messages/Bluesky.Actor.Profile",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/BlueskyFirehose.avro/schemas/Bluesky.Actor.Profile"
+        }
+      }
+    },
+    "BlueskyFirehose.avro.binary": {
+      "messagegroupid": "BlueskyFirehose.avro.binary",
+      "messages": {
+        "Bluesky.Feed.Post": {
+          "messageid": "Bluesky.Feed.Post",
+          "basemessage": "/messagegroups/BlueskyFirehose/messages/Bluesky.Feed.Post",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/BlueskyFirehose.avro/schemas/Bluesky.Feed.Post",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "Bluesky.Feed.Like": {
+          "messageid": "Bluesky.Feed.Like",
+          "basemessage": "/messagegroups/BlueskyFirehose/messages/Bluesky.Feed.Like",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/BlueskyFirehose.avro/schemas/Bluesky.Feed.Like",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "Bluesky.Feed.Repost": {
+          "messageid": "Bluesky.Feed.Repost",
+          "basemessage": "/messagegroups/BlueskyFirehose/messages/Bluesky.Feed.Repost",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/BlueskyFirehose.avro/schemas/Bluesky.Feed.Repost",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "Bluesky.Graph.Follow": {
+          "messageid": "Bluesky.Graph.Follow",
+          "basemessage": "/messagegroups/BlueskyFirehose/messages/Bluesky.Graph.Follow",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/BlueskyFirehose.avro/schemas/Bluesky.Graph.Follow",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "Bluesky.Graph.Block": {
+          "messageid": "Bluesky.Graph.Block",
+          "basemessage": "/messagegroups/BlueskyFirehose/messages/Bluesky.Graph.Block",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/BlueskyFirehose.avro/schemas/Bluesky.Graph.Block",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "Bluesky.Actor.Profile": {
+          "messageid": "Bluesky.Actor.Profile",
+          "basemessage": "/messagegroups/BlueskyFirehose/messages/Bluesky.Actor.Profile",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/BlueskyFirehose.avro/schemas/Bluesky.Actor.Profile",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
     },
     "BlueskyFirehose.mqtt": {
       "messagegroupid": "BlueskyFirehose.mqtt",
@@ -446,6 +594,242 @@
                 "value": "{did}",
                 "description": "AMQP message subject matching the CloudEvent subject and Kafka key identity for this event family."
               }
+            }
+          }
+        }
+      }
+    },
+    "BlueskyFirehose.mqtt.avro": {
+      "messagegroupid": "BlueskyFirehose.mqtt.avro",
+      "messages": {
+        "Bluesky.Feed.Post.mqtt": {
+          "messageid": "Bluesky.Feed.Post.mqtt",
+          "basemessage": "/messagegroups/BlueskyFirehose.mqtt/messages/Bluesky.Feed.Post.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/BlueskyFirehose.avro/schemas/Bluesky.Feed.Post"
+        },
+        "Bluesky.Feed.Like.mqtt": {
+          "messageid": "Bluesky.Feed.Like.mqtt",
+          "basemessage": "/messagegroups/BlueskyFirehose.mqtt/messages/Bluesky.Feed.Like.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/BlueskyFirehose.avro/schemas/Bluesky.Feed.Like"
+        },
+        "Bluesky.Feed.Repost.mqtt": {
+          "messageid": "Bluesky.Feed.Repost.mqtt",
+          "basemessage": "/messagegroups/BlueskyFirehose.mqtt/messages/Bluesky.Feed.Repost.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/BlueskyFirehose.avro/schemas/Bluesky.Feed.Repost"
+        },
+        "Bluesky.Graph.Follow.mqtt": {
+          "messageid": "Bluesky.Graph.Follow.mqtt",
+          "basemessage": "/messagegroups/BlueskyFirehose.mqtt/messages/Bluesky.Graph.Follow.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/BlueskyFirehose.avro/schemas/Bluesky.Graph.Follow"
+        },
+        "Bluesky.Graph.Block.mqtt": {
+          "messageid": "Bluesky.Graph.Block.mqtt",
+          "basemessage": "/messagegroups/BlueskyFirehose.mqtt/messages/Bluesky.Graph.Block.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/BlueskyFirehose.avro/schemas/Bluesky.Graph.Block"
+        },
+        "Bluesky.Actor.Profile.mqtt": {
+          "messageid": "Bluesky.Actor.Profile.mqtt",
+          "basemessage": "/messagegroups/BlueskyFirehose.mqtt/messages/Bluesky.Actor.Profile.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/BlueskyFirehose.avro/schemas/Bluesky.Actor.Profile"
+        }
+      }
+    },
+    "BlueskyFirehose.mqtt.avro.binary": {
+      "messagegroupid": "BlueskyFirehose.mqtt.avro.binary",
+      "messages": {
+        "Bluesky.Feed.Post.mqtt": {
+          "messageid": "Bluesky.Feed.Post.mqtt",
+          "basemessage": "/messagegroups/BlueskyFirehose.mqtt/messages/Bluesky.Feed.Post.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/BlueskyFirehose.avro/schemas/Bluesky.Feed.Post",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "Bluesky.Feed.Like.mqtt": {
+          "messageid": "Bluesky.Feed.Like.mqtt",
+          "basemessage": "/messagegroups/BlueskyFirehose.mqtt/messages/Bluesky.Feed.Like.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/BlueskyFirehose.avro/schemas/Bluesky.Feed.Like",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "Bluesky.Feed.Repost.mqtt": {
+          "messageid": "Bluesky.Feed.Repost.mqtt",
+          "basemessage": "/messagegroups/BlueskyFirehose.mqtt/messages/Bluesky.Feed.Repost.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/BlueskyFirehose.avro/schemas/Bluesky.Feed.Repost",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "Bluesky.Graph.Follow.mqtt": {
+          "messageid": "Bluesky.Graph.Follow.mqtt",
+          "basemessage": "/messagegroups/BlueskyFirehose.mqtt/messages/Bluesky.Graph.Follow.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/BlueskyFirehose.avro/schemas/Bluesky.Graph.Follow",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "Bluesky.Graph.Block.mqtt": {
+          "messageid": "Bluesky.Graph.Block.mqtt",
+          "basemessage": "/messagegroups/BlueskyFirehose.mqtt/messages/Bluesky.Graph.Block.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/BlueskyFirehose.avro/schemas/Bluesky.Graph.Block",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "Bluesky.Actor.Profile.mqtt": {
+          "messageid": "Bluesky.Actor.Profile.mqtt",
+          "basemessage": "/messagegroups/BlueskyFirehose.mqtt/messages/Bluesky.Actor.Profile.mqtt",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/BlueskyFirehose.avro/schemas/Bluesky.Actor.Profile",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "BlueskyFirehose.amqp.avro": {
+      "messagegroupid": "BlueskyFirehose.amqp.avro",
+      "messages": {
+        "BlueskyFirehose.amqp.Post": {
+          "messageid": "BlueskyFirehose.amqp.Post",
+          "basemessage": "/messagegroups/BlueskyFirehose.amqp/messages/BlueskyFirehose.amqp.Post",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/BlueskyFirehose.avro/schemas/Bluesky.Feed.Post"
+        },
+        "BlueskyFirehose.amqp.Like": {
+          "messageid": "BlueskyFirehose.amqp.Like",
+          "basemessage": "/messagegroups/BlueskyFirehose.amqp/messages/BlueskyFirehose.amqp.Like",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/BlueskyFirehose.avro/schemas/Bluesky.Feed.Like"
+        },
+        "BlueskyFirehose.amqp.Repost": {
+          "messageid": "BlueskyFirehose.amqp.Repost",
+          "basemessage": "/messagegroups/BlueskyFirehose.amqp/messages/BlueskyFirehose.amqp.Repost",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/BlueskyFirehose.avro/schemas/Bluesky.Feed.Repost"
+        },
+        "BlueskyFirehose.amqp.Follow": {
+          "messageid": "BlueskyFirehose.amqp.Follow",
+          "basemessage": "/messagegroups/BlueskyFirehose.amqp/messages/BlueskyFirehose.amqp.Follow",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/BlueskyFirehose.avro/schemas/Bluesky.Graph.Follow"
+        },
+        "BlueskyFirehose.amqp.Block": {
+          "messageid": "BlueskyFirehose.amqp.Block",
+          "basemessage": "/messagegroups/BlueskyFirehose.amqp/messages/BlueskyFirehose.amqp.Block",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/BlueskyFirehose.avro/schemas/Bluesky.Graph.Block"
+        },
+        "BlueskyFirehose.amqp.Profile": {
+          "messageid": "BlueskyFirehose.amqp.Profile",
+          "basemessage": "/messagegroups/BlueskyFirehose.amqp/messages/BlueskyFirehose.amqp.Profile",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/BlueskyFirehose.avro/schemas/Bluesky.Actor.Profile"
+        }
+      }
+    },
+    "BlueskyFirehose.amqp.avro.binary": {
+      "messagegroupid": "BlueskyFirehose.amqp.avro.binary",
+      "messages": {
+        "BlueskyFirehose.amqp.Post": {
+          "messageid": "BlueskyFirehose.amqp.Post",
+          "basemessage": "/messagegroups/BlueskyFirehose.amqp/messages/BlueskyFirehose.amqp.Post",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/BlueskyFirehose.avro/schemas/Bluesky.Feed.Post",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "BlueskyFirehose.amqp.Like": {
+          "messageid": "BlueskyFirehose.amqp.Like",
+          "basemessage": "/messagegroups/BlueskyFirehose.amqp/messages/BlueskyFirehose.amqp.Like",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/BlueskyFirehose.avro/schemas/Bluesky.Feed.Like",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "BlueskyFirehose.amqp.Repost": {
+          "messageid": "BlueskyFirehose.amqp.Repost",
+          "basemessage": "/messagegroups/BlueskyFirehose.amqp/messages/BlueskyFirehose.amqp.Repost",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/BlueskyFirehose.avro/schemas/Bluesky.Feed.Repost",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "BlueskyFirehose.amqp.Follow": {
+          "messageid": "BlueskyFirehose.amqp.Follow",
+          "basemessage": "/messagegroups/BlueskyFirehose.amqp/messages/BlueskyFirehose.amqp.Follow",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/BlueskyFirehose.avro/schemas/Bluesky.Graph.Follow",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "BlueskyFirehose.amqp.Block": {
+          "messageid": "BlueskyFirehose.amqp.Block",
+          "basemessage": "/messagegroups/BlueskyFirehose.amqp/messages/BlueskyFirehose.amqp.Block",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/BlueskyFirehose.avro/schemas/Bluesky.Graph.Block",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "BlueskyFirehose.amqp.Profile": {
+          "messageid": "BlueskyFirehose.amqp.Profile",
+          "basemessage": "/messagegroups/BlueskyFirehose.amqp/messages/BlueskyFirehose.amqp.Profile",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/BlueskyFirehose.avro/schemas/Bluesky.Actor.Profile",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
             }
           }
         }
@@ -1067,12 +1451,12 @@
       "schemas": {
         "Bluesky.Feed.Post": {
           "schemaid": "Bluesky.Feed.Post",
-          "format": "Avro",
+          "format": "Avro/1.11.3",
           "versions": {
             "1": {
               "schemaid": "Bluesky.Feed.Post",
               "versionid": "1",
-              "format": "Avro",
+              "format": "Avro/1.11.3",
               "schema": {
                 "type": "record",
                 "name": "Post",
@@ -1202,17 +1586,145 @@
               "createdat": "2024-11-14T12:00:00",
               "epoch": 0,
               "modifiedat": "2024-11-14T12:00:00"
+            },
+            "2": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "Bluesky.Feed.Post",
+                "fields": [
+                  {
+                    "name": "uri",
+                    "type": "string",
+                    "doc": "AT-URI of the post (at://did:plc:xxx/app.bsky.feed.post/xxx)"
+                  },
+                  {
+                    "name": "cid",
+                    "type": "string",
+                    "doc": "Content Identifier (CID) of the post"
+                  },
+                  {
+                    "name": "did",
+                    "type": "string",
+                    "doc": "Decentralized Identifier of the author"
+                  },
+                  {
+                    "name": "handle",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Handle of the author JSON Structure annotations: {\"default\": null} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "text",
+                    "type": "string",
+                    "doc": "Text content of the post"
+                  },
+                  {
+                    "name": "langs",
+                    "default": [],
+                    "type": {
+                      "type": "array",
+                      "items": "string"
+                    },
+                    "doc": "Language codes for the post JSON Structure annotations: {\"default\": []}"
+                  },
+                  {
+                    "name": "reply_parent",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "AT-URI of parent post if this is a reply JSON Structure annotations: {\"default\": null} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "reply_root",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "AT-URI of root post in thread JSON Structure annotations: {\"default\": null} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "embed_type",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Type of embedded content (images, external, record, etc.) JSON Structure annotations: {\"default\": null} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "embed_uri",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "URI of embedded content JSON Structure annotations: {\"default\": null} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "facets",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "JSON string of rich text facets (mentions, links, tags) JSON Structure annotations: {\"default\": null} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "tags",
+                    "default": [],
+                    "type": {
+                      "type": "array",
+                      "items": "string"
+                    },
+                    "doc": "Hashtags in the post JSON Structure annotations: {\"default\": []}"
+                  },
+                  {
+                    "name": "created_at",
+                    "type": "string",
+                    "doc": "ISO 8601 timestamp of post creation"
+                  },
+                  {
+                    "name": "indexed_at",
+                    "type": "string",
+                    "doc": "ISO 8601 timestamp of when the post was indexed"
+                  },
+                  {
+                    "name": "seq",
+                    "type": "long",
+                    "doc": "Firehose sequence number"
+                  },
+                  {
+                    "name": "collection",
+                    "type": "string",
+                    "doc": "AT Protocol record collection NSID (e.g. 'app.bsky.feed.post'). Populated by the bridge from the upstream firehose commit and used as the second MQTT topic segment so subscribers can wildcard on a record family (e.g. all posts via 'app.bsky.feed.post/+/+/post'). Lowercase; never empty."
+                  },
+                  {
+                    "name": "lang",
+                    "type": "string",
+                    "doc": "Primary BCP-47 language tag for the record. For posts this is the first entry of `record.langs[]`; for records without a language field the bridge emits the sentinel 'und' (BCP-47 'undetermined'). Always lowercase, so subscribers can wildcard on `…/ja/+/+`."
+                  }
+                ],
+                "doc": "A post in the Bluesky feed"
+              }
             }
-          }
+          },
+          "defaultversionid": "2"
         },
         "Bluesky.Feed.Like": {
           "schemaid": "Bluesky.Feed.Like",
-          "format": "Avro",
+          "format": "Avro/1.11.3",
           "versions": {
             "1": {
               "schemaid": "Bluesky.Feed.Like",
               "versionid": "1",
-              "format": "Avro",
+              "format": "Avro/1.11.3",
               "schema": {
                 "type": "record",
                 "name": "Like",
@@ -1284,17 +1796,87 @@
               "createdat": "2024-11-14T12:00:01",
               "epoch": 0,
               "modifiedat": "2024-11-14T12:00:01"
+            },
+            "2": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "Bluesky.Feed.Like",
+                "fields": [
+                  {
+                    "name": "uri",
+                    "type": "string",
+                    "doc": "AT-URI of the like record"
+                  },
+                  {
+                    "name": "cid",
+                    "type": "string",
+                    "doc": "Content Identifier of the like"
+                  },
+                  {
+                    "name": "did",
+                    "type": "string",
+                    "doc": "DID of the user who liked"
+                  },
+                  {
+                    "name": "handle",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Handle of the user who liked JSON Structure annotations: {\"default\": null} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "subject_uri",
+                    "type": "string",
+                    "doc": "AT-URI of the liked post"
+                  },
+                  {
+                    "name": "subject_cid",
+                    "type": "string",
+                    "doc": "CID of the liked post"
+                  },
+                  {
+                    "name": "created_at",
+                    "type": "string",
+                    "doc": "ISO 8601 timestamp of like creation"
+                  },
+                  {
+                    "name": "indexed_at",
+                    "type": "string",
+                    "doc": "ISO 8601 timestamp of indexing"
+                  },
+                  {
+                    "name": "seq",
+                    "type": "long",
+                    "doc": "Firehose sequence number"
+                  },
+                  {
+                    "name": "collection",
+                    "type": "string",
+                    "doc": "AT Protocol record collection NSID (e.g. 'app.bsky.feed.post'). Populated by the bridge from the upstream firehose commit and used as the second MQTT topic segment so subscribers can wildcard on a record family (e.g. all posts via 'app.bsky.feed.post/+/+/post'). Lowercase; never empty."
+                  },
+                  {
+                    "name": "lang",
+                    "type": "string",
+                    "doc": "Primary BCP-47 language tag for the record. For posts this is the first entry of `record.langs[]`; for records without a language field the bridge emits the sentinel 'und' (BCP-47 'undetermined'). Always lowercase, so subscribers can wildcard on `…/ja/+/+`."
+                  }
+                ],
+                "doc": "A like on a post"
+              }
             }
-          }
+          },
+          "defaultversionid": "2"
         },
         "Bluesky.Feed.Repost": {
           "schemaid": "Bluesky.Feed.Repost",
-          "format": "Avro",
+          "format": "Avro/1.11.3",
           "versions": {
             "1": {
               "schemaid": "Bluesky.Feed.Repost",
               "versionid": "1",
-              "format": "Avro",
+              "format": "Avro/1.11.3",
               "schema": {
                 "type": "record",
                 "name": "Repost",
@@ -1366,17 +1948,87 @@
               "createdat": "2024-11-14T12:00:02",
               "epoch": 0,
               "modifiedat": "2024-11-14T12:00:02"
+            },
+            "2": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "Bluesky.Feed.Repost",
+                "fields": [
+                  {
+                    "name": "uri",
+                    "type": "string",
+                    "doc": "AT-URI of the repost record"
+                  },
+                  {
+                    "name": "cid",
+                    "type": "string",
+                    "doc": "Content Identifier of the repost"
+                  },
+                  {
+                    "name": "did",
+                    "type": "string",
+                    "doc": "DID of the user who reposted"
+                  },
+                  {
+                    "name": "handle",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Handle of the user who reposted JSON Structure annotations: {\"default\": null} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "subject_uri",
+                    "type": "string",
+                    "doc": "AT-URI of the reposted post"
+                  },
+                  {
+                    "name": "subject_cid",
+                    "type": "string",
+                    "doc": "CID of the reposted post"
+                  },
+                  {
+                    "name": "created_at",
+                    "type": "string",
+                    "doc": "ISO 8601 timestamp of repost creation"
+                  },
+                  {
+                    "name": "indexed_at",
+                    "type": "string",
+                    "doc": "ISO 8601 timestamp of indexing"
+                  },
+                  {
+                    "name": "seq",
+                    "type": "long",
+                    "doc": "Firehose sequence number"
+                  },
+                  {
+                    "name": "collection",
+                    "type": "string",
+                    "doc": "AT Protocol record collection NSID (e.g. 'app.bsky.feed.post'). Populated by the bridge from the upstream firehose commit and used as the second MQTT topic segment so subscribers can wildcard on a record family (e.g. all posts via 'app.bsky.feed.post/+/+/post'). Lowercase; never empty."
+                  },
+                  {
+                    "name": "lang",
+                    "type": "string",
+                    "doc": "Primary BCP-47 language tag for the record. For posts this is the first entry of `record.langs[]`; for records without a language field the bridge emits the sentinel 'und' (BCP-47 'undetermined'). Always lowercase, so subscribers can wildcard on `…/ja/+/+`."
+                  }
+                ],
+                "doc": "A repost of a post"
+              }
             }
-          }
+          },
+          "defaultversionid": "2"
         },
         "Bluesky.Graph.Follow": {
           "schemaid": "Bluesky.Graph.Follow",
-          "format": "Avro",
+          "format": "Avro/1.11.3",
           "versions": {
             "1": {
               "schemaid": "Bluesky.Graph.Follow",
               "versionid": "1",
-              "format": "Avro",
+              "format": "Avro/1.11.3",
               "schema": {
                 "type": "record",
                 "name": "Follow",
@@ -1452,17 +2104,91 @@
               "createdat": "2024-11-14T12:00:03",
               "epoch": 0,
               "modifiedat": "2024-11-14T12:00:03"
+            },
+            "2": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "Bluesky.Graph.Follow",
+                "fields": [
+                  {
+                    "name": "uri",
+                    "type": "string",
+                    "doc": "AT-URI of the follow record"
+                  },
+                  {
+                    "name": "cid",
+                    "type": "string",
+                    "doc": "Content Identifier of the follow"
+                  },
+                  {
+                    "name": "did",
+                    "type": "string",
+                    "doc": "DID of the follower"
+                  },
+                  {
+                    "name": "handle",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Handle of the follower JSON Structure annotations: {\"default\": null} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "subject",
+                    "type": "string",
+                    "doc": "DID of the followed user"
+                  },
+                  {
+                    "name": "subject_handle",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Handle of the followed user JSON Structure annotations: {\"default\": null} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "created_at",
+                    "type": "string",
+                    "doc": "ISO 8601 timestamp of follow creation"
+                  },
+                  {
+                    "name": "indexed_at",
+                    "type": "string",
+                    "doc": "ISO 8601 timestamp of indexing"
+                  },
+                  {
+                    "name": "seq",
+                    "type": "long",
+                    "doc": "Firehose sequence number"
+                  },
+                  {
+                    "name": "collection",
+                    "type": "string",
+                    "doc": "AT Protocol record collection NSID (e.g. 'app.bsky.feed.post'). Populated by the bridge from the upstream firehose commit and used as the second MQTT topic segment so subscribers can wildcard on a record family (e.g. all posts via 'app.bsky.feed.post/+/+/post'). Lowercase; never empty."
+                  },
+                  {
+                    "name": "lang",
+                    "type": "string",
+                    "doc": "Primary BCP-47 language tag for the record. For posts this is the first entry of `record.langs[]`; for records without a language field the bridge emits the sentinel 'und' (BCP-47 'undetermined'). Always lowercase, so subscribers can wildcard on `…/ja/+/+`."
+                  }
+                ],
+                "doc": "A follow relationship between users"
+              }
             }
-          }
+          },
+          "defaultversionid": "2"
         },
         "Bluesky.Graph.Block": {
           "schemaid": "Bluesky.Graph.Block",
-          "format": "Avro",
+          "format": "Avro/1.11.3",
           "versions": {
             "1": {
               "schemaid": "Bluesky.Graph.Block",
               "versionid": "1",
-              "format": "Avro",
+              "format": "Avro/1.11.3",
               "schema": {
                 "type": "record",
                 "name": "Block",
@@ -1538,17 +2264,91 @@
               "createdat": "2024-11-14T12:00:04",
               "epoch": 0,
               "modifiedat": "2024-11-14T12:00:04"
+            },
+            "2": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "Bluesky.Graph.Block",
+                "fields": [
+                  {
+                    "name": "uri",
+                    "type": "string",
+                    "doc": "AT-URI of the block record"
+                  },
+                  {
+                    "name": "cid",
+                    "type": "string",
+                    "doc": "Content Identifier of the block"
+                  },
+                  {
+                    "name": "did",
+                    "type": "string",
+                    "doc": "DID of the blocker"
+                  },
+                  {
+                    "name": "handle",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Handle of the blocker JSON Structure annotations: {\"default\": null} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "subject",
+                    "type": "string",
+                    "doc": "DID of the blocked user"
+                  },
+                  {
+                    "name": "subject_handle",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Handle of the blocked user JSON Structure annotations: {\"default\": null} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "created_at",
+                    "type": "string",
+                    "doc": "ISO 8601 timestamp of block creation"
+                  },
+                  {
+                    "name": "indexed_at",
+                    "type": "string",
+                    "doc": "ISO 8601 timestamp of indexing"
+                  },
+                  {
+                    "name": "seq",
+                    "type": "long",
+                    "doc": "Firehose sequence number"
+                  },
+                  {
+                    "name": "collection",
+                    "type": "string",
+                    "doc": "AT Protocol record collection NSID (e.g. 'app.bsky.feed.post'). Populated by the bridge from the upstream firehose commit and used as the second MQTT topic segment so subscribers can wildcard on a record family (e.g. all posts via 'app.bsky.feed.post/+/+/post'). Lowercase; never empty."
+                  },
+                  {
+                    "name": "lang",
+                    "type": "string",
+                    "doc": "Primary BCP-47 language tag for the record. For posts this is the first entry of `record.langs[]`; for records without a language field the bridge emits the sentinel 'und' (BCP-47 'undetermined'). Always lowercase, so subscribers can wildcard on `…/ja/+/+`."
+                  }
+                ],
+                "doc": "A block relationship between users"
+              }
             }
-          }
+          },
+          "defaultversionid": "2"
         },
         "Bluesky.Actor.Profile": {
           "schemaid": "Bluesky.Actor.Profile",
-          "format": "Avro",
+          "format": "Avro/1.11.3",
           "versions": {
             "1": {
               "schemaid": "Bluesky.Actor.Profile",
               "versionid": "1",
-              "format": "Avro",
+              "format": "Avro/1.11.3",
               "schema": {
                 "type": "record",
                 "name": "Profile",
@@ -1636,8 +2436,94 @@
               "createdat": "2024-11-14T12:00:05",
               "epoch": 0,
               "modifiedat": "2024-11-14T12:00:05"
+            },
+            "2": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "Bluesky.Actor.Profile",
+                "fields": [
+                  {
+                    "name": "did",
+                    "type": "string",
+                    "doc": "Decentralized Identifier"
+                  },
+                  {
+                    "name": "handle",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "User handle JSON Structure annotations: {\"default\": null}"
+                  },
+                  {
+                    "name": "display_name",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Display name JSON Structure annotations: {\"default\": null} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "description",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Bio/description JSON Structure annotations: {\"default\": null} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "avatar",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Avatar image URL JSON Structure annotations: {\"default\": null} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "banner",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Banner image URL JSON Structure annotations: {\"default\": null} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "created_at",
+                    "type": "string",
+                    "doc": "ISO 8601 timestamp of profile creation"
+                  },
+                  {
+                    "name": "indexed_at",
+                    "type": "string",
+                    "doc": "ISO 8601 timestamp of indexing"
+                  },
+                  {
+                    "name": "seq",
+                    "type": "long",
+                    "doc": "Firehose sequence number"
+                  },
+                  {
+                    "name": "collection",
+                    "type": "string",
+                    "doc": "AT Protocol record collection NSID (e.g. 'app.bsky.feed.post'). Populated by the bridge from the upstream firehose commit and used as the second MQTT topic segment so subscribers can wildcard on a record family (e.g. all posts via 'app.bsky.feed.post/+/+/post'). Lowercase; never empty."
+                  },
+                  {
+                    "name": "lang",
+                    "type": "string",
+                    "doc": "Primary BCP-47 language tag for the record. For posts this is the first entry of `record.langs[]`; for records without a language field the bridge emits the sentinel 'und' (BCP-47 'undetermined'). Always lowercase, so subscribers can wildcard on `…/ja/+/+`."
+                  }
+                ],
+                "doc": "A user profile update"
+              }
             }
-          }
+          },
+          "defaultversionid": "2"
         }
       }
     }

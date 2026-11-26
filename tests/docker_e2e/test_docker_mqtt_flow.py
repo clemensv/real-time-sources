@@ -32,7 +32,7 @@ from paho.mqtt.client import CallbackAPIVersion, MQTTv5
 
 from json_structure import InstanceValidator, SchemaValidator
 
-from .helpers import REPO_ROOT, build_image
+from .helpers import REPO_ROOT, _resolve_message_inheritance, build_image
 
 
 def _find_free_port() -> int:
@@ -5234,15 +5234,6 @@ def _resolve_json_pointer(document: Dict[str, Any], pointer: str) -> Any:
     return current
 
 
-def _resolve_message(document: Dict[str, Any], message: Dict[str, Any]) -> Dict[str, Any]:
-    base_url = message.get('basemessageuri')
-    if not base_url:
-        return dict(message)
-    base = _resolve_message(document, _resolve_json_pointer(document, base_url))
-    base.update({k: v for k, v in message.items() if k != 'basemessageuri'})
-    return base
-
-
 def _mqtt_topic_options(message: Mapping[str, Any]) -> Tuple[str, int, bool]:
     options = dict(message.get('protocoloptions') or {})
     properties = dict(options.get('properties') or {})
@@ -5269,7 +5260,11 @@ def _load_mqtt_contracts(project_dir: str) -> Dict[str, Dict[str, Any]]:
         for group_ref in endpoint.get('messagegroups', []):
             group = _resolve_json_pointer(manifest, group_ref)
             for message in group.get('messages', {}).values():
-                resolved = _resolve_message(manifest, message)
+                resolved = _resolve_message_inheritance(manifest, message)
+                schema_format = resolved.get('dataschemaformat', '')
+                if schema_format.startswith('Avro/'):
+                    continue
+                assert schema_format.startswith('JsonStructure/'), f'Unsupported MQTT JSON flow schema format: {schema_format!r}'
                 topic, qos, retain = _mqtt_topic_options(resolved)
                 ce_type = resolved.get('envelopemetadata', {}).get('type', {}).get('value')
                 subject_template = resolved.get('envelopemetadata', {}).get('subject', {}).get('value')

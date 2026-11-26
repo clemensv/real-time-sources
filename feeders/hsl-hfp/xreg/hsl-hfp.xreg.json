@@ -16,7 +16,9 @@
         ]
       },
       "messagegroups": [
-        "#/messagegroups/fi.hsl.hfp.upstream"
+        "#/messagegroups/fi.hsl.hfp.upstream",
+        "#/messagegroups/fi.hsl.hfp.upstream.avro",
+        "#/messagegroups/fi.hsl.hfp.upstream.avro.binary"
       ],
       "description": "Upstream HSL HFP MQTT broker (mqtt.hsl.fi). Consumed as plain JSON on the `/hfp/v2/journey/#` topic tree; the bridge wraps each message in a CloudEvent and republishes it."
     },
@@ -38,7 +40,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/fi.hsl.hfp"
+        "#/messagegroups/fi.hsl.hfp",
+        "#/messagegroups/fi.hsl.hfp.avro",
+        "#/messagegroups/fi.hsl.hfp.avro.binary"
       ],
       "description": "Downstream Kafka / Event Hubs producer for HFP telemetry on the `hsl-hfp` topic, partitioned by vehicle identity `{operator_id}/{vehicle_number}`."
     },
@@ -60,7 +64,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/fi.hsl.gtfs.operator"
+        "#/messagegroups/fi.hsl.gtfs.operator",
+        "#/messagegroups/fi.hsl.gtfs.operator.avro",
+        "#/messagegroups/fi.hsl.gtfs.operator.avro.binary"
       ],
       "description": "Downstream Kafka / Event Hubs producer for the HSL operator reference catalogue on the `hsl-hfp` topic, keyed by `operator/{operator_id}`."
     },
@@ -82,7 +88,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/fi.hsl.gtfs.route"
+        "#/messagegroups/fi.hsl.gtfs.route",
+        "#/messagegroups/fi.hsl.gtfs.route.avro",
+        "#/messagegroups/fi.hsl.gtfs.route.avro.binary"
       ],
       "description": "Downstream Kafka / Event Hubs producer for the HSL route reference catalogue on the `hsl-hfp` topic, keyed by `route/{route_id}`."
     },
@@ -104,7 +112,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/fi.hsl.gtfs.stop"
+        "#/messagegroups/fi.hsl.gtfs.stop",
+        "#/messagegroups/fi.hsl.gtfs.stop.avro",
+        "#/messagegroups/fi.hsl.gtfs.stop.avro.binary"
       ],
       "description": "Downstream Kafka / Event Hubs producer for the HSL stop reference catalogue on the `hsl-hfp` topic, keyed by `stop/{stop_id}`."
     },
@@ -129,7 +139,15 @@
         "#/messagegroups/fi.hsl.hfp.mqtt",
         "#/messagegroups/fi.hsl.gtfs.operator.mqtt",
         "#/messagegroups/fi.hsl.gtfs.route.mqtt",
-        "#/messagegroups/fi.hsl.gtfs.stop.mqtt"
+        "#/messagegroups/fi.hsl.gtfs.stop.mqtt",
+        "#/messagegroups/fi.hsl.hfp.mqtt.avro",
+        "#/messagegroups/fi.hsl.hfp.mqtt.avro.binary",
+        "#/messagegroups/fi.hsl.gtfs.operator.mqtt.avro",
+        "#/messagegroups/fi.hsl.gtfs.operator.mqtt.avro.binary",
+        "#/messagegroups/fi.hsl.gtfs.route.mqtt.avro",
+        "#/messagegroups/fi.hsl.gtfs.route.mqtt.avro.binary",
+        "#/messagegroups/fi.hsl.gtfs.stop.mqtt.avro",
+        "#/messagegroups/fi.hsl.gtfs.stop.mqtt.avro.binary"
       ],
       "description": "Downstream MQTT 5 producer. Telemetry mirrors the upstream HFP topic tree; reference data is retained on a reference topic tree."
     },
@@ -154,7 +172,15 @@
         "#/messagegroups/fi.hsl.hfp.amqp",
         "#/messagegroups/fi.hsl.gtfs.operator.amqp",
         "#/messagegroups/fi.hsl.gtfs.route.amqp",
-        "#/messagegroups/fi.hsl.gtfs.stop.amqp"
+        "#/messagegroups/fi.hsl.gtfs.stop.amqp",
+        "#/messagegroups/fi.hsl.hfp.amqp.avro",
+        "#/messagegroups/fi.hsl.hfp.amqp.avro.binary",
+        "#/messagegroups/fi.hsl.gtfs.operator.amqp.avro",
+        "#/messagegroups/fi.hsl.gtfs.operator.amqp.avro.binary",
+        "#/messagegroups/fi.hsl.gtfs.route.amqp.avro",
+        "#/messagegroups/fi.hsl.gtfs.route.amqp.avro.binary",
+        "#/messagegroups/fi.hsl.gtfs.stop.amqp.avro",
+        "#/messagegroups/fi.hsl.gtfs.stop.amqp.avro.binary"
       ],
       "description": "Downstream AMQP 1.0 producer (Service Bus / Event Hubs / generic brokers)."
     }
@@ -178,6 +204,10 @@
             "subject": {
               "value": "{operator_id}/{vehicle_number}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -198,6 +228,10 @@
             "subject": {
               "value": "{operator_id}/{vehicle_number}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -218,6 +252,10 @@
             "subject": {
               "value": "{operator_id}/{vehicle_number}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -238,6 +276,10 @@
             "subject": {
               "value": "{operator_id}/{vehicle_number}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -258,6 +300,10 @@
             "subject": {
               "value": "{operator_id}/{vehicle_number}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -278,6 +324,10 @@
             "subject": {
               "value": "{operator_id}/{vehicle_number}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -298,6 +348,10 @@
             "subject": {
               "value": "{operator_id}/{vehicle_number}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -318,6 +372,10 @@
             "subject": {
               "value": "{operator_id}/{vehicle_number}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -338,6 +396,10 @@
             "subject": {
               "value": "{operator_id}/{vehicle_number}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -358,6 +420,10 @@
             "subject": {
               "value": "{operator_id}/{vehicle_number}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -378,6 +444,10 @@
             "subject": {
               "value": "{operator_id}/{vehicle_number}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -398,6 +468,10 @@
             "subject": {
               "value": "{operator_id}/{vehicle_number}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -418,6 +492,10 @@
             "subject": {
               "value": "{operator_id}/{vehicle_number}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -438,6 +516,10 @@
             "subject": {
               "value": "{operator_id}/{vehicle_number}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -458,6 +540,10 @@
             "subject": {
               "value": "{operator_id}/{vehicle_number}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -478,6 +564,10 @@
             "subject": {
               "value": "{operator_id}/{vehicle_number}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -498,6 +588,10 @@
             "subject": {
               "value": "{operator_id}/{vehicle_number}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -518,6 +612,10 @@
             "subject": {
               "value": "{operator_id}/{vehicle_number}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -543,6 +641,10 @@
             "subject": {
               "value": "operator/{operator_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -568,6 +670,10 @@
             "subject": {
               "value": "route/{route_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -593,6 +699,10 @@
             "subject": {
               "value": "stop/{stop_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -1624,7 +1734,13 @@
             "qos": 0
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/fi.hsl.jstruct/schemas/fi.hsl.hfp.VehicleEvent"
+          "dataschemauri": "#/schemagroups/fi.hsl.jstruct/schemas/fi.hsl.hfp.VehicleEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
+            }
+          }
         },
         "fi.hsl.hfp.upstream.due": {
           "name": "due",
@@ -1635,7 +1751,13 @@
             "qos": 0
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/fi.hsl.jstruct/schemas/fi.hsl.hfp.VehicleEvent"
+          "dataschemauri": "#/schemagroups/fi.hsl.jstruct/schemas/fi.hsl.hfp.VehicleEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
+            }
+          }
         },
         "fi.hsl.hfp.upstream.arr": {
           "name": "arr",
@@ -1646,7 +1768,13 @@
             "qos": 0
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/fi.hsl.jstruct/schemas/fi.hsl.hfp.VehicleEvent"
+          "dataschemauri": "#/schemagroups/fi.hsl.jstruct/schemas/fi.hsl.hfp.VehicleEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
+            }
+          }
         },
         "fi.hsl.hfp.upstream.dep": {
           "name": "dep",
@@ -1657,7 +1785,13 @@
             "qos": 0
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/fi.hsl.jstruct/schemas/fi.hsl.hfp.VehicleEvent"
+          "dataschemauri": "#/schemagroups/fi.hsl.jstruct/schemas/fi.hsl.hfp.VehicleEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
+            }
+          }
         },
         "fi.hsl.hfp.upstream.ars": {
           "name": "ars",
@@ -1668,7 +1802,13 @@
             "qos": 0
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/fi.hsl.jstruct/schemas/fi.hsl.hfp.VehicleEvent"
+          "dataschemauri": "#/schemagroups/fi.hsl.jstruct/schemas/fi.hsl.hfp.VehicleEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
+            }
+          }
         },
         "fi.hsl.hfp.upstream.pde": {
           "name": "pde",
@@ -1679,7 +1819,13 @@
             "qos": 0
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/fi.hsl.jstruct/schemas/fi.hsl.hfp.VehicleEvent"
+          "dataschemauri": "#/schemagroups/fi.hsl.jstruct/schemas/fi.hsl.hfp.VehicleEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
+            }
+          }
         },
         "fi.hsl.hfp.upstream.pas": {
           "name": "pas",
@@ -1690,7 +1836,13 @@
             "qos": 0
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/fi.hsl.jstruct/schemas/fi.hsl.hfp.VehicleEvent"
+          "dataschemauri": "#/schemagroups/fi.hsl.jstruct/schemas/fi.hsl.hfp.VehicleEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
+            }
+          }
         },
         "fi.hsl.hfp.upstream.wait": {
           "name": "wait",
@@ -1701,7 +1853,13 @@
             "qos": 0
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/fi.hsl.jstruct/schemas/fi.hsl.hfp.VehicleEvent"
+          "dataschemauri": "#/schemagroups/fi.hsl.jstruct/schemas/fi.hsl.hfp.VehicleEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
+            }
+          }
         },
         "fi.hsl.hfp.upstream.doo": {
           "name": "doo",
@@ -1712,7 +1870,13 @@
             "qos": 0
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/fi.hsl.jstruct/schemas/fi.hsl.hfp.VehicleEvent"
+          "dataschemauri": "#/schemagroups/fi.hsl.jstruct/schemas/fi.hsl.hfp.VehicleEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
+            }
+          }
         },
         "fi.hsl.hfp.upstream.doc": {
           "name": "doc",
@@ -1723,7 +1887,13 @@
             "qos": 0
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/fi.hsl.jstruct/schemas/fi.hsl.hfp.VehicleEvent"
+          "dataschemauri": "#/schemagroups/fi.hsl.jstruct/schemas/fi.hsl.hfp.VehicleEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
+            }
+          }
         },
         "fi.hsl.hfp.upstream.vja": {
           "name": "vja",
@@ -1734,7 +1904,13 @@
             "qos": 0
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/fi.hsl.jstruct/schemas/fi.hsl.hfp.VehicleEvent"
+          "dataschemauri": "#/schemagroups/fi.hsl.jstruct/schemas/fi.hsl.hfp.VehicleEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
+            }
+          }
         },
         "fi.hsl.hfp.upstream.vjout": {
           "name": "vjout",
@@ -1745,7 +1921,13 @@
             "qos": 0
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/fi.hsl.jstruct/schemas/fi.hsl.hfp.VehicleEvent"
+          "dataschemauri": "#/schemagroups/fi.hsl.jstruct/schemas/fi.hsl.hfp.VehicleEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
+            }
+          }
         },
         "fi.hsl.hfp.upstream.tlr": {
           "name": "tlr",
@@ -1756,7 +1938,13 @@
             "qos": 0
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/fi.hsl.jstruct/schemas/fi.hsl.hfp.TrafficLightEvent"
+          "dataschemauri": "#/schemagroups/fi.hsl.jstruct/schemas/fi.hsl.hfp.TrafficLightEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
+            }
+          }
         },
         "fi.hsl.hfp.upstream.tla": {
           "name": "tla",
@@ -1767,7 +1955,13 @@
             "qos": 0
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/fi.hsl.jstruct/schemas/fi.hsl.hfp.TrafficLightEvent"
+          "dataschemauri": "#/schemagroups/fi.hsl.jstruct/schemas/fi.hsl.hfp.TrafficLightEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
+            }
+          }
         },
         "fi.hsl.hfp.upstream.da": {
           "name": "da",
@@ -1778,7 +1972,13 @@
             "qos": 0
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/fi.hsl.jstruct/schemas/fi.hsl.hfp.DriverBlockEvent"
+          "dataschemauri": "#/schemagroups/fi.hsl.jstruct/schemas/fi.hsl.hfp.DriverBlockEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
+            }
+          }
         },
         "fi.hsl.hfp.upstream.dout": {
           "name": "dout",
@@ -1789,7 +1989,13 @@
             "qos": 0
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/fi.hsl.jstruct/schemas/fi.hsl.hfp.DriverBlockEvent"
+          "dataschemauri": "#/schemagroups/fi.hsl.jstruct/schemas/fi.hsl.hfp.DriverBlockEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
+            }
+          }
         },
         "fi.hsl.hfp.upstream.ba": {
           "name": "ba",
@@ -1800,7 +2006,13 @@
             "qos": 0
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/fi.hsl.jstruct/schemas/fi.hsl.hfp.DriverBlockEvent"
+          "dataschemauri": "#/schemagroups/fi.hsl.jstruct/schemas/fi.hsl.hfp.DriverBlockEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
+            }
+          }
         },
         "fi.hsl.hfp.upstream.bout": {
           "name": "bout",
@@ -1811,7 +2023,1601 @@
             "qos": 0
           },
           "dataschemaformat": "JsonStructure/draft-02",
-          "dataschemauri": "#/schemagroups/fi.hsl.jstruct/schemas/fi.hsl.hfp.DriverBlockEvent"
+          "dataschemauri": "#/schemagroups/fi.hsl.jstruct/schemas/fi.hsl.hfp.DriverBlockEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
+            }
+          }
+        }
+      }
+    },
+    "fi.hsl.hfp.avro": {
+      "messagegroupid": "fi.hsl.hfp.avro",
+      "messages": {
+        "fi.hsl.hfp.vp": {
+          "messageid": "fi.hsl.hfp.vp",
+          "basemessage": "/messagegroups/fi.hsl.hfp/messages/fi.hsl.hfp.vp",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.VehicleEvent"
+        },
+        "fi.hsl.hfp.due": {
+          "messageid": "fi.hsl.hfp.due",
+          "basemessage": "/messagegroups/fi.hsl.hfp/messages/fi.hsl.hfp.due",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.VehicleEvent"
+        },
+        "fi.hsl.hfp.arr": {
+          "messageid": "fi.hsl.hfp.arr",
+          "basemessage": "/messagegroups/fi.hsl.hfp/messages/fi.hsl.hfp.arr",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.VehicleEvent"
+        },
+        "fi.hsl.hfp.dep": {
+          "messageid": "fi.hsl.hfp.dep",
+          "basemessage": "/messagegroups/fi.hsl.hfp/messages/fi.hsl.hfp.dep",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.VehicleEvent"
+        },
+        "fi.hsl.hfp.ars": {
+          "messageid": "fi.hsl.hfp.ars",
+          "basemessage": "/messagegroups/fi.hsl.hfp/messages/fi.hsl.hfp.ars",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.VehicleEvent"
+        },
+        "fi.hsl.hfp.pde": {
+          "messageid": "fi.hsl.hfp.pde",
+          "basemessage": "/messagegroups/fi.hsl.hfp/messages/fi.hsl.hfp.pde",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.VehicleEvent"
+        },
+        "fi.hsl.hfp.pas": {
+          "messageid": "fi.hsl.hfp.pas",
+          "basemessage": "/messagegroups/fi.hsl.hfp/messages/fi.hsl.hfp.pas",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.VehicleEvent"
+        },
+        "fi.hsl.hfp.wait": {
+          "messageid": "fi.hsl.hfp.wait",
+          "basemessage": "/messagegroups/fi.hsl.hfp/messages/fi.hsl.hfp.wait",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.VehicleEvent"
+        },
+        "fi.hsl.hfp.doo": {
+          "messageid": "fi.hsl.hfp.doo",
+          "basemessage": "/messagegroups/fi.hsl.hfp/messages/fi.hsl.hfp.doo",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.VehicleEvent"
+        },
+        "fi.hsl.hfp.doc": {
+          "messageid": "fi.hsl.hfp.doc",
+          "basemessage": "/messagegroups/fi.hsl.hfp/messages/fi.hsl.hfp.doc",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.VehicleEvent"
+        },
+        "fi.hsl.hfp.vja": {
+          "messageid": "fi.hsl.hfp.vja",
+          "basemessage": "/messagegroups/fi.hsl.hfp/messages/fi.hsl.hfp.vja",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.VehicleEvent"
+        },
+        "fi.hsl.hfp.vjout": {
+          "messageid": "fi.hsl.hfp.vjout",
+          "basemessage": "/messagegroups/fi.hsl.hfp/messages/fi.hsl.hfp.vjout",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.VehicleEvent"
+        },
+        "fi.hsl.hfp.tlr": {
+          "messageid": "fi.hsl.hfp.tlr",
+          "basemessage": "/messagegroups/fi.hsl.hfp/messages/fi.hsl.hfp.tlr",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.TrafficLightEvent"
+        },
+        "fi.hsl.hfp.tla": {
+          "messageid": "fi.hsl.hfp.tla",
+          "basemessage": "/messagegroups/fi.hsl.hfp/messages/fi.hsl.hfp.tla",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.TrafficLightEvent"
+        },
+        "fi.hsl.hfp.da": {
+          "messageid": "fi.hsl.hfp.da",
+          "basemessage": "/messagegroups/fi.hsl.hfp/messages/fi.hsl.hfp.da",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.DriverBlockEvent"
+        },
+        "fi.hsl.hfp.dout": {
+          "messageid": "fi.hsl.hfp.dout",
+          "basemessage": "/messagegroups/fi.hsl.hfp/messages/fi.hsl.hfp.dout",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.DriverBlockEvent"
+        },
+        "fi.hsl.hfp.ba": {
+          "messageid": "fi.hsl.hfp.ba",
+          "basemessage": "/messagegroups/fi.hsl.hfp/messages/fi.hsl.hfp.ba",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.DriverBlockEvent"
+        },
+        "fi.hsl.hfp.bout": {
+          "messageid": "fi.hsl.hfp.bout",
+          "basemessage": "/messagegroups/fi.hsl.hfp/messages/fi.hsl.hfp.bout",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.DriverBlockEvent"
+        }
+      }
+    },
+    "fi.hsl.hfp.avro.binary": {
+      "messagegroupid": "fi.hsl.hfp.avro.binary",
+      "messages": {
+        "fi.hsl.hfp.vp": {
+          "messageid": "fi.hsl.hfp.vp",
+          "basemessage": "/messagegroups/fi.hsl.hfp/messages/fi.hsl.hfp.vp",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.VehicleEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "fi.hsl.hfp.due": {
+          "messageid": "fi.hsl.hfp.due",
+          "basemessage": "/messagegroups/fi.hsl.hfp/messages/fi.hsl.hfp.due",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.VehicleEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "fi.hsl.hfp.arr": {
+          "messageid": "fi.hsl.hfp.arr",
+          "basemessage": "/messagegroups/fi.hsl.hfp/messages/fi.hsl.hfp.arr",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.VehicleEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "fi.hsl.hfp.dep": {
+          "messageid": "fi.hsl.hfp.dep",
+          "basemessage": "/messagegroups/fi.hsl.hfp/messages/fi.hsl.hfp.dep",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.VehicleEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "fi.hsl.hfp.ars": {
+          "messageid": "fi.hsl.hfp.ars",
+          "basemessage": "/messagegroups/fi.hsl.hfp/messages/fi.hsl.hfp.ars",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.VehicleEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "fi.hsl.hfp.pde": {
+          "messageid": "fi.hsl.hfp.pde",
+          "basemessage": "/messagegroups/fi.hsl.hfp/messages/fi.hsl.hfp.pde",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.VehicleEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "fi.hsl.hfp.pas": {
+          "messageid": "fi.hsl.hfp.pas",
+          "basemessage": "/messagegroups/fi.hsl.hfp/messages/fi.hsl.hfp.pas",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.VehicleEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "fi.hsl.hfp.wait": {
+          "messageid": "fi.hsl.hfp.wait",
+          "basemessage": "/messagegroups/fi.hsl.hfp/messages/fi.hsl.hfp.wait",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.VehicleEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "fi.hsl.hfp.doo": {
+          "messageid": "fi.hsl.hfp.doo",
+          "basemessage": "/messagegroups/fi.hsl.hfp/messages/fi.hsl.hfp.doo",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.VehicleEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "fi.hsl.hfp.doc": {
+          "messageid": "fi.hsl.hfp.doc",
+          "basemessage": "/messagegroups/fi.hsl.hfp/messages/fi.hsl.hfp.doc",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.VehicleEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "fi.hsl.hfp.vja": {
+          "messageid": "fi.hsl.hfp.vja",
+          "basemessage": "/messagegroups/fi.hsl.hfp/messages/fi.hsl.hfp.vja",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.VehicleEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "fi.hsl.hfp.vjout": {
+          "messageid": "fi.hsl.hfp.vjout",
+          "basemessage": "/messagegroups/fi.hsl.hfp/messages/fi.hsl.hfp.vjout",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.VehicleEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "fi.hsl.hfp.tlr": {
+          "messageid": "fi.hsl.hfp.tlr",
+          "basemessage": "/messagegroups/fi.hsl.hfp/messages/fi.hsl.hfp.tlr",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.TrafficLightEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "fi.hsl.hfp.tla": {
+          "messageid": "fi.hsl.hfp.tla",
+          "basemessage": "/messagegroups/fi.hsl.hfp/messages/fi.hsl.hfp.tla",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.TrafficLightEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "fi.hsl.hfp.da": {
+          "messageid": "fi.hsl.hfp.da",
+          "basemessage": "/messagegroups/fi.hsl.hfp/messages/fi.hsl.hfp.da",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.DriverBlockEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "fi.hsl.hfp.dout": {
+          "messageid": "fi.hsl.hfp.dout",
+          "basemessage": "/messagegroups/fi.hsl.hfp/messages/fi.hsl.hfp.dout",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.DriverBlockEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "fi.hsl.hfp.ba": {
+          "messageid": "fi.hsl.hfp.ba",
+          "basemessage": "/messagegroups/fi.hsl.hfp/messages/fi.hsl.hfp.ba",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.DriverBlockEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "fi.hsl.hfp.bout": {
+          "messageid": "fi.hsl.hfp.bout",
+          "basemessage": "/messagegroups/fi.hsl.hfp/messages/fi.hsl.hfp.bout",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.DriverBlockEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "fi.hsl.gtfs.operator.avro": {
+      "messagegroupid": "fi.hsl.gtfs.operator.avro",
+      "messages": {
+        "fi.hsl.gtfs.operator.Operator": {
+          "messageid": "fi.hsl.gtfs.operator.Operator",
+          "basemessage": "/messagegroups/fi.hsl.gtfs.operator/messages/fi.hsl.gtfs.operator.Operator",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.gtfs.Operator"
+        }
+      }
+    },
+    "fi.hsl.gtfs.operator.avro.binary": {
+      "messagegroupid": "fi.hsl.gtfs.operator.avro.binary",
+      "messages": {
+        "fi.hsl.gtfs.operator.Operator": {
+          "messageid": "fi.hsl.gtfs.operator.Operator",
+          "basemessage": "/messagegroups/fi.hsl.gtfs.operator/messages/fi.hsl.gtfs.operator.Operator",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.gtfs.Operator",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "fi.hsl.gtfs.route.avro": {
+      "messagegroupid": "fi.hsl.gtfs.route.avro",
+      "messages": {
+        "fi.hsl.gtfs.route.Route": {
+          "messageid": "fi.hsl.gtfs.route.Route",
+          "basemessage": "/messagegroups/fi.hsl.gtfs.route/messages/fi.hsl.gtfs.route.Route",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.gtfs.Route"
+        }
+      }
+    },
+    "fi.hsl.gtfs.route.avro.binary": {
+      "messagegroupid": "fi.hsl.gtfs.route.avro.binary",
+      "messages": {
+        "fi.hsl.gtfs.route.Route": {
+          "messageid": "fi.hsl.gtfs.route.Route",
+          "basemessage": "/messagegroups/fi.hsl.gtfs.route/messages/fi.hsl.gtfs.route.Route",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.gtfs.Route",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "fi.hsl.gtfs.stop.avro": {
+      "messagegroupid": "fi.hsl.gtfs.stop.avro",
+      "messages": {
+        "fi.hsl.gtfs.stop.Stop": {
+          "messageid": "fi.hsl.gtfs.stop.Stop",
+          "basemessage": "/messagegroups/fi.hsl.gtfs.stop/messages/fi.hsl.gtfs.stop.Stop",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.gtfs.Stop"
+        }
+      }
+    },
+    "fi.hsl.gtfs.stop.avro.binary": {
+      "messagegroupid": "fi.hsl.gtfs.stop.avro.binary",
+      "messages": {
+        "fi.hsl.gtfs.stop.Stop": {
+          "messageid": "fi.hsl.gtfs.stop.Stop",
+          "basemessage": "/messagegroups/fi.hsl.gtfs.stop/messages/fi.hsl.gtfs.stop.Stop",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.gtfs.Stop",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "fi.hsl.hfp.mqtt.avro": {
+      "messagegroupid": "fi.hsl.hfp.mqtt.avro",
+      "messages": {
+        "fi.hsl.hfp.mqtt.vp": {
+          "messageid": "fi.hsl.hfp.mqtt.vp",
+          "basemessage": "/messagegroups/fi.hsl.hfp.mqtt/messages/fi.hsl.hfp.mqtt.vp",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.VehicleEvent"
+        },
+        "fi.hsl.hfp.mqtt.due": {
+          "messageid": "fi.hsl.hfp.mqtt.due",
+          "basemessage": "/messagegroups/fi.hsl.hfp.mqtt/messages/fi.hsl.hfp.mqtt.due",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.VehicleEvent"
+        },
+        "fi.hsl.hfp.mqtt.arr": {
+          "messageid": "fi.hsl.hfp.mqtt.arr",
+          "basemessage": "/messagegroups/fi.hsl.hfp.mqtt/messages/fi.hsl.hfp.mqtt.arr",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.VehicleEvent"
+        },
+        "fi.hsl.hfp.mqtt.dep": {
+          "messageid": "fi.hsl.hfp.mqtt.dep",
+          "basemessage": "/messagegroups/fi.hsl.hfp.mqtt/messages/fi.hsl.hfp.mqtt.dep",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.VehicleEvent"
+        },
+        "fi.hsl.hfp.mqtt.ars": {
+          "messageid": "fi.hsl.hfp.mqtt.ars",
+          "basemessage": "/messagegroups/fi.hsl.hfp.mqtt/messages/fi.hsl.hfp.mqtt.ars",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.VehicleEvent"
+        },
+        "fi.hsl.hfp.mqtt.pde": {
+          "messageid": "fi.hsl.hfp.mqtt.pde",
+          "basemessage": "/messagegroups/fi.hsl.hfp.mqtt/messages/fi.hsl.hfp.mqtt.pde",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.VehicleEvent"
+        },
+        "fi.hsl.hfp.mqtt.pas": {
+          "messageid": "fi.hsl.hfp.mqtt.pas",
+          "basemessage": "/messagegroups/fi.hsl.hfp.mqtt/messages/fi.hsl.hfp.mqtt.pas",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.VehicleEvent"
+        },
+        "fi.hsl.hfp.mqtt.wait": {
+          "messageid": "fi.hsl.hfp.mqtt.wait",
+          "basemessage": "/messagegroups/fi.hsl.hfp.mqtt/messages/fi.hsl.hfp.mqtt.wait",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.VehicleEvent"
+        },
+        "fi.hsl.hfp.mqtt.doo": {
+          "messageid": "fi.hsl.hfp.mqtt.doo",
+          "basemessage": "/messagegroups/fi.hsl.hfp.mqtt/messages/fi.hsl.hfp.mqtt.doo",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.VehicleEvent"
+        },
+        "fi.hsl.hfp.mqtt.doc": {
+          "messageid": "fi.hsl.hfp.mqtt.doc",
+          "basemessage": "/messagegroups/fi.hsl.hfp.mqtt/messages/fi.hsl.hfp.mqtt.doc",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.VehicleEvent"
+        },
+        "fi.hsl.hfp.mqtt.vja": {
+          "messageid": "fi.hsl.hfp.mqtt.vja",
+          "basemessage": "/messagegroups/fi.hsl.hfp.mqtt/messages/fi.hsl.hfp.mqtt.vja",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.VehicleEvent"
+        },
+        "fi.hsl.hfp.mqtt.vjout": {
+          "messageid": "fi.hsl.hfp.mqtt.vjout",
+          "basemessage": "/messagegroups/fi.hsl.hfp.mqtt/messages/fi.hsl.hfp.mqtt.vjout",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.VehicleEvent"
+        },
+        "fi.hsl.hfp.mqtt.tlr": {
+          "messageid": "fi.hsl.hfp.mqtt.tlr",
+          "basemessage": "/messagegroups/fi.hsl.hfp.mqtt/messages/fi.hsl.hfp.mqtt.tlr",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.TrafficLightEvent"
+        },
+        "fi.hsl.hfp.mqtt.tla": {
+          "messageid": "fi.hsl.hfp.mqtt.tla",
+          "basemessage": "/messagegroups/fi.hsl.hfp.mqtt/messages/fi.hsl.hfp.mqtt.tla",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.TrafficLightEvent"
+        },
+        "fi.hsl.hfp.mqtt.da": {
+          "messageid": "fi.hsl.hfp.mqtt.da",
+          "basemessage": "/messagegroups/fi.hsl.hfp.mqtt/messages/fi.hsl.hfp.mqtt.da",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.DriverBlockEvent"
+        },
+        "fi.hsl.hfp.mqtt.dout": {
+          "messageid": "fi.hsl.hfp.mqtt.dout",
+          "basemessage": "/messagegroups/fi.hsl.hfp.mqtt/messages/fi.hsl.hfp.mqtt.dout",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.DriverBlockEvent"
+        },
+        "fi.hsl.hfp.mqtt.ba": {
+          "messageid": "fi.hsl.hfp.mqtt.ba",
+          "basemessage": "/messagegroups/fi.hsl.hfp.mqtt/messages/fi.hsl.hfp.mqtt.ba",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.DriverBlockEvent"
+        },
+        "fi.hsl.hfp.mqtt.bout": {
+          "messageid": "fi.hsl.hfp.mqtt.bout",
+          "basemessage": "/messagegroups/fi.hsl.hfp.mqtt/messages/fi.hsl.hfp.mqtt.bout",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.DriverBlockEvent"
+        }
+      }
+    },
+    "fi.hsl.hfp.mqtt.avro.binary": {
+      "messagegroupid": "fi.hsl.hfp.mqtt.avro.binary",
+      "messages": {
+        "fi.hsl.hfp.mqtt.vp": {
+          "messageid": "fi.hsl.hfp.mqtt.vp",
+          "basemessage": "/messagegroups/fi.hsl.hfp.mqtt/messages/fi.hsl.hfp.mqtt.vp",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.VehicleEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "fi.hsl.hfp.mqtt.due": {
+          "messageid": "fi.hsl.hfp.mqtt.due",
+          "basemessage": "/messagegroups/fi.hsl.hfp.mqtt/messages/fi.hsl.hfp.mqtt.due",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.VehicleEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "fi.hsl.hfp.mqtt.arr": {
+          "messageid": "fi.hsl.hfp.mqtt.arr",
+          "basemessage": "/messagegroups/fi.hsl.hfp.mqtt/messages/fi.hsl.hfp.mqtt.arr",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.VehicleEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "fi.hsl.hfp.mqtt.dep": {
+          "messageid": "fi.hsl.hfp.mqtt.dep",
+          "basemessage": "/messagegroups/fi.hsl.hfp.mqtt/messages/fi.hsl.hfp.mqtt.dep",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.VehicleEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "fi.hsl.hfp.mqtt.ars": {
+          "messageid": "fi.hsl.hfp.mqtt.ars",
+          "basemessage": "/messagegroups/fi.hsl.hfp.mqtt/messages/fi.hsl.hfp.mqtt.ars",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.VehicleEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "fi.hsl.hfp.mqtt.pde": {
+          "messageid": "fi.hsl.hfp.mqtt.pde",
+          "basemessage": "/messagegroups/fi.hsl.hfp.mqtt/messages/fi.hsl.hfp.mqtt.pde",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.VehicleEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "fi.hsl.hfp.mqtt.pas": {
+          "messageid": "fi.hsl.hfp.mqtt.pas",
+          "basemessage": "/messagegroups/fi.hsl.hfp.mqtt/messages/fi.hsl.hfp.mqtt.pas",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.VehicleEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "fi.hsl.hfp.mqtt.wait": {
+          "messageid": "fi.hsl.hfp.mqtt.wait",
+          "basemessage": "/messagegroups/fi.hsl.hfp.mqtt/messages/fi.hsl.hfp.mqtt.wait",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.VehicleEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "fi.hsl.hfp.mqtt.doo": {
+          "messageid": "fi.hsl.hfp.mqtt.doo",
+          "basemessage": "/messagegroups/fi.hsl.hfp.mqtt/messages/fi.hsl.hfp.mqtt.doo",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.VehicleEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "fi.hsl.hfp.mqtt.doc": {
+          "messageid": "fi.hsl.hfp.mqtt.doc",
+          "basemessage": "/messagegroups/fi.hsl.hfp.mqtt/messages/fi.hsl.hfp.mqtt.doc",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.VehicleEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "fi.hsl.hfp.mqtt.vja": {
+          "messageid": "fi.hsl.hfp.mqtt.vja",
+          "basemessage": "/messagegroups/fi.hsl.hfp.mqtt/messages/fi.hsl.hfp.mqtt.vja",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.VehicleEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "fi.hsl.hfp.mqtt.vjout": {
+          "messageid": "fi.hsl.hfp.mqtt.vjout",
+          "basemessage": "/messagegroups/fi.hsl.hfp.mqtt/messages/fi.hsl.hfp.mqtt.vjout",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.VehicleEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "fi.hsl.hfp.mqtt.tlr": {
+          "messageid": "fi.hsl.hfp.mqtt.tlr",
+          "basemessage": "/messagegroups/fi.hsl.hfp.mqtt/messages/fi.hsl.hfp.mqtt.tlr",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.TrafficLightEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "fi.hsl.hfp.mqtt.tla": {
+          "messageid": "fi.hsl.hfp.mqtt.tla",
+          "basemessage": "/messagegroups/fi.hsl.hfp.mqtt/messages/fi.hsl.hfp.mqtt.tla",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.TrafficLightEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "fi.hsl.hfp.mqtt.da": {
+          "messageid": "fi.hsl.hfp.mqtt.da",
+          "basemessage": "/messagegroups/fi.hsl.hfp.mqtt/messages/fi.hsl.hfp.mqtt.da",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.DriverBlockEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "fi.hsl.hfp.mqtt.dout": {
+          "messageid": "fi.hsl.hfp.mqtt.dout",
+          "basemessage": "/messagegroups/fi.hsl.hfp.mqtt/messages/fi.hsl.hfp.mqtt.dout",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.DriverBlockEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "fi.hsl.hfp.mqtt.ba": {
+          "messageid": "fi.hsl.hfp.mqtt.ba",
+          "basemessage": "/messagegroups/fi.hsl.hfp.mqtt/messages/fi.hsl.hfp.mqtt.ba",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.DriverBlockEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "fi.hsl.hfp.mqtt.bout": {
+          "messageid": "fi.hsl.hfp.mqtt.bout",
+          "basemessage": "/messagegroups/fi.hsl.hfp.mqtt/messages/fi.hsl.hfp.mqtt.bout",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.DriverBlockEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "fi.hsl.hfp.amqp.avro": {
+      "messagegroupid": "fi.hsl.hfp.amqp.avro",
+      "messages": {
+        "fi.hsl.hfp.amqp.vp": {
+          "messageid": "fi.hsl.hfp.amqp.vp",
+          "basemessage": "/messagegroups/fi.hsl.hfp.amqp/messages/fi.hsl.hfp.amqp.vp",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.VehicleEvent"
+        },
+        "fi.hsl.hfp.amqp.due": {
+          "messageid": "fi.hsl.hfp.amqp.due",
+          "basemessage": "/messagegroups/fi.hsl.hfp.amqp/messages/fi.hsl.hfp.amqp.due",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.VehicleEvent"
+        },
+        "fi.hsl.hfp.amqp.arr": {
+          "messageid": "fi.hsl.hfp.amqp.arr",
+          "basemessage": "/messagegroups/fi.hsl.hfp.amqp/messages/fi.hsl.hfp.amqp.arr",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.VehicleEvent"
+        },
+        "fi.hsl.hfp.amqp.dep": {
+          "messageid": "fi.hsl.hfp.amqp.dep",
+          "basemessage": "/messagegroups/fi.hsl.hfp.amqp/messages/fi.hsl.hfp.amqp.dep",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.VehicleEvent"
+        },
+        "fi.hsl.hfp.amqp.ars": {
+          "messageid": "fi.hsl.hfp.amqp.ars",
+          "basemessage": "/messagegroups/fi.hsl.hfp.amqp/messages/fi.hsl.hfp.amqp.ars",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.VehicleEvent"
+        },
+        "fi.hsl.hfp.amqp.pde": {
+          "messageid": "fi.hsl.hfp.amqp.pde",
+          "basemessage": "/messagegroups/fi.hsl.hfp.amqp/messages/fi.hsl.hfp.amqp.pde",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.VehicleEvent"
+        },
+        "fi.hsl.hfp.amqp.pas": {
+          "messageid": "fi.hsl.hfp.amqp.pas",
+          "basemessage": "/messagegroups/fi.hsl.hfp.amqp/messages/fi.hsl.hfp.amqp.pas",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.VehicleEvent"
+        },
+        "fi.hsl.hfp.amqp.wait": {
+          "messageid": "fi.hsl.hfp.amqp.wait",
+          "basemessage": "/messagegroups/fi.hsl.hfp.amqp/messages/fi.hsl.hfp.amqp.wait",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.VehicleEvent"
+        },
+        "fi.hsl.hfp.amqp.doo": {
+          "messageid": "fi.hsl.hfp.amqp.doo",
+          "basemessage": "/messagegroups/fi.hsl.hfp.amqp/messages/fi.hsl.hfp.amqp.doo",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.VehicleEvent"
+        },
+        "fi.hsl.hfp.amqp.doc": {
+          "messageid": "fi.hsl.hfp.amqp.doc",
+          "basemessage": "/messagegroups/fi.hsl.hfp.amqp/messages/fi.hsl.hfp.amqp.doc",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.VehicleEvent"
+        },
+        "fi.hsl.hfp.amqp.vja": {
+          "messageid": "fi.hsl.hfp.amqp.vja",
+          "basemessage": "/messagegroups/fi.hsl.hfp.amqp/messages/fi.hsl.hfp.amqp.vja",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.VehicleEvent"
+        },
+        "fi.hsl.hfp.amqp.vjout": {
+          "messageid": "fi.hsl.hfp.amqp.vjout",
+          "basemessage": "/messagegroups/fi.hsl.hfp.amqp/messages/fi.hsl.hfp.amqp.vjout",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.VehicleEvent"
+        },
+        "fi.hsl.hfp.amqp.tlr": {
+          "messageid": "fi.hsl.hfp.amqp.tlr",
+          "basemessage": "/messagegroups/fi.hsl.hfp.amqp/messages/fi.hsl.hfp.amqp.tlr",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.TrafficLightEvent"
+        },
+        "fi.hsl.hfp.amqp.tla": {
+          "messageid": "fi.hsl.hfp.amqp.tla",
+          "basemessage": "/messagegroups/fi.hsl.hfp.amqp/messages/fi.hsl.hfp.amqp.tla",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.TrafficLightEvent"
+        },
+        "fi.hsl.hfp.amqp.da": {
+          "messageid": "fi.hsl.hfp.amqp.da",
+          "basemessage": "/messagegroups/fi.hsl.hfp.amqp/messages/fi.hsl.hfp.amqp.da",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.DriverBlockEvent"
+        },
+        "fi.hsl.hfp.amqp.dout": {
+          "messageid": "fi.hsl.hfp.amqp.dout",
+          "basemessage": "/messagegroups/fi.hsl.hfp.amqp/messages/fi.hsl.hfp.amqp.dout",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.DriverBlockEvent"
+        },
+        "fi.hsl.hfp.amqp.ba": {
+          "messageid": "fi.hsl.hfp.amqp.ba",
+          "basemessage": "/messagegroups/fi.hsl.hfp.amqp/messages/fi.hsl.hfp.amqp.ba",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.DriverBlockEvent"
+        },
+        "fi.hsl.hfp.amqp.bout": {
+          "messageid": "fi.hsl.hfp.amqp.bout",
+          "basemessage": "/messagegroups/fi.hsl.hfp.amqp/messages/fi.hsl.hfp.amqp.bout",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.DriverBlockEvent"
+        }
+      }
+    },
+    "fi.hsl.hfp.amqp.avro.binary": {
+      "messagegroupid": "fi.hsl.hfp.amqp.avro.binary",
+      "messages": {
+        "fi.hsl.hfp.amqp.vp": {
+          "messageid": "fi.hsl.hfp.amqp.vp",
+          "basemessage": "/messagegroups/fi.hsl.hfp.amqp/messages/fi.hsl.hfp.amqp.vp",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.VehicleEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "fi.hsl.hfp.amqp.due": {
+          "messageid": "fi.hsl.hfp.amqp.due",
+          "basemessage": "/messagegroups/fi.hsl.hfp.amqp/messages/fi.hsl.hfp.amqp.due",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.VehicleEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "fi.hsl.hfp.amqp.arr": {
+          "messageid": "fi.hsl.hfp.amqp.arr",
+          "basemessage": "/messagegroups/fi.hsl.hfp.amqp/messages/fi.hsl.hfp.amqp.arr",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.VehicleEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "fi.hsl.hfp.amqp.dep": {
+          "messageid": "fi.hsl.hfp.amqp.dep",
+          "basemessage": "/messagegroups/fi.hsl.hfp.amqp/messages/fi.hsl.hfp.amqp.dep",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.VehicleEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "fi.hsl.hfp.amqp.ars": {
+          "messageid": "fi.hsl.hfp.amqp.ars",
+          "basemessage": "/messagegroups/fi.hsl.hfp.amqp/messages/fi.hsl.hfp.amqp.ars",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.VehicleEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "fi.hsl.hfp.amqp.pde": {
+          "messageid": "fi.hsl.hfp.amqp.pde",
+          "basemessage": "/messagegroups/fi.hsl.hfp.amqp/messages/fi.hsl.hfp.amqp.pde",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.VehicleEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "fi.hsl.hfp.amqp.pas": {
+          "messageid": "fi.hsl.hfp.amqp.pas",
+          "basemessage": "/messagegroups/fi.hsl.hfp.amqp/messages/fi.hsl.hfp.amqp.pas",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.VehicleEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "fi.hsl.hfp.amqp.wait": {
+          "messageid": "fi.hsl.hfp.amqp.wait",
+          "basemessage": "/messagegroups/fi.hsl.hfp.amqp/messages/fi.hsl.hfp.amqp.wait",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.VehicleEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "fi.hsl.hfp.amqp.doo": {
+          "messageid": "fi.hsl.hfp.amqp.doo",
+          "basemessage": "/messagegroups/fi.hsl.hfp.amqp/messages/fi.hsl.hfp.amqp.doo",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.VehicleEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "fi.hsl.hfp.amqp.doc": {
+          "messageid": "fi.hsl.hfp.amqp.doc",
+          "basemessage": "/messagegroups/fi.hsl.hfp.amqp/messages/fi.hsl.hfp.amqp.doc",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.VehicleEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "fi.hsl.hfp.amqp.vja": {
+          "messageid": "fi.hsl.hfp.amqp.vja",
+          "basemessage": "/messagegroups/fi.hsl.hfp.amqp/messages/fi.hsl.hfp.amqp.vja",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.VehicleEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "fi.hsl.hfp.amqp.vjout": {
+          "messageid": "fi.hsl.hfp.amqp.vjout",
+          "basemessage": "/messagegroups/fi.hsl.hfp.amqp/messages/fi.hsl.hfp.amqp.vjout",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.VehicleEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "fi.hsl.hfp.amqp.tlr": {
+          "messageid": "fi.hsl.hfp.amqp.tlr",
+          "basemessage": "/messagegroups/fi.hsl.hfp.amqp/messages/fi.hsl.hfp.amqp.tlr",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.TrafficLightEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "fi.hsl.hfp.amqp.tla": {
+          "messageid": "fi.hsl.hfp.amqp.tla",
+          "basemessage": "/messagegroups/fi.hsl.hfp.amqp/messages/fi.hsl.hfp.amqp.tla",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.TrafficLightEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "fi.hsl.hfp.amqp.da": {
+          "messageid": "fi.hsl.hfp.amqp.da",
+          "basemessage": "/messagegroups/fi.hsl.hfp.amqp/messages/fi.hsl.hfp.amqp.da",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.DriverBlockEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "fi.hsl.hfp.amqp.dout": {
+          "messageid": "fi.hsl.hfp.amqp.dout",
+          "basemessage": "/messagegroups/fi.hsl.hfp.amqp/messages/fi.hsl.hfp.amqp.dout",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.DriverBlockEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "fi.hsl.hfp.amqp.ba": {
+          "messageid": "fi.hsl.hfp.amqp.ba",
+          "basemessage": "/messagegroups/fi.hsl.hfp.amqp/messages/fi.hsl.hfp.amqp.ba",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.DriverBlockEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "fi.hsl.hfp.amqp.bout": {
+          "messageid": "fi.hsl.hfp.amqp.bout",
+          "basemessage": "/messagegroups/fi.hsl.hfp.amqp/messages/fi.hsl.hfp.amqp.bout",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.DriverBlockEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "fi.hsl.gtfs.operator.mqtt.avro": {
+      "messagegroupid": "fi.hsl.gtfs.operator.mqtt.avro",
+      "messages": {
+        "fi.hsl.gtfs.operator.mqtt.Operator": {
+          "messageid": "fi.hsl.gtfs.operator.mqtt.Operator",
+          "basemessage": "/messagegroups/fi.hsl.gtfs.operator.mqtt/messages/fi.hsl.gtfs.operator.mqtt.Operator",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.gtfs.Operator"
+        }
+      }
+    },
+    "fi.hsl.gtfs.operator.mqtt.avro.binary": {
+      "messagegroupid": "fi.hsl.gtfs.operator.mqtt.avro.binary",
+      "messages": {
+        "fi.hsl.gtfs.operator.mqtt.Operator": {
+          "messageid": "fi.hsl.gtfs.operator.mqtt.Operator",
+          "basemessage": "/messagegroups/fi.hsl.gtfs.operator.mqtt/messages/fi.hsl.gtfs.operator.mqtt.Operator",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.gtfs.Operator",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "fi.hsl.gtfs.operator.amqp.avro": {
+      "messagegroupid": "fi.hsl.gtfs.operator.amqp.avro",
+      "messages": {
+        "fi.hsl.gtfs.operator.amqp.Operator": {
+          "messageid": "fi.hsl.gtfs.operator.amqp.Operator",
+          "basemessage": "/messagegroups/fi.hsl.gtfs.operator.amqp/messages/fi.hsl.gtfs.operator.amqp.Operator",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.gtfs.Operator"
+        }
+      }
+    },
+    "fi.hsl.gtfs.operator.amqp.avro.binary": {
+      "messagegroupid": "fi.hsl.gtfs.operator.amqp.avro.binary",
+      "messages": {
+        "fi.hsl.gtfs.operator.amqp.Operator": {
+          "messageid": "fi.hsl.gtfs.operator.amqp.Operator",
+          "basemessage": "/messagegroups/fi.hsl.gtfs.operator.amqp/messages/fi.hsl.gtfs.operator.amqp.Operator",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.gtfs.Operator",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "fi.hsl.gtfs.route.mqtt.avro": {
+      "messagegroupid": "fi.hsl.gtfs.route.mqtt.avro",
+      "messages": {
+        "fi.hsl.gtfs.route.mqtt.Route": {
+          "messageid": "fi.hsl.gtfs.route.mqtt.Route",
+          "basemessage": "/messagegroups/fi.hsl.gtfs.route.mqtt/messages/fi.hsl.gtfs.route.mqtt.Route",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.gtfs.Route"
+        }
+      }
+    },
+    "fi.hsl.gtfs.route.mqtt.avro.binary": {
+      "messagegroupid": "fi.hsl.gtfs.route.mqtt.avro.binary",
+      "messages": {
+        "fi.hsl.gtfs.route.mqtt.Route": {
+          "messageid": "fi.hsl.gtfs.route.mqtt.Route",
+          "basemessage": "/messagegroups/fi.hsl.gtfs.route.mqtt/messages/fi.hsl.gtfs.route.mqtt.Route",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.gtfs.Route",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "fi.hsl.gtfs.route.amqp.avro": {
+      "messagegroupid": "fi.hsl.gtfs.route.amqp.avro",
+      "messages": {
+        "fi.hsl.gtfs.route.amqp.Route": {
+          "messageid": "fi.hsl.gtfs.route.amqp.Route",
+          "basemessage": "/messagegroups/fi.hsl.gtfs.route.amqp/messages/fi.hsl.gtfs.route.amqp.Route",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.gtfs.Route"
+        }
+      }
+    },
+    "fi.hsl.gtfs.route.amqp.avro.binary": {
+      "messagegroupid": "fi.hsl.gtfs.route.amqp.avro.binary",
+      "messages": {
+        "fi.hsl.gtfs.route.amqp.Route": {
+          "messageid": "fi.hsl.gtfs.route.amqp.Route",
+          "basemessage": "/messagegroups/fi.hsl.gtfs.route.amqp/messages/fi.hsl.gtfs.route.amqp.Route",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.gtfs.Route",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "fi.hsl.gtfs.stop.mqtt.avro": {
+      "messagegroupid": "fi.hsl.gtfs.stop.mqtt.avro",
+      "messages": {
+        "fi.hsl.gtfs.stop.mqtt.Stop": {
+          "messageid": "fi.hsl.gtfs.stop.mqtt.Stop",
+          "basemessage": "/messagegroups/fi.hsl.gtfs.stop.mqtt/messages/fi.hsl.gtfs.stop.mqtt.Stop",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.gtfs.Stop"
+        }
+      }
+    },
+    "fi.hsl.gtfs.stop.mqtt.avro.binary": {
+      "messagegroupid": "fi.hsl.gtfs.stop.mqtt.avro.binary",
+      "messages": {
+        "fi.hsl.gtfs.stop.mqtt.Stop": {
+          "messageid": "fi.hsl.gtfs.stop.mqtt.Stop",
+          "basemessage": "/messagegroups/fi.hsl.gtfs.stop.mqtt/messages/fi.hsl.gtfs.stop.mqtt.Stop",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.gtfs.Stop",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "fi.hsl.gtfs.stop.amqp.avro": {
+      "messagegroupid": "fi.hsl.gtfs.stop.amqp.avro",
+      "messages": {
+        "fi.hsl.gtfs.stop.amqp.Stop": {
+          "messageid": "fi.hsl.gtfs.stop.amqp.Stop",
+          "basemessage": "/messagegroups/fi.hsl.gtfs.stop.amqp/messages/fi.hsl.gtfs.stop.amqp.Stop",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.gtfs.Stop"
+        }
+      }
+    },
+    "fi.hsl.gtfs.stop.amqp.avro.binary": {
+      "messagegroupid": "fi.hsl.gtfs.stop.amqp.avro.binary",
+      "messages": {
+        "fi.hsl.gtfs.stop.amqp.Stop": {
+          "messageid": "fi.hsl.gtfs.stop.amqp.Stop",
+          "basemessage": "/messagegroups/fi.hsl.gtfs.stop.amqp/messages/fi.hsl.gtfs.stop.amqp.Stop",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.gtfs.Stop",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "fi.hsl.hfp.upstream.avro": {
+      "messagegroupid": "fi.hsl.hfp.upstream.avro",
+      "messages": {
+        "fi.hsl.hfp.upstream.vp": {
+          "messageid": "fi.hsl.hfp.upstream.vp",
+          "basemessage": "/messagegroups/fi.hsl.hfp.upstream/messages/fi.hsl.hfp.upstream.vp",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.VehicleEvent"
+        },
+        "fi.hsl.hfp.upstream.due": {
+          "messageid": "fi.hsl.hfp.upstream.due",
+          "basemessage": "/messagegroups/fi.hsl.hfp.upstream/messages/fi.hsl.hfp.upstream.due",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.VehicleEvent"
+        },
+        "fi.hsl.hfp.upstream.arr": {
+          "messageid": "fi.hsl.hfp.upstream.arr",
+          "basemessage": "/messagegroups/fi.hsl.hfp.upstream/messages/fi.hsl.hfp.upstream.arr",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.VehicleEvent"
+        },
+        "fi.hsl.hfp.upstream.dep": {
+          "messageid": "fi.hsl.hfp.upstream.dep",
+          "basemessage": "/messagegroups/fi.hsl.hfp.upstream/messages/fi.hsl.hfp.upstream.dep",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.VehicleEvent"
+        },
+        "fi.hsl.hfp.upstream.ars": {
+          "messageid": "fi.hsl.hfp.upstream.ars",
+          "basemessage": "/messagegroups/fi.hsl.hfp.upstream/messages/fi.hsl.hfp.upstream.ars",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.VehicleEvent"
+        },
+        "fi.hsl.hfp.upstream.pde": {
+          "messageid": "fi.hsl.hfp.upstream.pde",
+          "basemessage": "/messagegroups/fi.hsl.hfp.upstream/messages/fi.hsl.hfp.upstream.pde",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.VehicleEvent"
+        },
+        "fi.hsl.hfp.upstream.pas": {
+          "messageid": "fi.hsl.hfp.upstream.pas",
+          "basemessage": "/messagegroups/fi.hsl.hfp.upstream/messages/fi.hsl.hfp.upstream.pas",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.VehicleEvent"
+        },
+        "fi.hsl.hfp.upstream.wait": {
+          "messageid": "fi.hsl.hfp.upstream.wait",
+          "basemessage": "/messagegroups/fi.hsl.hfp.upstream/messages/fi.hsl.hfp.upstream.wait",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.VehicleEvent"
+        },
+        "fi.hsl.hfp.upstream.doo": {
+          "messageid": "fi.hsl.hfp.upstream.doo",
+          "basemessage": "/messagegroups/fi.hsl.hfp.upstream/messages/fi.hsl.hfp.upstream.doo",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.VehicleEvent"
+        },
+        "fi.hsl.hfp.upstream.doc": {
+          "messageid": "fi.hsl.hfp.upstream.doc",
+          "basemessage": "/messagegroups/fi.hsl.hfp.upstream/messages/fi.hsl.hfp.upstream.doc",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.VehicleEvent"
+        },
+        "fi.hsl.hfp.upstream.vja": {
+          "messageid": "fi.hsl.hfp.upstream.vja",
+          "basemessage": "/messagegroups/fi.hsl.hfp.upstream/messages/fi.hsl.hfp.upstream.vja",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.VehicleEvent"
+        },
+        "fi.hsl.hfp.upstream.vjout": {
+          "messageid": "fi.hsl.hfp.upstream.vjout",
+          "basemessage": "/messagegroups/fi.hsl.hfp.upstream/messages/fi.hsl.hfp.upstream.vjout",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.VehicleEvent"
+        },
+        "fi.hsl.hfp.upstream.tlr": {
+          "messageid": "fi.hsl.hfp.upstream.tlr",
+          "basemessage": "/messagegroups/fi.hsl.hfp.upstream/messages/fi.hsl.hfp.upstream.tlr",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.TrafficLightEvent"
+        },
+        "fi.hsl.hfp.upstream.tla": {
+          "messageid": "fi.hsl.hfp.upstream.tla",
+          "basemessage": "/messagegroups/fi.hsl.hfp.upstream/messages/fi.hsl.hfp.upstream.tla",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.TrafficLightEvent"
+        },
+        "fi.hsl.hfp.upstream.da": {
+          "messageid": "fi.hsl.hfp.upstream.da",
+          "basemessage": "/messagegroups/fi.hsl.hfp.upstream/messages/fi.hsl.hfp.upstream.da",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.DriverBlockEvent"
+        },
+        "fi.hsl.hfp.upstream.dout": {
+          "messageid": "fi.hsl.hfp.upstream.dout",
+          "basemessage": "/messagegroups/fi.hsl.hfp.upstream/messages/fi.hsl.hfp.upstream.dout",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.DriverBlockEvent"
+        },
+        "fi.hsl.hfp.upstream.ba": {
+          "messageid": "fi.hsl.hfp.upstream.ba",
+          "basemessage": "/messagegroups/fi.hsl.hfp.upstream/messages/fi.hsl.hfp.upstream.ba",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.DriverBlockEvent"
+        },
+        "fi.hsl.hfp.upstream.bout": {
+          "messageid": "fi.hsl.hfp.upstream.bout",
+          "basemessage": "/messagegroups/fi.hsl.hfp.upstream/messages/fi.hsl.hfp.upstream.bout",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.DriverBlockEvent"
+        }
+      }
+    },
+    "fi.hsl.hfp.upstream.avro.binary": {
+      "messagegroupid": "fi.hsl.hfp.upstream.avro.binary",
+      "messages": {
+        "fi.hsl.hfp.upstream.vp": {
+          "messageid": "fi.hsl.hfp.upstream.vp",
+          "basemessage": "/messagegroups/fi.hsl.hfp.upstream/messages/fi.hsl.hfp.upstream.vp",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.VehicleEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "fi.hsl.hfp.upstream.due": {
+          "messageid": "fi.hsl.hfp.upstream.due",
+          "basemessage": "/messagegroups/fi.hsl.hfp.upstream/messages/fi.hsl.hfp.upstream.due",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.VehicleEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "fi.hsl.hfp.upstream.arr": {
+          "messageid": "fi.hsl.hfp.upstream.arr",
+          "basemessage": "/messagegroups/fi.hsl.hfp.upstream/messages/fi.hsl.hfp.upstream.arr",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.VehicleEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "fi.hsl.hfp.upstream.dep": {
+          "messageid": "fi.hsl.hfp.upstream.dep",
+          "basemessage": "/messagegroups/fi.hsl.hfp.upstream/messages/fi.hsl.hfp.upstream.dep",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.VehicleEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "fi.hsl.hfp.upstream.ars": {
+          "messageid": "fi.hsl.hfp.upstream.ars",
+          "basemessage": "/messagegroups/fi.hsl.hfp.upstream/messages/fi.hsl.hfp.upstream.ars",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.VehicleEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "fi.hsl.hfp.upstream.pde": {
+          "messageid": "fi.hsl.hfp.upstream.pde",
+          "basemessage": "/messagegroups/fi.hsl.hfp.upstream/messages/fi.hsl.hfp.upstream.pde",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.VehicleEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "fi.hsl.hfp.upstream.pas": {
+          "messageid": "fi.hsl.hfp.upstream.pas",
+          "basemessage": "/messagegroups/fi.hsl.hfp.upstream/messages/fi.hsl.hfp.upstream.pas",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.VehicleEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "fi.hsl.hfp.upstream.wait": {
+          "messageid": "fi.hsl.hfp.upstream.wait",
+          "basemessage": "/messagegroups/fi.hsl.hfp.upstream/messages/fi.hsl.hfp.upstream.wait",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.VehicleEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "fi.hsl.hfp.upstream.doo": {
+          "messageid": "fi.hsl.hfp.upstream.doo",
+          "basemessage": "/messagegroups/fi.hsl.hfp.upstream/messages/fi.hsl.hfp.upstream.doo",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.VehicleEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "fi.hsl.hfp.upstream.doc": {
+          "messageid": "fi.hsl.hfp.upstream.doc",
+          "basemessage": "/messagegroups/fi.hsl.hfp.upstream/messages/fi.hsl.hfp.upstream.doc",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.VehicleEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "fi.hsl.hfp.upstream.vja": {
+          "messageid": "fi.hsl.hfp.upstream.vja",
+          "basemessage": "/messagegroups/fi.hsl.hfp.upstream/messages/fi.hsl.hfp.upstream.vja",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.VehicleEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "fi.hsl.hfp.upstream.vjout": {
+          "messageid": "fi.hsl.hfp.upstream.vjout",
+          "basemessage": "/messagegroups/fi.hsl.hfp.upstream/messages/fi.hsl.hfp.upstream.vjout",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.VehicleEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "fi.hsl.hfp.upstream.tlr": {
+          "messageid": "fi.hsl.hfp.upstream.tlr",
+          "basemessage": "/messagegroups/fi.hsl.hfp.upstream/messages/fi.hsl.hfp.upstream.tlr",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.TrafficLightEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "fi.hsl.hfp.upstream.tla": {
+          "messageid": "fi.hsl.hfp.upstream.tla",
+          "basemessage": "/messagegroups/fi.hsl.hfp.upstream/messages/fi.hsl.hfp.upstream.tla",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.TrafficLightEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "fi.hsl.hfp.upstream.da": {
+          "messageid": "fi.hsl.hfp.upstream.da",
+          "basemessage": "/messagegroups/fi.hsl.hfp.upstream/messages/fi.hsl.hfp.upstream.da",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.DriverBlockEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "fi.hsl.hfp.upstream.dout": {
+          "messageid": "fi.hsl.hfp.upstream.dout",
+          "basemessage": "/messagegroups/fi.hsl.hfp.upstream/messages/fi.hsl.hfp.upstream.dout",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.DriverBlockEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "fi.hsl.hfp.upstream.ba": {
+          "messageid": "fi.hsl.hfp.upstream.ba",
+          "basemessage": "/messagegroups/fi.hsl.hfp.upstream/messages/fi.hsl.hfp.upstream.ba",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.DriverBlockEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "fi.hsl.hfp.upstream.bout": {
+          "messageid": "fi.hsl.hfp.upstream.bout",
+          "basemessage": "/messagegroups/fi.hsl.hfp.upstream/messages/fi.hsl.hfp.upstream.bout",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/fi.hsl.avro/schemas/fi.hsl.hfp.DriverBlockEvent",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
         }
       }
     }
@@ -3242,6 +5048,1334 @@
                     }
                   }
                 }
+              }
+            }
+          }
+        }
+      }
+    },
+    "fi.hsl.avro": {
+      "schemas": {
+        "fi.hsl.hfp.VehicleEvent": {
+          "name": "VehicleEvent",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "fi.hsl.hfp.VehicleEvent",
+                "fields": [
+                  {
+                    "name": "oper",
+                    "type": "int",
+                    "doc": "Unique numeric ID of the operator *running* the trip. This MAY differ from the `operator_id` MQTT-topic level (the *owning* operator) when a service is subcontracted to another operator. Carries no leading zeroes. Sourced from the HFP payload `oper` field. Resolve against the operator catalogue (`fi.hsl.gtfs.Operator`)."
+                  },
+                  {
+                    "name": "veh",
+                    "type": "int",
+                    "doc": "Vehicle number painted on the side of the vehicle (often next to the front door). Unique only in combination with the operator; different operators may reuse vehicle numbers. Matches the `vehicle_number` topic level without its leading zeroes. Sourced from the HFP payload `veh` field."
+                  },
+                  {
+                    "name": "tst",
+                    "type": "string",
+                    "doc": "UTC timestamp with millisecond precision generated by the vehicle, in ISO 8601 `yyyy-MM-dd'T'HH:mm:ss.SSS'Z'`. Sourced from the HFP payload `tst` field. Also surfaced as the CloudEvents `time` attribute. JSON Structure annotations: {\"pattern\": \"^\\\\d{4}-\\\\d{2}-\\\\d{2}T\\\\d{2}:\\\\d{2}:\\\\d{2}(\\\\.\\\\d{1,9})?(Z|[+-]\\\\d{2}:\\\\d{2})$\"}"
+                  },
+                  {
+                    "name": "tsi",
+                    "type": "int",
+                    "doc": "POSIX/Unix time in whole seconds from the vehicle, equal to `tst` truncated to seconds. Sourced from the HFP payload `tsi` field. Modeled as a 32-bit integer so it round-trips as a JSON number (verbatim with the upstream) rather than the stringified form avrotize emits for 64-bit integers; the value stays within int32 range until 2038-01-19."
+                  },
+                  {
+                    "name": "operator_id",
+                    "type": "string",
+                    "doc": "Zero-padded 4-digit ID of the *owning* operator, taken from the `operator_id` MQTT-topic level (e.g. `0055`, `0012`). The stable vehicle-owner identifier (unlike the mutable payload `oper`, which is the *running* operator under subcontracting). Forms the first segment of the CloudEvents subject and Kafka key; resolve against `fi.hsl.gtfs.Operator`. JSON Structure annotations: {\"pattern\": \"^[0-9]{4}$\"}"
+                  },
+                  {
+                    "name": "vehicle_number",
+                    "type": "string",
+                    "doc": "Zero-padded vehicle number (4-5 digits) taken from the `vehicle_number` MQTT-topic level (e.g. `01216`). Unique only together with `operator_id`; matches the payload `veh` field without its leading zeroes. Forms the second segment of the CloudEvents subject and Kafka key. JSON Structure annotations: {\"pattern\": \"^[0-9]{4,5}$\"}"
+                  },
+                  {
+                    "name": "temporal_type",
+                    "default": null,
+                    "type": [
+                      "null",
+                      {
+                        "type": "enum",
+                        "name": "fi.hsl.hfp.TemporalTypeEnum",
+                        "symbols": [
+                          "ongoing",
+                          "upcoming"
+                        ]
+                      }
+                    ],
+                    "doc": "Journey temporal type from the MQTT-topic level: `ongoing` (journey in progress) or `upcoming` (journey about to start). The bridge subscribes to both; the `deadrun`/`signoff` trees are not consumed. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "transport_mode",
+                    "default": null,
+                    "type": [
+                      "null",
+                      {
+                        "type": "enum",
+                        "name": "fi.hsl.hfp.TransportModeEnum",
+                        "symbols": [
+                          "bus",
+                          "tram",
+                          "train",
+                          "ferry",
+                          "metro",
+                          "ubus",
+                          "robot"
+                        ]
+                      }
+                    ],
+                    "doc": "Vehicle transport mode from the MQTT-topic level (`bus`, `tram`, `train`, `ferry`, `metro`, `ubus`, `robot`). An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "route_id",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "GTFS route ID from the `route_id` MQTT-topic level (without the `HSL:` prefix), e.g. `2550`. The topic twin of the payload `route` field; `null` when the topic level is empty. Resolve against `fi.hsl.gtfs.Route`. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "direction_id",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Route direction from the `direction_id` MQTT-topic level, `1` or `2` — the topic twin of the payload `dir` field. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "headsign",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Vehicle headsign from the MQTT-topic level — the destination shown on the vehicle, e.g. `Eira`. May be empty on the topic. Free-form text. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "start_time",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Scheduled start time of the trip from the `start_time` MQTT-topic level, in `HH:mm` 24-hour local time — the topic twin of the payload `start` field. JSON Structure annotations: {\"pattern\": \"^([01]\\\\d|2[0-3]):[0-5]\\\\d$\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "next_stop",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Next stop ID from the `next_stop` MQTT-topic level, e.g. `1130106`. The topic carries the literal `EOL` at the end of the line and may be empty, so this is a free-form string (not a numeric stop ID). Resolve numeric values against `fi.hsl.gtfs.Stop`. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "geohash_level",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Geohash precision level (0-5) from the MQTT-topic level, indicating how many leading digits of the vehicle position have changed since the previous message. Carried as a string to mirror the topic verbatim. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "geohash",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Slash-delimited geohash of the vehicle position assembled from the trailing MQTT-topic levels (e.g. `60;24/18/71/93`), used by HSL for geographic topic filtering. Carried as a string to mirror the topic verbatim. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "desi",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Route number visible to passengers — the public-facing line label shown on the head sign, e.g. `551`, `H72`. Sourced from the HFP payload `desi` field. Not populated on driver/block sign events (`da`,`dout`,`ba`,`bout`). An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "dir",
+                    "default": null,
+                    "type": [
+                      "null",
+                      {
+                        "type": "string",
+                        "doc": "Allowed JSON values: [\"1\", \"2\"]"
+                      }
+                    ],
+                    "doc": "Route direction of the trip as a string, either `\"1\"` or `\"2\"`. After type conversion this matches the `direction_id` topic level; relative to GTFS it is offset by one (HFP `1` = GTFS `0`, HFP `2` = GTFS `1`). Sourced from the HFP payload `dir` field. Not populated on `da`,`dout`,`ba`,`bout`. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "dl",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Offset from the scheduled timetable in seconds (s). Negative values indicate the vehicle is lagging behind schedule, positive values indicate running ahead. Sourced from the HFP payload `dl` field. Not populated on `da`,`dout`,`ba`,`bout`. JSON Structure annotations: {\"symbol\": \"s\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "oday",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Operating day of the trip in `YYYY-MM-DD`. The operating day typically ends around 04:30 local time on the following calendar day, so the final moments of day `2018-04-05` fall at 2018-04-06T04:30 local. Sourced from the HFP payload `oday` field. Not populated on `da`,`dout`. JSON Structure annotations: {\"pattern\": \"^\\\\d{4}-\\\\d{2}-\\\\d{2}$\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "jrn",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Internal journey descriptor used by HSL. Not meant to be useful for external consumers. Sourced from the HFP payload `jrn` field. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "line",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Internal line descriptor used by HSL. Not meant to be useful for external consumers. Sourced from the HFP payload `line` field. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "start",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Scheduled start time of the trip — the scheduled departure from the first stop — in `HH:mm` 24-hour local time (not the 30-hour GTFS operating-day clock). Matches the `start_time` topic level. Sourced from the HFP payload `start` field. JSON Structure annotations: {\"pattern\": \"^([01]\\\\d|2[0-3]):[0-5]\\\\d$\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "stop",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Numeric GTFS stop ID of the stop related to this event (for example the stop the vehicle departed from for a `dep` event, or the stop it currently sits at for a `vp` event). `null` when the event is not related to any stop. Equals `stop_id` in GTFS without the `HSL:` prefix; resolve against `fi.hsl.gtfs.Stop`. Sourced from the HFP payload `stop` field, which is a JSON number on the wire (the upstream field table mislabels it as a String; live traffic confirms an integer or null). An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "route",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "GTFS route ID the vehicle is currently running on. Matches the `route_id` topic level and `route_id` in GTFS without the `HSL:` prefix; resolve against `fi.hsl.gtfs.Route`. Sourced from the HFP payload `route` field. Not populated on `da`,`dout`,`ba`,`bout`. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "occu",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Passenger occupancy level on the interval [0, 100]. Currently only Suomenlinna ferries report a measured value; other vehicles emit `0` (space available, accepting passengers) or `100` (full, may not accept passengers). Sourced from the HFP payload `occu` field. JSON Structure annotations: {\"maximum\": 100, \"minimum\": 0} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "seq",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Sequence number of the unit within a multi-unit consist (e.g. coupled metro or train units), starting at 1. Currently only populated for metros. Sourced from the HFP payload `seq` field. JSON Structure annotations: {\"minimum\": 1} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "label",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Human-visible label that helps identify the vehicle. Currently only Suomenlinna ferries populate this, with the vessel name. Sourced from the HFP payload `label` field. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "spd",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Instantaneous ground speed of the vehicle in metres per second (m/s). Sourced from the HFP payload `spd` field. JSON Structure annotations: {\"symbol\": \"m/s\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "hdg",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Heading of the vehicle in degrees (°) clockwise from geographic north, on the closed interval [0, 360]. Sourced from the HFP payload `hdg` field. JSON Structure annotations: {\"maximum\": 360, \"minimum\": 0, \"symbol\": \"°\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "lat",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "WGS84 latitude of the vehicle in decimal degrees (°). `null` when the vehicle location is unavailable. Sourced from the HFP payload `lat` field. JSON Structure annotations: {\"maximum\": 90, \"minimum\": -90, \"symbol\": \"°\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "long",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "WGS84 longitude of the vehicle in decimal degrees (°). `null` when the vehicle location is unavailable. Sourced from the HFP payload `long` field (the upstream key is literally `long`). JSON Structure annotations: {\"maximum\": 180, \"minimum\": -180, \"symbol\": \"°\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "acc",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Acceleration in metres per second squared (m/s^2), derived from the speed delta between this and the previous message. Negative values indicate the vehicle is decelerating. Sourced from the HFP payload `acc` field. JSON Structure annotations: {\"symbol\": \"m/s²\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "odo",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Odometer reading in metres (m) since the start of the trip. The upstream notes the value is currently not very reliable. Sourced from the HFP payload `odo` field. JSON Structure annotations: {\"symbol\": \"m\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "drst",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Door status. `0` = all doors closed, `1` = at least one door open. `null` when unknown. Sourced from the HFP payload `drst` field. JSON Structure annotations: {\"maximum\": 1, \"minimum\": 0} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "loc",
+                    "default": null,
+                    "type": [
+                      "null",
+                      {
+                        "type": "string",
+                        "doc": "Allowed JSON values: [\"GPS\", \"ODO\", \"MAN\", \"DR\", \"N/A\"]"
+                      }
+                    ],
+                    "doc": "Source of the reported location. One of `GPS` (satellite fix), `ODO` (computed from the odometer), `MAN` (manually set), `DR` (dead reckoning, used in tunnels and other GPS-denied locations) or `N/A` (location unavailable). Sourced from the HFP payload `loc` field. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "ttarr",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "UTC timestamp of the scheduled arrival time to the stop related to a stop event, ISO 8601. Populated on the stop and door events (`due`,`arr`,`dep`,`ars`,`pde`,`pas`,`wait`,`doo`,`doc`); absent on `vp` and on the service-journey sign events. Sourced from the HFP payload `ttarr` field. JSON Structure annotations: {\"pattern\": \"^\\\\d{4}-\\\\d{2}-\\\\d{2}T\\\\d{2}:\\\\d{2}:\\\\d{2}(\\\\.\\\\d{1,9})?(Z|[+-]\\\\d{2}:\\\\d{2})$\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "ttdep",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "UTC timestamp of the scheduled departure time from the stop related to a stop event, ISO 8601. Populated on the stop and door events; absent on `vp` and on the service-journey sign events. Sourced from the HFP payload `ttdep` field. JSON Structure annotations: {\"pattern\": \"^\\\\d{4}-\\\\d{2}-\\\\d{2}T\\\\d{2}:\\\\d{2}:\\\\d{2}(\\\\.\\\\d{1,9})?(Z|[+-]\\\\d{2}:\\\\d{2})$\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "dr_type",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Type of the driver. `0` = service technician, `1` = normal driver. Populated on the service-journey sign events (`vja`,`vjout`). Sourced from the HFP payload `dr-type` field. JSON Structure annotations: {\"altnames\": {\"json\": \"dr-type\"}, \"maximum\": 1, \"minimum\": 0} An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "Telemetry payload shared by the HFP vehicle-position event (`vp`), the stop progress events (`due`,`arr`,`dep`,`ars`,`pde`,`pas`,`wait`), the door events (`doo`,`doc`) and the service-journey sign events (`vja`,`vjout`). Mirrors the single HFP v2 payload field table verbatim (the upstream defines one payload object whose populated fields depend on the event type, identified by the CloudEvents `type`). All fields except the operator/vehicle/timestamp identity are optional because their presence depends on the event type and on data availability."
+              }
+            }
+          }
+        },
+        "fi.hsl.hfp.TrafficLightEvent": {
+          "name": "TrafficLightEvent",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "fi.hsl.hfp.TrafficLightEvent",
+                "fields": [
+                  {
+                    "name": "oper",
+                    "type": "int",
+                    "doc": "Unique numeric ID of the operator *running* the trip. This MAY differ from the `operator_id` MQTT-topic level (the *owning* operator) when a service is subcontracted to another operator. Carries no leading zeroes. Sourced from the HFP payload `oper` field. Resolve against the operator catalogue (`fi.hsl.gtfs.Operator`)."
+                  },
+                  {
+                    "name": "veh",
+                    "type": "int",
+                    "doc": "Vehicle number painted on the side of the vehicle (often next to the front door). Unique only in combination with the operator; different operators may reuse vehicle numbers. Matches the `vehicle_number` topic level without its leading zeroes. Sourced from the HFP payload `veh` field."
+                  },
+                  {
+                    "name": "tst",
+                    "type": "string",
+                    "doc": "UTC timestamp with millisecond precision generated by the vehicle, in ISO 8601 `yyyy-MM-dd'T'HH:mm:ss.SSS'Z'`. Sourced from the HFP payload `tst` field. Also surfaced as the CloudEvents `time` attribute. JSON Structure annotations: {\"pattern\": \"^\\\\d{4}-\\\\d{2}-\\\\d{2}T\\\\d{2}:\\\\d{2}:\\\\d{2}(\\\\.\\\\d{1,9})?(Z|[+-]\\\\d{2}:\\\\d{2})$\"}"
+                  },
+                  {
+                    "name": "tsi",
+                    "type": "int",
+                    "doc": "POSIX/Unix time in whole seconds from the vehicle, equal to `tst` truncated to seconds. Sourced from the HFP payload `tsi` field. Modeled as a 32-bit integer so it round-trips as a JSON number (verbatim with the upstream) rather than the stringified form avrotize emits for 64-bit integers; the value stays within int32 range until 2038-01-19."
+                  },
+                  {
+                    "name": "operator_id",
+                    "type": "string",
+                    "doc": "Zero-padded 4-digit ID of the *owning* operator, taken from the `operator_id` MQTT-topic level (e.g. `0055`, `0012`). The stable vehicle-owner identifier (unlike the mutable payload `oper`, which is the *running* operator under subcontracting). Forms the first segment of the CloudEvents subject and Kafka key; resolve against `fi.hsl.gtfs.Operator`. JSON Structure annotations: {\"pattern\": \"^[0-9]{4}$\"}"
+                  },
+                  {
+                    "name": "vehicle_number",
+                    "type": "string",
+                    "doc": "Zero-padded vehicle number (4-5 digits) taken from the `vehicle_number` MQTT-topic level (e.g. `01216`). Unique only together with `operator_id`; matches the payload `veh` field without its leading zeroes. Forms the second segment of the CloudEvents subject and Kafka key. JSON Structure annotations: {\"pattern\": \"^[0-9]{4,5}$\"}"
+                  },
+                  {
+                    "name": "temporal_type",
+                    "default": null,
+                    "type": [
+                      "null",
+                      {
+                        "type": "enum",
+                        "name": "fi.hsl.hfp.TemporalTypeEnum",
+                        "symbols": [
+                          "ongoing",
+                          "upcoming"
+                        ]
+                      }
+                    ],
+                    "doc": "Journey temporal type from the MQTT-topic level: `ongoing` (journey in progress) or `upcoming` (journey about to start). The bridge subscribes to both; the `deadrun`/`signoff` trees are not consumed. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "transport_mode",
+                    "default": null,
+                    "type": [
+                      "null",
+                      {
+                        "type": "enum",
+                        "name": "fi.hsl.hfp.TransportModeEnum",
+                        "symbols": [
+                          "bus",
+                          "tram",
+                          "train",
+                          "ferry",
+                          "metro",
+                          "ubus",
+                          "robot"
+                        ]
+                      }
+                    ],
+                    "doc": "Vehicle transport mode from the MQTT-topic level (`bus`, `tram`, `train`, `ferry`, `metro`, `ubus`, `robot`). An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "route_id",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "GTFS route ID from the `route_id` MQTT-topic level (without the `HSL:` prefix), e.g. `2550`. The topic twin of the payload `route` field; `null` when the topic level is empty. Resolve against `fi.hsl.gtfs.Route`. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "direction_id",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Route direction from the `direction_id` MQTT-topic level, `1` or `2` — the topic twin of the payload `dir` field. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "headsign",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Vehicle headsign from the MQTT-topic level — the destination shown on the vehicle, e.g. `Eira`. May be empty on the topic. Free-form text. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "start_time",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Scheduled start time of the trip from the `start_time` MQTT-topic level, in `HH:mm` 24-hour local time — the topic twin of the payload `start` field. JSON Structure annotations: {\"pattern\": \"^([01]\\\\d|2[0-3]):[0-5]\\\\d$\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "next_stop",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Next stop ID from the `next_stop` MQTT-topic level, e.g. `1130106`. The topic carries the literal `EOL` at the end of the line and may be empty, so this is a free-form string (not a numeric stop ID). Resolve numeric values against `fi.hsl.gtfs.Stop`. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "geohash_level",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Geohash precision level (0-5) from the MQTT-topic level, indicating how many leading digits of the vehicle position have changed since the previous message. Carried as a string to mirror the topic verbatim. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "geohash",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Slash-delimited geohash of the vehicle position assembled from the trailing MQTT-topic levels (e.g. `60;24/18/71/93`), used by HSL for geographic topic filtering. Carried as a string to mirror the topic verbatim. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "desi",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Route number visible to passengers — the public-facing line label shown on the head sign, e.g. `551`, `H72`. Sourced from the HFP payload `desi` field. Not populated on driver/block sign events (`da`,`dout`,`ba`,`bout`). An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "dir",
+                    "default": null,
+                    "type": [
+                      "null",
+                      {
+                        "type": "string",
+                        "doc": "Allowed JSON values: [\"1\", \"2\"]"
+                      }
+                    ],
+                    "doc": "Route direction of the trip as a string, either `\"1\"` or `\"2\"`. After type conversion this matches the `direction_id` topic level; relative to GTFS it is offset by one (HFP `1` = GTFS `0`, HFP `2` = GTFS `1`). Sourced from the HFP payload `dir` field. Not populated on `da`,`dout`,`ba`,`bout`. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "dl",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Offset from the scheduled timetable in seconds (s). Negative values indicate the vehicle is lagging behind schedule, positive values indicate running ahead. Sourced from the HFP payload `dl` field. Not populated on `da`,`dout`,`ba`,`bout`. JSON Structure annotations: {\"symbol\": \"s\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "oday",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Operating day of the trip in `YYYY-MM-DD`. The operating day typically ends around 04:30 local time on the following calendar day, so the final moments of day `2018-04-05` fall at 2018-04-06T04:30 local. Sourced from the HFP payload `oday` field. Not populated on `da`,`dout`. JSON Structure annotations: {\"pattern\": \"^\\\\d{4}-\\\\d{2}-\\\\d{2}$\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "jrn",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Internal journey descriptor used by HSL. Not meant to be useful for external consumers. Sourced from the HFP payload `jrn` field. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "line",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Internal line descriptor used by HSL. Not meant to be useful for external consumers. Sourced from the HFP payload `line` field. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "start",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Scheduled start time of the trip — the scheduled departure from the first stop — in `HH:mm` 24-hour local time (not the 30-hour GTFS operating-day clock). Matches the `start_time` topic level. Sourced from the HFP payload `start` field. JSON Structure annotations: {\"pattern\": \"^([01]\\\\d|2[0-3]):[0-5]\\\\d$\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "stop",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Numeric GTFS stop ID of the stop related to this event (for example the stop the vehicle departed from for a `dep` event, or the stop it currently sits at for a `vp` event). `null` when the event is not related to any stop. Equals `stop_id` in GTFS without the `HSL:` prefix; resolve against `fi.hsl.gtfs.Stop`. Sourced from the HFP payload `stop` field, which is a JSON number on the wire (the upstream field table mislabels it as a String; live traffic confirms an integer or null). An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "route",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "GTFS route ID the vehicle is currently running on. Matches the `route_id` topic level and `route_id` in GTFS without the `HSL:` prefix; resolve against `fi.hsl.gtfs.Route`. Sourced from the HFP payload `route` field. Not populated on `da`,`dout`,`ba`,`bout`. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "occu",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Passenger occupancy level on the interval [0, 100]. Currently only Suomenlinna ferries report a measured value; other vehicles emit `0` (space available, accepting passengers) or `100` (full, may not accept passengers). Sourced from the HFP payload `occu` field. JSON Structure annotations: {\"maximum\": 100, \"minimum\": 0} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "spd",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Instantaneous ground speed of the vehicle in metres per second (m/s). Sourced from the HFP payload `spd` field. JSON Structure annotations: {\"symbol\": \"m/s\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "hdg",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Heading of the vehicle in degrees (°) clockwise from geographic north, on the closed interval [0, 360]. Sourced from the HFP payload `hdg` field. JSON Structure annotations: {\"maximum\": 360, \"minimum\": 0, \"symbol\": \"°\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "lat",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "WGS84 latitude of the vehicle in decimal degrees (°). `null` when the vehicle location is unavailable. Sourced from the HFP payload `lat` field. JSON Structure annotations: {\"maximum\": 90, \"minimum\": -90, \"symbol\": \"°\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "long",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "WGS84 longitude of the vehicle in decimal degrees (°). `null` when the vehicle location is unavailable. Sourced from the HFP payload `long` field (the upstream key is literally `long`). JSON Structure annotations: {\"maximum\": 180, \"minimum\": -180, \"symbol\": \"°\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "acc",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Acceleration in metres per second squared (m/s^2), derived from the speed delta between this and the previous message. Negative values indicate the vehicle is decelerating. Sourced from the HFP payload `acc` field. JSON Structure annotations: {\"symbol\": \"m/s²\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "odo",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Odometer reading in metres (m) since the start of the trip. The upstream notes the value is currently not very reliable. Sourced from the HFP payload `odo` field. JSON Structure annotations: {\"symbol\": \"m\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "drst",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Door status. `0` = all doors closed, `1` = at least one door open. `null` when unknown. Sourced from the HFP payload `drst` field. JSON Structure annotations: {\"maximum\": 1, \"minimum\": 0} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "loc",
+                    "default": null,
+                    "type": [
+                      "null",
+                      {
+                        "type": "string",
+                        "doc": "Allowed JSON values: [\"GPS\", \"ODO\", \"MAN\", \"DR\", \"N/A\"]"
+                      }
+                    ],
+                    "doc": "Source of the reported location. One of `GPS` (satellite fix), `ODO` (computed from the odometer), `MAN` (manually set), `DR` (dead reckoning, used in tunnels and other GPS-denied locations) or `N/A` (location unavailable). Sourced from the HFP payload `loc` field. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "tlp_requestid",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Traffic-light priority request ID on the interval [0, 255]. Populated on `tlr` (the request) and echoed on `tla` (the response). Sourced from the HFP payload `tlp-requestid` field. JSON Structure annotations: {\"altnames\": {\"json\": \"tlp-requestid\"}, \"maximum\": 255, \"minimum\": 0} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "tlp_requesttype",
+                    "default": null,
+                    "type": [
+                      "null",
+                      {
+                        "type": "enum",
+                        "name": "fi.hsl.hfp.TlpRequestTypeEnum",
+                        "symbols": [
+                          "NORMAL",
+                          "DOOR_CLOSE",
+                          "DOOR_OPEN",
+                          "ADVANCE"
+                        ]
+                      }
+                    ],
+                    "doc": "Type of the traffic-light priority request. One of `NORMAL`, `DOOR_CLOSE`, `DOOR_OPEN` or `ADVANCE`. Populated on `tlr`. Sourced from the HFP payload `tlp-requesttype` field. JSON Structure annotations: {\"altnames\": {\"json\": \"tlp-requesttype\"}} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "tlp_prioritylevel",
+                    "default": null,
+                    "type": [
+                      "null",
+                      {
+                        "type": "enum",
+                        "name": "fi.hsl.hfp.TlpPriorityLevelEnum",
+                        "symbols": [
+                          "normal",
+                          "high",
+                          "norequest"
+                        ]
+                      }
+                    ],
+                    "doc": "Priority level of the traffic-light priority request. One of `normal`, `high` or `norequest`. Populated on `tlr`. Sourced from the HFP payload `tlp-prioritylevel` field. JSON Structure annotations: {\"altnames\": {\"json\": \"tlp-prioritylevel\"}} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "tlp_reason",
+                    "default": null,
+                    "type": [
+                      "null",
+                      {
+                        "type": "enum",
+                        "name": "fi.hsl.hfp.TlpReasonEnum",
+                        "symbols": [
+                          "GLOBAL",
+                          "AHEAD",
+                          "LINE",
+                          "PRIOEXEP"
+                        ]
+                      }
+                    ],
+                    "doc": "Reason for *not* sending a traffic-light priority request. One of `GLOBAL`, `AHEAD`, `LINE` or `PRIOEXEP`. Populated on `tlr`. Sourced from the HFP payload `tlp-reason` field. JSON Structure annotations: {\"altnames\": {\"json\": \"tlp-reason\"}} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "tlp_att_seq",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Traffic-light priority request attempt sequence number. Populated on `tlr`. Sourced from the HFP payload `tlp-att-seq` field. JSON Structure annotations: {\"altnames\": {\"json\": \"tlp-att-seq\"}, \"minimum\": 0} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "tlp_decision",
+                    "default": null,
+                    "type": [
+                      "null",
+                      {
+                        "type": "enum",
+                        "name": "fi.hsl.hfp.TlpDecisionEnum",
+                        "symbols": [
+                          "ACK",
+                          "NAK"
+                        ]
+                      }
+                    ],
+                    "doc": "Response decision for the traffic-light priority request. One of `ACK` or `NAK`. Populated on `tla` (the response). Sourced from the HFP payload `tlp-decision` field. JSON Structure annotations: {\"altnames\": {\"json\": \"tlp-decision\"}} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "sid",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Junction ID where priority is requested, matching the `sid` topic level. Populated on `tlr` and `tla`. Sourced from the HFP payload `sid` field. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "signal_groupid",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Signal-group ID (a group of traffic lights at a junction). Populated on `tlr`. Sourced from the HFP payload `signal-groupid` field. JSON Structure annotations: {\"altnames\": {\"json\": \"signal-groupid\"}} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "tlp_signalgroupnbr",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "ID of the specific traffic light within the signal group; may be negative. Populated on `tlr`. Sourced from the HFP payload `tlp-signalgroupnbr` field. JSON Structure annotations: {\"altnames\": {\"json\": \"tlp-signalgroupnbr\"}} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "tlp_line_configid",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "ID of the line configuration in DOI. Populated on `tlr`. Sourced from the HFP payload `tlp-line-configid` field. JSON Structure annotations: {\"altnames\": {\"json\": \"tlp-line-configid\"}} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "tlp_point_configid",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Point configuration ID. Populated on `tlr`. Sourced from the HFP payload `tlp-point-configid` field. JSON Structure annotations: {\"altnames\": {\"json\": \"tlp-point-configid\"}} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "tlp_frequency",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Frequency used for the traffic-light priority request. Populated on `tlr`. Sourced from the HFP payload `tlp-frequency` field. JSON Structure annotations: {\"altnames\": {\"json\": \"tlp-frequency\"}} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "tlp_protocol",
+                    "default": null,
+                    "type": [
+                      "null",
+                      {
+                        "type": "string",
+                        "doc": "Allowed JSON values: [\"MQTT\", \"KAR-MQTT\"]"
+                      }
+                    ],
+                    "doc": "Protocol used for the traffic-light priority request. One of `MQTT` or `KAR-MQTT`. Populated on `tlr`. Sourced from the HFP payload `tlp-protocol` field. JSON Structure annotations: {\"altnames\": {\"json\": \"tlp-protocol\"}} An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "Telemetry payload for the traffic-light priority events: the request (`tlr`) and the response (`tla`). Carries the vehicle identity, time and position context plus the `tlp-*`, `sid` and `signal-groupid` priority fields. Mirrors the HFP v2 payload field table for these event types."
+              }
+            }
+          }
+        },
+        "fi.hsl.hfp.DriverBlockEvent": {
+          "name": "DriverBlockEvent",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "fi.hsl.hfp.DriverBlockEvent",
+                "fields": [
+                  {
+                    "name": "oper",
+                    "type": "int",
+                    "doc": "Unique numeric ID of the operator *running* the trip. This MAY differ from the `operator_id` MQTT-topic level (the *owning* operator) when a service is subcontracted to another operator. Carries no leading zeroes. Sourced from the HFP payload `oper` field. Resolve against the operator catalogue (`fi.hsl.gtfs.Operator`)."
+                  },
+                  {
+                    "name": "veh",
+                    "type": "int",
+                    "doc": "Vehicle number painted on the side of the vehicle (often next to the front door). Unique only in combination with the operator; different operators may reuse vehicle numbers. Matches the `vehicle_number` topic level without its leading zeroes. Sourced from the HFP payload `veh` field."
+                  },
+                  {
+                    "name": "tst",
+                    "type": "string",
+                    "doc": "UTC timestamp with millisecond precision generated by the vehicle, in ISO 8601 `yyyy-MM-dd'T'HH:mm:ss.SSS'Z'`. Sourced from the HFP payload `tst` field. Also surfaced as the CloudEvents `time` attribute. JSON Structure annotations: {\"pattern\": \"^\\\\d{4}-\\\\d{2}-\\\\d{2}T\\\\d{2}:\\\\d{2}:\\\\d{2}(\\\\.\\\\d{1,9})?(Z|[+-]\\\\d{2}:\\\\d{2})$\"}"
+                  },
+                  {
+                    "name": "tsi",
+                    "type": "int",
+                    "doc": "POSIX/Unix time in whole seconds from the vehicle, equal to `tst` truncated to seconds. Sourced from the HFP payload `tsi` field. Modeled as a 32-bit integer so it round-trips as a JSON number (verbatim with the upstream) rather than the stringified form avrotize emits for 64-bit integers; the value stays within int32 range until 2038-01-19."
+                  },
+                  {
+                    "name": "operator_id",
+                    "type": "string",
+                    "doc": "Zero-padded 4-digit ID of the *owning* operator, taken from the `operator_id` MQTT-topic level (e.g. `0055`, `0012`). The stable vehicle-owner identifier (unlike the mutable payload `oper`, which is the *running* operator under subcontracting). Forms the first segment of the CloudEvents subject and Kafka key; resolve against `fi.hsl.gtfs.Operator`. JSON Structure annotations: {\"pattern\": \"^[0-9]{4}$\"}"
+                  },
+                  {
+                    "name": "vehicle_number",
+                    "type": "string",
+                    "doc": "Zero-padded vehicle number (4-5 digits) taken from the `vehicle_number` MQTT-topic level (e.g. `01216`). Unique only together with `operator_id`; matches the payload `veh` field without its leading zeroes. Forms the second segment of the CloudEvents subject and Kafka key. JSON Structure annotations: {\"pattern\": \"^[0-9]{4,5}$\"}"
+                  },
+                  {
+                    "name": "temporal_type",
+                    "default": null,
+                    "type": [
+                      "null",
+                      {
+                        "type": "enum",
+                        "name": "fi.hsl.hfp.TemporalTypeEnum",
+                        "symbols": [
+                          "ongoing",
+                          "upcoming"
+                        ]
+                      }
+                    ],
+                    "doc": "Journey temporal type from the MQTT-topic level: `ongoing` (journey in progress) or `upcoming` (journey about to start). The bridge subscribes to both; the `deadrun`/`signoff` trees are not consumed. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "transport_mode",
+                    "default": null,
+                    "type": [
+                      "null",
+                      {
+                        "type": "enum",
+                        "name": "fi.hsl.hfp.TransportModeEnum",
+                        "symbols": [
+                          "bus",
+                          "tram",
+                          "train",
+                          "ferry",
+                          "metro",
+                          "ubus",
+                          "robot"
+                        ]
+                      }
+                    ],
+                    "doc": "Vehicle transport mode from the MQTT-topic level (`bus`, `tram`, `train`, `ferry`, `metro`, `ubus`, `robot`). An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "route_id",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "GTFS route ID from the `route_id` MQTT-topic level (without the `HSL:` prefix), e.g. `2550`. The topic twin of the payload `route` field; `null` when the topic level is empty. Resolve against `fi.hsl.gtfs.Route`. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "direction_id",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Route direction from the `direction_id` MQTT-topic level, `1` or `2` — the topic twin of the payload `dir` field. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "headsign",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Vehicle headsign from the MQTT-topic level — the destination shown on the vehicle, e.g. `Eira`. May be empty on the topic. Free-form text. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "start_time",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Scheduled start time of the trip from the `start_time` MQTT-topic level, in `HH:mm` 24-hour local time — the topic twin of the payload `start` field. JSON Structure annotations: {\"pattern\": \"^([01]\\\\d|2[0-3]):[0-5]\\\\d$\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "next_stop",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Next stop ID from the `next_stop` MQTT-topic level, e.g. `1130106`. The topic carries the literal `EOL` at the end of the line and may be empty, so this is a free-form string (not a numeric stop ID). Resolve numeric values against `fi.hsl.gtfs.Stop`. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "geohash_level",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Geohash precision level (0-5) from the MQTT-topic level, indicating how many leading digits of the vehicle position have changed since the previous message. Carried as a string to mirror the topic verbatim. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "geohash",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Slash-delimited geohash of the vehicle position assembled from the trailing MQTT-topic levels (e.g. `60;24/18/71/93`), used by HSL for geographic topic filtering. Carried as a string to mirror the topic verbatim. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "spd",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Instantaneous ground speed of the vehicle in metres per second (m/s). Sourced from the HFP payload `spd` field. JSON Structure annotations: {\"symbol\": \"m/s\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "hdg",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Heading of the vehicle in degrees (°) clockwise from geographic north, on the closed interval [0, 360]. Sourced from the HFP payload `hdg` field. JSON Structure annotations: {\"maximum\": 360, \"minimum\": 0, \"symbol\": \"°\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "lat",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "WGS84 latitude of the vehicle in decimal degrees (°). `null` when the vehicle location is unavailable. Sourced from the HFP payload `lat` field. JSON Structure annotations: {\"maximum\": 90, \"minimum\": -90, \"symbol\": \"°\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "long",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "WGS84 longitude of the vehicle in decimal degrees (°). `null` when the vehicle location is unavailable. Sourced from the HFP payload `long` field (the upstream key is literally `long`). JSON Structure annotations: {\"maximum\": 180, \"minimum\": -180, \"symbol\": \"°\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "acc",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Acceleration in metres per second squared (m/s^2), derived from the speed delta between this and the previous message. Negative values indicate the vehicle is decelerating. Sourced from the HFP payload `acc` field. JSON Structure annotations: {\"symbol\": \"m/s²\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "odo",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Odometer reading in metres (m) since the start of the trip. The upstream notes the value is currently not very reliable. Sourced from the HFP payload `odo` field. JSON Structure annotations: {\"symbol\": \"m\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "drst",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Door status. `0` = all doors closed, `1` = at least one door open. `null` when unknown. Sourced from the HFP payload `drst` field. JSON Structure annotations: {\"maximum\": 1, \"minimum\": 0} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "loc",
+                    "default": null,
+                    "type": [
+                      "null",
+                      {
+                        "type": "string",
+                        "doc": "Allowed JSON values: [\"GPS\", \"ODO\", \"MAN\", \"DR\", \"N/A\"]"
+                      }
+                    ],
+                    "doc": "Source of the reported location. One of `GPS` (satellite fix), `ODO` (computed from the odometer), `MAN` (manually set), `DR` (dead reckoning, used in tunnels and other GPS-denied locations) or `N/A` (location unavailable). Sourced from the HFP payload `loc` field. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "oday",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Operating day of the trip in `YYYY-MM-DD`. Populated on the block events `ba`/`bout`; not populated on the driver sign events `da`/`dout`. Sourced from the HFP payload `oday` field. JSON Structure annotations: {\"pattern\": \"^\\\\d{4}-\\\\d{2}-\\\\d{2}$\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "dr_type",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Type of the driver. `0` = service technician, `1` = normal driver. Sourced from the HFP payload `dr-type` field. JSON Structure annotations: {\"altnames\": {\"json\": \"dr-type\"}, \"maximum\": 1, \"minimum\": 0} An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "Telemetry payload for the low-frequency driver and block sign events: driver sign-in (`da`), driver sign-out (`dout`), block selection (`ba`) and block sign-out (`bout`). These carry a reduced field set — vehicle identity, time, position and driver type — because route, schedule and stop context are not available when the vehicle is not signed on to a public journey."
+              }
+            }
+          }
+        },
+        "fi.hsl.gtfs.Operator": {
+          "name": "Operator",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "fi.hsl.gtfs.Operator",
+                "fields": [
+                  {
+                    "name": "operator_id",
+                    "type": "string",
+                    "doc": "Zero-padded 4-digit ID of the *owning* operator, matching the `operator_id` MQTT-topic level (e.g. `0012`, `0060`). Stable identifier; used as the CloudEvents subject and Kafka key (prefixed `operator/`) for this reference record. Derived from the HSL HFP operator catalogue. JSON Structure annotations: {\"pattern\": \"^[0-9]{4}$\"}"
+                  },
+                  {
+                    "name": "operator_number",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Numeric operator ID without leading zeroes, matching the HFP payload `oper` field form (e.g. `12`, `60`). Note operator `6` appears only in the payload `oper` field and denotes the same owner as `18`. Derived from the HSL HFP operator catalogue. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "name",
+                    "type": "string",
+                    "doc": "Operator (transit company) name as published in the HSL HFP operator catalogue, e.g. `Koiviston Auto Oy`, `Suomenlinnan Liikenne Oy`."
+                  },
+                  {
+                    "name": "note",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Free-form note from the operator catalogue, e.g. that multiple smaller operators run under a shared operator ID. `null` when there is no note. An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "Reference record for one HSL transit operator, derived from the HFP operator catalogue. Emitted at bridge start-up and refreshed periodically so consumers can resolve the `operator_id` topic level and the payload `oper` field to a named operator without an out-of-band lookup."
+              }
+            }
+          }
+        },
+        "fi.hsl.gtfs.Route": {
+          "name": "Route",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "fi.hsl.gtfs.Route",
+                "fields": [
+                  {
+                    "name": "route_id",
+                    "type": "string",
+                    "doc": "GTFS route identifier without the `HSL:` prefix, matching the HFP payload `route` field and the `route_id` topic level (e.g. `2550`). Stable identifier; used as the CloudEvents subject and Kafka key (prefixed `route/`). Sourced from `route_id` in the HSL GTFS `routes.txt`."
+                  },
+                  {
+                    "name": "agency_id",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Identifier of the agency that operates the route, a foreign key into the GTFS `agency.txt`. Sourced from the `agency_id` field of `routes.txt`. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "route_short_name",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Short, public-facing route name shown to riders (e.g. `550`, `H72`); frequently equals the HFP `desi` field. Sourced from the `route_short_name` field of `routes.txt`. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "route_long_name",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Full, descriptive route name, e.g. `Itäkeskus(M) - Westendinasema`. Sourced from the `route_long_name` field of `routes.txt`. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "route_desc",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Optional human-readable description providing useful information about the route. Sourced from the `route_desc` field of `routes.txt`. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "route_type",
+                    "type": "int",
+                    "doc": "GTFS route type / extended Hierarchical Vehicle Type (HVT) describing the transit mode used on the route. HSL emits both the basic GTFS values — `0` = tram / light rail, `1` = subway / metro, `4` = ferry — and the extended HVT codes — `109` = suburban railway, `700`/`701` = bus, `702` = express bus, `704` = local bus, `900` = funicular. Modeled as an open integer (not a closed enum) because HSL may introduce further HVT codes. Sourced from the `route_type` field of `routes.txt`."
+                  },
+                  {
+                    "name": "route_url",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "URL of a web page about the route. Sourced from the `route_url` field of `routes.txt`. An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "Reference record for one HSL route, sourced from the HSL GTFS static `routes.txt`. Emitted at bridge start-up and refreshed periodically so consumers can resolve the HFP `route` field / `route_id` topic level to a named route and transit mode. Shares the vehicle-telemetry Kafka topic so a consumer can build a temporally consistent view of telemetry and the routes it references."
+              }
+            }
+          }
+        },
+        "fi.hsl.gtfs.Stop": {
+          "name": "Stop",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "fi.hsl.gtfs.Stop",
+                "fields": [
+                  {
+                    "name": "stop_id",
+                    "type": "string",
+                    "doc": "GTFS stop identifier without the `HSL:` prefix, matching the HFP payload `stop` field and the `next_stop` topic level (e.g. `1130106`). Stable identifier; used as the CloudEvents subject and Kafka key (prefixed `stop/`). Sourced from `stop_id` in the HSL GTFS `stops.txt`."
+                  },
+                  {
+                    "name": "stop_code",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Short text or number that uniquely identifies the stop for riders (shown on signage and in journey planners), e.g. `H1234`. Sourced from the `stop_code` field of `stops.txt`. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "stop_name",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Name of the stop, station, or station entrance as shown to riders, e.g. `Rautatientori`. Sourced from the `stop_name` field of `stops.txt`. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "stop_desc",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Description providing useful, quality information about the stop. Sourced from the `stop_desc` field of `stops.txt`. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "stop_lat",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "WGS84 latitude of the stop in decimal degrees (°), on [-90, 90]. Sourced from the `stop_lat` field of `stops.txt`. JSON Structure annotations: {\"maximum\": 90, \"minimum\": -90} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "stop_lon",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "WGS84 longitude of the stop in decimal degrees (°), on [-180, 180]. Sourced from the `stop_lon` field of `stops.txt`. JSON Structure annotations: {\"maximum\": 180, \"minimum\": -180} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "zone_id",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "HSL fare zone the stop belongs to, e.g. `A`, `B`, `C`, `D`. Sourced from the `zone_id` field of `stops.txt`. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "stop_url",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "URL of a web page about the stop. Sourced from the `stop_url` field of `stops.txt`. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "location_type",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Type of the location. `0` (or empty) = stop / platform, `1` = station, `2` = station entrance / exit, `3` = generic node, `4` = boarding area. Sourced from the `location_type` field of `stops.txt`. JSON Structure annotations: {\"maximum\": 4, \"minimum\": 0} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "parent_station",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "`stop_id` of the parent station for a platform, entrance or boarding area. Sourced from the `parent_station` field of `stops.txt`. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "platform_code",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Platform identifier for a platform stop (the part that differs between platforms of a station), e.g. `1`, `B`. Sourced from the `platform_code` field of `stops.txt`. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "wheelchair_boarding",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Wheelchair accessibility of boarding at the stop. `0` (or empty) = no information, `1` = some accessible boarding, `2` = no accessible boarding. Sourced from the `wheelchair_boarding` field of `stops.txt`. JSON Structure annotations: {\"maximum\": 2, \"minimum\": 0} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "vehicle_type",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "HSL extension: the Hierarchical Vehicle Type (extended GTFS route type) of the vehicles that serve this stop, e.g. `0` = tram, `1` = subway, `109` = suburban rail, `700`/`704` = bus, `4` = ferry. Empty when not assigned. Sourced from the non-standard `vehicle_type` field of the HSL `stops.txt`. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "digistop_id",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "HSL extension: internal DigiStop identifier for the stop. Sourced from the non-standard `digistop_id` field of the HSL `stops.txt`. `null` when not present. An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "Reference record for one HSL stop, station or station entrance, sourced from the HSL GTFS static `stops.txt`. Emitted at bridge start-up and refreshed periodically so consumers can resolve the HFP `stop` field / `next_stop` topic level to a named, geolocated stop. Shares the vehicle-telemetry Kafka topic for temporal consistency with the telemetry it contextualises."
               }
             }
           }

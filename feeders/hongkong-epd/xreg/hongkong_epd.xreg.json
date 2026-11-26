@@ -18,7 +18,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/HK.Gov.EPD.AQHI"
+        "#/messagegroups/HK.Gov.EPD.AQHI",
+        "#/messagegroups/HK.Gov.EPD.AQHI.avro",
+        "#/messagegroups/HK.Gov.EPD.AQHI.avro.binary"
       ],
       "description": "Kafka producer endpoint for Hong Kong EPD Air Quality CloudEvents on the `hongkong-epd-aqhi` topic keyed by `{station_id}`."
     },
@@ -40,7 +42,9 @@
         ]
       },
       "messagegroups": [
-        "#/messagegroups/HK.Gov.EPD.AQHI.mqtt"
+        "#/messagegroups/HK.Gov.EPD.AQHI.mqtt",
+        "#/messagegroups/HK.Gov.EPD.AQHI.mqtt.avro",
+        "#/messagegroups/HK.Gov.EPD.AQHI.mqtt.avro.binary"
       ],
       "description": "MQTT 5 producer endpoint for Hong Kong EPD Air Quality CloudEvents using the source topic hierarchy and retain settings declared in this manifest."
     },
@@ -62,7 +66,9 @@
         ]
       },
       "messagegroups": [
-        "#/messagegroups/HK.Gov.EPD.AQHI.amqp"
+        "#/messagegroups/HK.Gov.EPD.AQHI.amqp",
+        "#/messagegroups/HK.Gov.EPD.AQHI.amqp.avro",
+        "#/messagegroups/HK.Gov.EPD.AQHI.amqp.avro.binary"
       ],
       "description": "AMQP 1.0 producer endpoint for Hong Kong EPD AQHI CloudEvents on the configured broker address."
     }
@@ -83,6 +89,10 @@
             "subject": {
               "value": "{station_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -102,6 +112,10 @@
             "subject": {
               "value": "{station_id}",
               "type": "uritemplate"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -178,6 +192,144 @@
                 "value": "{district}",
                 "description": "Hong Kong 18-district administrative area normalized for routing and Service Bus subscription filters."
               }
+            }
+          }
+        }
+      }
+    },
+    "HK.Gov.EPD.AQHI.avro": {
+      "messagegroupid": "HK.Gov.EPD.AQHI.avro",
+      "messages": {
+        "HK.Gov.EPD.AQHI.Station": {
+          "messageid": "HK.Gov.EPD.AQHI.Station",
+          "basemessage": "/messagegroups/HK.Gov.EPD.AQHI/messages/HK.Gov.EPD.AQHI.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/HK.Gov.EPD.AQHI.avro/schemas/HK.Gov.EPD.AQHI.Station"
+        },
+        "HK.Gov.EPD.AQHI.AQHIReading": {
+          "messageid": "HK.Gov.EPD.AQHI.AQHIReading",
+          "basemessage": "/messagegroups/HK.Gov.EPD.AQHI/messages/HK.Gov.EPD.AQHI.AQHIReading",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/HK.Gov.EPD.AQHI.avro/schemas/HK.Gov.EPD.AQHI.AQHIReading"
+        }
+      }
+    },
+    "HK.Gov.EPD.AQHI.avro.binary": {
+      "messagegroupid": "HK.Gov.EPD.AQHI.avro.binary",
+      "messages": {
+        "HK.Gov.EPD.AQHI.Station": {
+          "messageid": "HK.Gov.EPD.AQHI.Station",
+          "basemessage": "/messagegroups/HK.Gov.EPD.AQHI/messages/HK.Gov.EPD.AQHI.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/HK.Gov.EPD.AQHI.avro/schemas/HK.Gov.EPD.AQHI.Station",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "HK.Gov.EPD.AQHI.AQHIReading": {
+          "messageid": "HK.Gov.EPD.AQHI.AQHIReading",
+          "basemessage": "/messagegroups/HK.Gov.EPD.AQHI/messages/HK.Gov.EPD.AQHI.AQHIReading",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/HK.Gov.EPD.AQHI.avro/schemas/HK.Gov.EPD.AQHI.AQHIReading",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "HK.Gov.EPD.AQHI.mqtt.avro": {
+      "messagegroupid": "HK.Gov.EPD.AQHI.mqtt.avro",
+      "messages": {
+        "HK.Gov.EPD.AQHI.mqtt.Station": {
+          "messageid": "HK.Gov.EPD.AQHI.mqtt.Station",
+          "basemessage": "/messagegroups/HK.Gov.EPD.AQHI.mqtt/messages/HK.Gov.EPD.AQHI.mqtt.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/HK.Gov.EPD.AQHI.avro/schemas/HK.Gov.EPD.AQHI.Station"
+        },
+        "HK.Gov.EPD.AQHI.mqtt.AQHIReading": {
+          "messageid": "HK.Gov.EPD.AQHI.mqtt.AQHIReading",
+          "basemessage": "/messagegroups/HK.Gov.EPD.AQHI.mqtt/messages/HK.Gov.EPD.AQHI.mqtt.AQHIReading",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/HK.Gov.EPD.AQHI.avro/schemas/HK.Gov.EPD.AQHI.AQHIReading"
+        }
+      }
+    },
+    "HK.Gov.EPD.AQHI.mqtt.avro.binary": {
+      "messagegroupid": "HK.Gov.EPD.AQHI.mqtt.avro.binary",
+      "messages": {
+        "HK.Gov.EPD.AQHI.mqtt.Station": {
+          "messageid": "HK.Gov.EPD.AQHI.mqtt.Station",
+          "basemessage": "/messagegroups/HK.Gov.EPD.AQHI.mqtt/messages/HK.Gov.EPD.AQHI.mqtt.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/HK.Gov.EPD.AQHI.avro/schemas/HK.Gov.EPD.AQHI.Station",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "HK.Gov.EPD.AQHI.mqtt.AQHIReading": {
+          "messageid": "HK.Gov.EPD.AQHI.mqtt.AQHIReading",
+          "basemessage": "/messagegroups/HK.Gov.EPD.AQHI.mqtt/messages/HK.Gov.EPD.AQHI.mqtt.AQHIReading",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/HK.Gov.EPD.AQHI.avro/schemas/HK.Gov.EPD.AQHI.AQHIReading",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "HK.Gov.EPD.AQHI.amqp.avro": {
+      "messagegroupid": "HK.Gov.EPD.AQHI.amqp.avro",
+      "messages": {
+        "HK.Gov.EPD.AQHI.amqp.Station": {
+          "messageid": "HK.Gov.EPD.AQHI.amqp.Station",
+          "basemessage": "/messagegroups/HK.Gov.EPD.AQHI.amqp/messages/HK.Gov.EPD.AQHI.amqp.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/HK.Gov.EPD.AQHI.avro/schemas/HK.Gov.EPD.AQHI.Station"
+        },
+        "HK.Gov.EPD.AQHI.amqp.AQHIReading": {
+          "messageid": "HK.Gov.EPD.AQHI.amqp.AQHIReading",
+          "basemessage": "/messagegroups/HK.Gov.EPD.AQHI.amqp/messages/HK.Gov.EPD.AQHI.amqp.AQHIReading",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/HK.Gov.EPD.AQHI.avro/schemas/HK.Gov.EPD.AQHI.AQHIReading"
+        }
+      }
+    },
+    "HK.Gov.EPD.AQHI.amqp.avro.binary": {
+      "messagegroupid": "HK.Gov.EPD.AQHI.amqp.avro.binary",
+      "messages": {
+        "HK.Gov.EPD.AQHI.amqp.Station": {
+          "messageid": "HK.Gov.EPD.AQHI.amqp.Station",
+          "basemessage": "/messagegroups/HK.Gov.EPD.AQHI.amqp/messages/HK.Gov.EPD.AQHI.amqp.Station",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/HK.Gov.EPD.AQHI.avro/schemas/HK.Gov.EPD.AQHI.Station",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        },
+        "HK.Gov.EPD.AQHI.amqp.AQHIReading": {
+          "messageid": "HK.Gov.EPD.AQHI.amqp.AQHIReading",
+          "basemessage": "/messagegroups/HK.Gov.EPD.AQHI.amqp/messages/HK.Gov.EPD.AQHI.amqp.AQHIReading",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/HK.Gov.EPD.AQHI.avro/schemas/HK.Gov.EPD.AQHI.AQHIReading",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
             }
           }
         }
@@ -323,6 +475,121 @@
                 "$uses": [
                   "JSONStructureAlternateNames"
                 ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "HK.Gov.EPD.AQHI.avro": {
+      "schemas": {
+        "HK.Gov.EPD.AQHI.Station": {
+          "name": "Station",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "HK.Gov.EPD.AQHI.Station",
+                "fields": [
+                  {
+                    "name": "station_id",
+                    "type": "string",
+                    "doc": "Stable station identifier derived from the station name in snake_case, for example central_western or mong_kok."
+                  },
+                  {
+                    "name": "station_name",
+                    "type": "string",
+                    "doc": "Station name as published in the EPD AQHI feed, for example 'Central/Western' or 'Mong Kok'."
+                  },
+                  {
+                    "name": "station_type",
+                    "type": "string",
+                    "doc": "Station classification. General Stations measure ambient background air quality and Roadside Stations are positioned near roads to capture traffic-related pollution. JSON Structure annotations: {\"altenums\": [\"General Stations\", \"Roadside Stations\"]}"
+                  },
+                  {
+                    "name": "district",
+                    "type": "string",
+                    "doc": "Hong Kong 18-district administrative area where the monitoring station is located, normalized to lowercase snake_case. Used as the {district} segment of the MQTT/UNS topic. Examples: central-and-western, wan-chai, yau-tsim-mong."
+                  },
+                  {
+                    "name": "latitude",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "WGS84 latitude of the monitoring station. JSON Structure annotations: {\"symbol\": \"°\", \"unit\": \"degree\"} An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "longitude",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "WGS84 longitude of the monitoring station. JSON Structure annotations: {\"symbol\": \"°\", \"unit\": \"degree\"} An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "A reference record published by Hong Kong's Environmental Protection Department. It lets consumers label, group, and route the live measurement or forecast events."
+              }
+            }
+          }
+        },
+        "HK.Gov.EPD.AQHI.AQHIReading": {
+          "name": "AQHIReading",
+          "format": "Avro/1.11.3",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "HK.Gov.EPD.AQHI.AQHIReading",
+                "fields": [
+                  {
+                    "name": "station_id",
+                    "type": "string",
+                    "doc": "Stable station identifier in snake_case."
+                  },
+                  {
+                    "name": "station_name",
+                    "type": "string",
+                    "doc": "Station name as published in the EPD AQHI feed."
+                  },
+                  {
+                    "name": "station_type",
+                    "type": "string",
+                    "doc": "Station classification: General Stations or Roadside Stations. JSON Structure annotations: {\"altenums\": [\"General Stations\", \"Roadside Stations\"]}"
+                  },
+                  {
+                    "name": "district",
+                    "type": "string",
+                    "doc": "Hong Kong 18-district administrative area where the monitoring station is located, normalized to lowercase snake_case. Used as the {district} segment of the MQTT/UNS topic."
+                  },
+                  {
+                    "name": "reading_time",
+                    "type": "string",
+                    "doc": "Observation timestamp parsed from the feed DateTime field. The XML feed publishes RFC 2822 timestamps and the bridge emits ISO 8601 values."
+                  },
+                  {
+                    "name": "aqhi",
+                    "type": "int",
+                    "doc": "AQHI value. Scale: 1 to 3 Low health risk, 4 to 6 Moderate, 7 High, 8 to 10 Very High, and above 10 Serious. Value 11 is used in the feed to indicate 10+ Serious. JSON Structure annotations: {\"minimum\": 1}"
+                  },
+                  {
+                    "name": "health_risk_category",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Health risk category derived from the AQHI value: Low, Moderate, High, Very High, or Serious. JSON Structure annotations: {\"altenums\": [\"Low\", \"Moderate\", \"High\", \"Very High\", \"Serious\"]} An absent JSON property uses the declared default in Avro."
+                  }
+                ],
+                "doc": "A current environmental measurement from Hong Kong's Environmental Protection Department. It carries air-quality health index and pollutant measurements when the upstream feed reports a new or refreshed value."
               }
             }
           }

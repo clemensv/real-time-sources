@@ -18,7 +18,9 @@
         }
       },
       "messagegroups": [
-        "#/messagegroups/Gov.NIFC.Wildfires"
+        "#/messagegroups/Gov.NIFC.Wildfires",
+        "#/messagegroups/Gov.NIFC.Wildfires.avro",
+        "#/messagegroups/Gov.NIFC.Wildfires.avro.binary"
       ],
       "description": "Kafka producer endpoint for NIFC USA Wildfires CloudEvents on the `nifc-usa-wildfires` topic keyed by `{irwin_id}`."
     },
@@ -40,7 +42,9 @@
         ]
       },
       "messagegroups": [
-        "#/messagegroups/Gov.NIFC.Wildfires.mqtt"
+        "#/messagegroups/Gov.NIFC.Wildfires.mqtt",
+        "#/messagegroups/Gov.NIFC.Wildfires.mqtt.avro",
+        "#/messagegroups/Gov.NIFC.Wildfires.mqtt.avro.binary"
       ],
       "description": "MQTT 5 producer endpoint for NIFC USA Wildfires CloudEvents using wildfire/us/nifc/nifc-usa-wildfires/{state}/{status}/{irwin_id}/incident topics."
     },
@@ -62,7 +66,9 @@
         ]
       },
       "messagegroups": [
-        "#/messagegroups/Gov.NIFC.Wildfires.amqp"
+        "#/messagegroups/Gov.NIFC.Wildfires.amqp",
+        "#/messagegroups/Gov.NIFC.Wildfires.amqp.avro",
+        "#/messagegroups/Gov.NIFC.Wildfires.amqp.avro.binary"
       ],
       "description": "AMQP 1.0 producer endpoint for NIFC USA Wildfires CloudEvents."
     }
@@ -89,6 +95,10 @@
             "time": {
               "value": "{modified_on_datetime}",
               "type": "timestamp"
+            },
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/json"
             }
           },
           "dataschemaformat": "JsonStructure/draft-02",
@@ -139,6 +149,90 @@
                 "value": "{status}",
                 "description": "Incident lifecycle status routing segment: active, contained, controlled, or out."
               }
+            }
+          }
+        }
+      }
+    },
+    "Gov.NIFC.Wildfires.avro": {
+      "messagegroupid": "Gov.NIFC.Wildfires.avro",
+      "messages": {
+        "Gov.NIFC.Wildfires.WildfireIncident": {
+          "messageid": "Gov.NIFC.Wildfires.WildfireIncident",
+          "basemessage": "/messagegroups/Gov.NIFC.Wildfires/messages/Gov.NIFC.Wildfires.WildfireIncident",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Gov.NIFC.Wildfires.avro/schemas/Gov.NIFC.Wildfires.WildfireIncident"
+        }
+      }
+    },
+    "Gov.NIFC.Wildfires.avro.binary": {
+      "messagegroupid": "Gov.NIFC.Wildfires.avro.binary",
+      "messages": {
+        "Gov.NIFC.Wildfires.WildfireIncident": {
+          "messageid": "Gov.NIFC.Wildfires.WildfireIncident",
+          "basemessage": "/messagegroups/Gov.NIFC.Wildfires/messages/Gov.NIFC.Wildfires.WildfireIncident",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Gov.NIFC.Wildfires.avro/schemas/Gov.NIFC.Wildfires.WildfireIncident",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "Gov.NIFC.Wildfires.mqtt.avro": {
+      "messagegroupid": "Gov.NIFC.Wildfires.mqtt.avro",
+      "messages": {
+        "Gov.NIFC.Wildfires.mqtt.WildfireIncident": {
+          "messageid": "Gov.NIFC.Wildfires.mqtt.WildfireIncident",
+          "basemessage": "/messagegroups/Gov.NIFC.Wildfires.mqtt/messages/Gov.NIFC.Wildfires.mqtt.WildfireIncident",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Gov.NIFC.Wildfires.avro/schemas/Gov.NIFC.Wildfires.WildfireIncident"
+        }
+      }
+    },
+    "Gov.NIFC.Wildfires.mqtt.avro.binary": {
+      "messagegroupid": "Gov.NIFC.Wildfires.mqtt.avro.binary",
+      "messages": {
+        "Gov.NIFC.Wildfires.mqtt.WildfireIncident": {
+          "messageid": "Gov.NIFC.Wildfires.mqtt.WildfireIncident",
+          "basemessage": "/messagegroups/Gov.NIFC.Wildfires.mqtt/messages/Gov.NIFC.Wildfires.mqtt.WildfireIncident",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Gov.NIFC.Wildfires.avro/schemas/Gov.NIFC.Wildfires.WildfireIncident",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
+            }
+          }
+        }
+      }
+    },
+    "Gov.NIFC.Wildfires.amqp.avro": {
+      "messagegroupid": "Gov.NIFC.Wildfires.amqp.avro",
+      "messages": {
+        "Gov.NIFC.Wildfires.amqp.WildfireIncident": {
+          "messageid": "Gov.NIFC.Wildfires.amqp.WildfireIncident",
+          "basemessage": "/messagegroups/Gov.NIFC.Wildfires.amqp/messages/Gov.NIFC.Wildfires.amqp.WildfireIncident",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Gov.NIFC.Wildfires.avro/schemas/Gov.NIFC.Wildfires.WildfireIncident"
+        }
+      }
+    },
+    "Gov.NIFC.Wildfires.amqp.avro.binary": {
+      "messagegroupid": "Gov.NIFC.Wildfires.amqp.avro.binary",
+      "messages": {
+        "Gov.NIFC.Wildfires.amqp.WildfireIncident": {
+          "messageid": "Gov.NIFC.Wildfires.amqp.WildfireIncident",
+          "basemessage": "/messagegroups/Gov.NIFC.Wildfires.amqp/messages/Gov.NIFC.Wildfires.amqp.WildfireIncident",
+          "dataschemaformat": "Avro/1.11.3",
+          "dataschemauri": "#/schemagroups/Gov.NIFC.Wildfires.avro/schemas/Gov.NIFC.Wildfires.WildfireIncident",
+          "envelopemetadata": {
+            "datacontenttype": {
+              "type": "string",
+              "value": "application/vnd.apache.org.avro+avro"
             }
           }
         }
@@ -396,7 +490,7 @@
           "name": "WildfireIncident",
           "format": "Avro/1.11.3",
           "description": "Active wildfire incident data from the National Interagency Fire Center (NIFC) IRWIN system, published via ArcGIS Feature Service.",
-          "defaultversionid": "1",
+          "defaultversionid": "2",
           "versions": {
             "1": {
               "format": "Avro/1.11.3",
@@ -641,6 +735,275 @@
                   }
                 ],
                 "description": "Payload for an incident update from the U.S. National Interagency Fire Center. It reports the current status, location, and classification for a wildfire or emergency incident."
+              }
+            },
+            "2": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "Gov.NIFC.Wildfires.WildfireIncident",
+                "fields": [
+                  {
+                    "name": "irwin_id",
+                    "type": "string",
+                    "doc": "IRWIN incident identifier, a globally unique GUID assigned by the Integrated Reporting of Wildland-Fire Information (IRWIN) system. Primary key for wildfire incidents."
+                  },
+                  {
+                    "name": "incident_name",
+                    "type": "string",
+                    "doc": "The name assigned to the wildfire incident (e.g. 'Pinnacle', 'Backbone')."
+                  },
+                  {
+                    "name": "unique_fire_identifier",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Unique fire identifier string assigned by the dispatching agency (e.g. '2025-ORRSF-000389'). May be null for incidents not yet assigned. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "incident_type_category",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Category of the incident type: WF (Wildfire), RX (Prescribed Fire), or other NWCG-defined categories. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "incident_type_kind",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Kind of incident from NWCG classification (e.g. 'FI' for Fire). An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "fire_discovery_datetime",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Date and time when the fire was first discovered, in ISO 8601 format. Converted from ArcGIS epoch milliseconds. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "daily_acres",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Most recently reported fire size in acres from the daily situation report. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "calculated_acres",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "GIS-calculated fire area in acres, derived from perimeter mapping when available. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "discovery_acres",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Size of the fire in acres at the time of initial discovery. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "percent_contained",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Percentage of the fire perimeter that is contained (0-100). Null if not reported. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "poo_state",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "US state or territory where the point of origin is located, as a two-letter code prefixed with 'US-' (e.g. 'US-OR', 'US-CA'). An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "poo_county",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "County where the point of origin of the fire is located (e.g. 'Curry', 'Kings'). An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "latitude",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Latitude of the fire incident point of origin in decimal degrees (WGS 84). An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "longitude",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Longitude of the fire incident point of origin in decimal degrees (WGS 84). An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "fire_cause",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "General cause of the fire (e.g. 'Natural', 'Human', 'Undetermined'). An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "fire_cause_general",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Specific fire cause category when known (e.g. 'Lightning', 'Arson', 'Equipment Use'). An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "gacc",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Geographic Area Coordination Center responsible for the incident (e.g. 'NWCC', 'OSCC', 'EACC'). GACCs coordinate wildfire management resources across regions. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "total_incident_personnel",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Total number of personnel assigned to the incident including all resources. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "incident_management_organization",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Name or type of the incident management organization or team managing the fire. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "fire_mgmt_complexity",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Complexity level of the fire management effort, typically a Type designation (e.g. 'Type 1' for the most complex). An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "residences_destroyed",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Number of residential structures destroyed by the fire. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "other_structures_destroyed",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Number of non-residential structures (outbuildings, commercial, etc.) destroyed by the fire. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "injuries",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Number of injuries reported in connection with the incident. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "fatalities",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Number of fatalities reported in connection with the incident. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "containment_datetime",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Date and time the fire was fully contained, in ISO 8601 format. Null if not yet contained. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "control_datetime",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Date and time the fire was declared under control, in ISO 8601 format. Null if not yet controlled. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "fire_out_datetime",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Date and time the fire was declared out, in ISO 8601 format. Null if the fire is still active. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "final_acres",
+                    "default": null,
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Final fire size in acres after the fire is declared out. An absent JSON property uses the declared default in Avro."
+                  },
+                  {
+                    "name": "modified_on_datetime",
+                    "type": "string",
+                    "doc": "Date and time when the incident record was last modified in the IRWIN system, in ISO 8601 format."
+                  },
+                  {
+                    "name": "state",
+                    "type": "string",
+                    "doc": "Lowercase two-letter US state or territory code used as the {state} routing segment, derived from the IRWIN POOState value."
+                  },
+                  {
+                    "name": "status",
+                    "type": "string",
+                    "doc": "Normalized wildfire lifecycle status used as the {status} routing segment. Values are active, contained, controlled, or out, derived from containment, control, and fire-out timestamps."
+                  }
+                ],
+                "doc": "Active wildfire incident data from the National Interagency Fire Center (NIFC) IRWIN system, published via ArcGIS Feature Service."
               }
             }
           }

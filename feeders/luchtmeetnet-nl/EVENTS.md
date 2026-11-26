@@ -1,10 +1,10 @@
-# Luchtmeetnet Netherlands feeder Events
+# Luchtmeetnet Netherlands Events
 
 Luchtmeetnet NL publishes pollutant concentration measurements from the Dutch national air-quality monitoring network for Dutch air-quality monitoring stations. These events help consumers build monitoring, alerting, analytics, and dashboards without polling the upstream API directly.
 
 ## At a glance
 
-- **Event types:** 4 documented event types (12 transport bindings in the manifest).
+- **Event types:** 4 documented event types (36 transport bindings in the manifest).
 - **Transports:** KAFKA, MQTT/5.0, AMQP/1.0
 - **Reference vs telemetry:** 1 reference/catalog event type and 3 telemetry event types.
 - **Identity:** `{station_number}`, `{formula}` identifies the resource each event is about.
@@ -78,7 +78,7 @@ Each event identifies the real-world resource with `{station_number}`. `{station
 | --- | --- |
 | `KAFKA` | topic `luchtmeetnet-nl`, key `{station_number}` |
 | `MQTT/5.0` | topic `air-quality/nl/rijkswaterstaat/luchtmeetnet-nl/{region}/{station_number}/{formula}/info`, retain `true`, QoS `1` |
-| `AMQP/1.0` | source address `amqps://localhost:5671/luchtmeetnet-nl`, message subject `{station_number}`; application properties region `{region}`, formula `{formula}` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/luchtmeetnet-nl`, message subject `{station_number}` |
 
 #### Payload
 
@@ -137,7 +137,7 @@ Each event identifies the real-world resource with `{station_number}`. `{station
 | --- | --- |
 | `KAFKA` | topic `luchtmeetnet-nl`, key `{station_number}` |
 | `MQTT/5.0` | topic `air-quality/nl/rijkswaterstaat/luchtmeetnet-nl/{region}/{station_number}/{formula}/measurement`, retain `true`, QoS `1` |
-| `AMQP/1.0` | source address `amqps://localhost:5671/luchtmeetnet-nl`, message subject `{station_number}`; application properties region `{region}`, formula `{formula}` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/luchtmeetnet-nl`, message subject `{station_number}` |
 
 #### Payload
 
@@ -146,7 +146,7 @@ Each event identifies the real-world resource with `{station_number}`. `{station
 - **`station_number`** (string, required): Stable Luchtmeetnet station code identifying where the measurement was taken.
 - **`formula`** (string, required): Component formula code identifying what was measured, for example NO2, O3, PM10, or FN.
 - **`value`** (double, required, ugm-3): Numeric measurement value published by the API for the station and formula at the given timestamp. Standard gaseous and particulate concentration formulas are expressed in micrograms per cubic meter; some specialised formulas such as particle counts or black-carbon indicators may use different domain-specific units, so consumers should interpret the formula-specific semantics together with the component catalog.
-- **`timestamp_measured`** (string, required): Timestamp at which the value was measured, encoded as an ISO 8601 date-time string with timezone offset.
+- **`timestamp_measured`** (string or null, required): Timestamp at which the value was measured, encoded as an ISO 8601 date-time string with timezone offset.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -182,7 +182,7 @@ Each event identifies the real-world resource with `{station_number}`. `{station
 | --- | --- |
 | `KAFKA` | topic `luchtmeetnet-nl`, key `{station_number}` |
 | `MQTT/5.0` | topic `air-quality/nl/rijkswaterstaat/luchtmeetnet-nl/{region}/{station_number}/{formula}/lki`, retain `true`, QoS `1` |
-| `AMQP/1.0` | source address `amqps://localhost:5671/luchtmeetnet-nl`, message subject `{station_number}`; application properties region `{region}`, formula `{formula}` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/luchtmeetnet-nl`, message subject `{station_number}` |
 
 #### Payload
 
@@ -190,7 +190,7 @@ Each event identifies the real-world resource with `{station_number}`. `{station
 
 - **`station_number`** (string, required): Stable Luchtmeetnet station code identifying the station for which the LKI value was calculated.
 - **`value`** (integer, required, 1): Luchtkwaliteitsindex value on the Dutch 1 to 11 scale, where 1 to 3 is good, 4 to 6 is moderate, 7 to 9 is bad, and 10 to 11 is very bad.
-- **`timestamp_measured`** (string, required): Timestamp for the hourly LKI value, encoded as an ISO 8601 date-time string with timezone offset.
+- **`timestamp_measured`** (string or null, required): Timestamp for the hourly LKI value, encoded as an ISO 8601 date-time string with timezone offset.
 #### Example payload
 
 Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
@@ -225,7 +225,7 @@ Each event identifies the real-world resource with `{formula}`. `{formula}` is s
 | --- | --- |
 | `KAFKA` | topic `luchtmeetnet-nl`, key `{formula}` |
 | `MQTT/5.0` | topic `air-quality/nl/rijkswaterstaat/luchtmeetnet-nl/{region}/{station_number}/{formula}/component`, retain `true`, QoS `1` |
-| `AMQP/1.0` | source address `amqps://localhost:5671/luchtmeetnet-nl`, message subject `{formula}`; application properties region `{region}`, station_number `{station_number}` |
+| `AMQP/1.0` | source address `amqps://localhost:5671/luchtmeetnet-nl`, message subject `{formula}` |
 
 #### Payload
 
@@ -263,7 +263,11 @@ Transport bindings carry CloudEvents metadata differently:
 | MQTT 5 binary mode | MQTT 5 user properties named by the CloudEvents attribute (`id`, `source`, `type`, `subject`, ...), as defined by the CloudEvents MQTT binding; no `ce_` prefix | PUBLISH payload |
 | AMQP 1.0 binary mode | Application properties named `cloudEvents:<attribute>` except `datacontenttype`; `datacontenttype` maps to AMQP `content-type` and must not be duplicated as an application property | AMQP message body |
 
-All payloads documented here are JSON. MQTT retained messages are Last Known Value snapshots: the broker stores the most recent retained message per exact topic and delivers it to new subscribers when their subscription matches that topic. Schema evolution is additive where possible; incompatible semantic or structural changes are published as a new CloudEvents type so existing consumers can keep running.
+The default payload remains JSON with a JSON Structure schema. The manifest also declares inherited `.avro` groups with Avro schemas and unchanged `application/json` payloads, and `.avro.binary` groups with `application/vnd.apache.org.avro+avro` payloads. These encoding variants retain the same event identities and transport routing. Binary Avro bytes inside structured JSON CloudEvents belong in `data_base64`; payload encoding is independent of the CloudEvents envelope mode.
+
+Binary Avro is declared by the contract but is not yet a supported feeder output. [xregistry/codegen#670](https://github.com/xregistry/codegen/issues/670) tracks the producer-generation defect. The checked-in feeders continue to use their existing JSON producers. Avro schemas preserve RFC3339 strings as strings where no native timestamp mapping was already declared; optional JSON properties without a declared default use null defaults in Avro records.
+
+MQTT retained messages are Last Known Value snapshots: the broker stores the most recent retained message per exact topic and delivers it to new subscribers when their subscription matches that topic. Schema evolution is additive where possible; incompatible semantic or structural changes are published as a new CloudEvents type so existing consumers can keep running.
 
 ## Operational notes
 
@@ -274,3 +278,4 @@ All payloads documented here are JSON. MQTT retained messages are Last Known Val
 - xRegistry manifest: [`xreg/luchtmeetnet-nl.xreg.json`](xreg/luchtmeetnet-nl.xreg.json)
 - Source README: [`README.md`](README.md)
 - Container deployment guide: [`CONTAINER.md`](CONTAINER.md)
+- Azure Service Bus Standard namespace: <https://learn.microsoft.com/azure/service-bus-messaging/service-bus-messaging-overview>
