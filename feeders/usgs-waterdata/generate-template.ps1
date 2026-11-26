@@ -83,6 +83,9 @@ try {
     $templates = @($original.emptyTemplates | ForEach-Object { Join-Path $repoRoot $_ })
     & python (Join-Path $repoRoot 'tools\aci_files_identity.py') @templates
     if ($LASTEXITCODE -ne 0) { throw 'USGS Water Data managed-identity state configuration failed' }
+    & python (Join-Path $repoRoot 'tools\aci_kafka_identity.py') `
+        (Join-Path $PSScriptRoot 'azure-template-with-eventhub.json')
+    if ($LASTEXITCODE -ne 0) { throw 'USGS Water Data managed-identity Kafka configuration failed' }
 } finally {
     Remove-Item $generatedCatalog -ErrorAction SilentlyContinue
 }

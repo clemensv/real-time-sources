@@ -64,10 +64,16 @@ argument-hint: "Describe the source, its runtime package, required environment v
 
 ## Learnings
 
+- To publish selected feeder images without queuing the fleet, dispatch
+  `build_containers.yml` with `feeders=usgs-waterdata,usgs-iv,usgs-nwis-wq` and
+  `publish=true` on the intended branch.
+  The filter includes every transport variant and rejects unknown slugs;
+  `publish=false` builds without registry login, pushes or signing.
 - Azure Files now supports managed-identity SMB mounts; do not conclude that
   keyless state requires removing ACI volumes. The shared
   [`aci_files_identity.py`](../../../tools/aci_files_identity.md) transformation
-  enables SMB OAuth, disables storage Shared Key and uses the stable ACI
+  defaults to HTTPS checkpoints; its explicit `--mode smb` enables SMB OAuth,
+  disables storage Shared Key and uses the stable ACI
   `2026-07-01` REST field `userManagedIdentityClientId` (the ARM reference uses
   a conflicting spelling). Its required SMB MI Admin role grants broad file
   access, so use a dedicated state account and require live mount/restart
@@ -87,3 +93,20 @@ argument-hint: "Describe the source, its runtime package, required environment v
   an early teardown can leave the application/mount evidence without its
   storage-side correlation. A recovered workspace may retain only older phases,
   so label those limits rather than interpreting missing rows as no traffic.
+- For a runtime that supports it, managed-identity Azure Files HTTPS can remove
+  the ACI host SMB dependency without dropping persistence or changing event
+  contracts; this does not diagnose or repair the host defect.
+  Follow the [shared checkpoint guide](../../../tools/aci_files_identity.md):
+  explicit state identity, OAuth backup intent, dedicated account and privileged
+  file-data role, preserved share-relative paths, and one writer per checkpoint.
+  Incremental ARM deployment retains obsolete SMB role assignments; remove only
+  those assignments after verified cutover.
+- Azure Files SDK atomic replacement uses
+  `stage.rename_file(relative_path, overwrite=True)`, not the internal
+  `replace_if_exists` keyword, which can fail only after upload.
+  Test through the real SDK request builder and assert
+  `x-ms-file-rename-replace-if-exists: true`; a mocked rename method alone misses
+  this error.
+  Commit in-memory dedupe state only after remote replacement succeeds, and
+  distinguish a missing checkpoint file from share/authentication/corruption
+  failures.

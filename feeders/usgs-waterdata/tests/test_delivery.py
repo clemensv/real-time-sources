@@ -84,3 +84,33 @@ def test_fabric_oauth_rejects_plaintext_and_password_fallback(monkeypatch, confi
     monkeypatch.setenv("KAFKA_AUTH_MODE", "fabric-entra")
     with pytest.raises(ValueError, match="Fabric Entra"):
         fabric_kafka_config(config)
+
+
+def test_aci_oauth_uses_explicit_managed_identity_and_refreshes(monkeypatch):
+    from azure.core.credentials import AccessToken
+    import azure.identity
+
+    monkeypatch.setenv("KAFKA_AUTH_MODE", "azure-entra")
+    monkeypatch.setenv("KAFKA_ENTRA_CLIENT_ID", "synthetic-client")
+    credential = Mock()
+    expiry = int(time.time()) + 3600
+    credential.get_token.side_effect = [AccessToken("first", expiry), AccessToken("second", expiry + 3600)]
+    factory = Mock(return_value=credential)
+    monkeypatch.setattr(azure.identity, "ManagedIdentityCredential", factory)
+    result = fabric_kafka_config({"security.protocol": "SSL",
+                                  "bootstrap.servers": "synthetic.servicebus.windows.net:9093"})
+    assert result["oauth_cb"]("") == ("first", float(expiry))
+    assert result["oauth_cb"]("") == ("second", float(expiry + 3600))
+    factory.assert_called_once_with(client_id="synthetic-client")
+    credential.get_token.assert_called_with("https://eventhubs.azure.net/.default")
+    assert credential.get_token.call_count == 2
+    assert result["sasl.mechanism"] == "OAUTHBEARER"
+    assert result["security.protocol"] == "SASL_SSL"
+
+
+def test_aci_oauth_requires_identity_without_default_credential_fallback(monkeypatch):
+    monkeypatch.setenv("KAFKA_AUTH_MODE", "azure-entra")
+    monkeypatch.delenv("KAFKA_ENTRA_CLIENT_ID", raising=False)
+    with pytest.raises(ValueError, match="requires KAFKA_ENTRA_CLIENT_ID"):
+        fabric_kafka_config({"security.protocol": "SSL",
+                             "bootstrap.servers": "synthetic.servicebus.windows.net:9093"})

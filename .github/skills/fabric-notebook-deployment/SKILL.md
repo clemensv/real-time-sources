@@ -1,6 +1,6 @@
 ---
 name: fabric-notebook-deployment
-description: "Use when adding or modifying a Fabric notebook-hosted feeder for a source in this repo. Covers per-source Fabric Environment build (poetry wheel + path-dep stripping), CustomEndpoint connection-string lookup via the public Topology API, Lakehouse + KQL + Environment binding, scheduling, and OneLake-based diagnostics for scheduled runs."
+description: "Use when adding or modifying a Fabric notebook-hosted feeder. Covers Environment-backed hosting, approved plain-Python OneLake wheels, keyless Topology/Entra Kafka binding, scheduling, fresh-event acceptance and OneLake diagnostics."
 argument-hint: "Describe the source, its workspace, eventhouse and KQL database, and whether a Fabric Environment already exists."
 ---
 
@@ -23,7 +23,8 @@ argument-hint: "Describe the source, its workspace, eventhouse and KQL database,
   a worker thread that owns its own loop. See `references/fabric-notebook-runbook.md`
   for the canonical snippet.
 - **Never `%pip install` from a notebook cell.** Build a per-source Fabric
-  Environment with the producer + bridge wheels. The deploy script handles
+  Environment with the producer + bridge wheels, unless the maintainer selected
+  the plain-Python hosting path described under Learnings. The deploy script handles
   this end-to-end. `%pip install` slows scheduled runs by 60–120 s and breaks
   air-gapped capacities.
 - **Never retrieve Event Stream connection strings via the legacy 7-step MWC
@@ -42,9 +43,10 @@ argument-hint: "Describe the source, its workspace, eventhouse and KQL database,
   failures via `notebookutils.notebook.exit("FAIL: …")`. The Fabric REST APIs
   do **not** expose cell output; OneLake is the only programmatic diagnostic
   channel.
-- **A scheduled run is not validated until `KQL count > 0`** in the source's
-  reference and telemetry tables, queried via Kusto with the
-  `https://kusto.kusto.windows.net` audience.
+- **A scheduled run requires fresh reference and telemetry events** correlated
+  by event ID, envelope and payload across custom output and typed history.
+  Query Kusto with the `https://kusto.kusto.windows.net` audience; old positive
+  row counts and a `Completed` job are not delivery proof.
 - **Pre-merge static validation is a blocking review criterion.** Every PR
   that adds or modifies a notebook MUST pass
   `pwsh tools/validate-fabric-deployment.ps1 -FeederSlug <slug>` with **zero
@@ -209,8 +211,7 @@ irm "https://<cluster>.z1.kusto.fabric.microsoft.com/v2/rest/query" -Method Post
   -Headers @{Authorization="Bearer $tok"; 'Content-Type'='application/json'} -Body $body
 ```
 
-The deployment is verified when **both** of the following are
-non-zero:
+For non-schematized dispatch/update-policy ingestion, check both:
 
 1. `['_cloudevents_dispatch'] | count` — the raw landing table fed by
    the eventstream.
@@ -221,9 +222,11 @@ A non-zero dispatch count with a zero typed-table count means the
 update policy never fired against the new events. This is exactly the
 failure mode the eventstream-topology timing bug produced before
 `Wait-EventStreamTopologyReady` was added to `deploy-fabric.ps1`.
-Reporting only the dispatch count hides update-policy regressions, so
-both counts must be captured and pasted into the PR body alongside the
-ISO-8601 timestamp of the run.
+Reporting only dispatch counts hides update-policy regressions.
+Both counts are diagnostic checks, not sufficient acceptance: require fresh
+events from every selected family matched across custom output, dispatch and
+typed history. Keep raw receipts and deployment coordinates outside Git and PR
+bodies; publish sanitized verdicts.
 
 Pegelonline reference: 785 stations × 1 = 785 reference rows;
 telemetry: 736 measurements after one cycle.
@@ -236,9 +239,38 @@ telemetry: 736 measurements after one cycle.
 - Adding a `CONNECTION_STRING` parameter to the notebook — it must be looked
   up at run time via the Topology API.
 - Skipping the Lakehouse binding (the log-file diagnostic depends on it).
-- Bypassing the per-source Fabric Environment by inlining `%pip install`.
+- Bypassing the selected dependency host by inlining `%pip install`.
 - Using the legacy `Get-FabricClusterUrl` / `Get-FabricMwcToken` chain. It
   has been removed from `deploy-fabric.ps1`.
+
+## Learnings
+
+- An approved plain-Python host can load verified producer/core/bridge wheels
+  from OneLake without a Spark Environment or cell pip installation; preserve
+  OneLake state/logs and bounded worker execution.
+  Use the USGS [notebook generator](../../../feeders/usgs-waterdata/create_notebook.py)
+  as the example, not a mechanical copy of an Environment-bound notebook.
+  Read back the deployed kernel and dependency bindings and verify active wheel
+  versions; a host choice does not authorize clearing another notebook's Environment.
+- For the USGS `fabric-entra` Kafka path, NotebookUtils accepted the full
+  namespace resource URI `https://<service-issued-namespace>/`, while the global
+  Event Hubs resource failed in that runtime.
+  Reuse [fabric_kafka_config](../../../feeders/usgs-waterdata/usgs_waterdata_core/usgs_waterdata_core/delivery.py):
+  explicit opt-in, TLS, no username/password, refreshed OAuth callback, and
+  audience/expiry guards; do not infer support for every runtime or protocol.
+  Read back the actual publishing principal: delegated-user success is not
+  workspace-managed-identity proof.
+- Topology connection responses can bundle access keys even when only endpoint
+  metadata is needed; discard keys without logging, persisting or using them.
+  A credentialless `BootstrapServer` binding still needs explicit TLS before
+  the OAuth helper runs; reject disabled TLS rather than silently overriding it.
+  Never enable local auth or fetch keys to make a keyless test pass.
+- Scheduled acceptance requires an actual scheduled invocation, successful
+  OneLake diagnostics and fresh correlated events, not just schedule creation.
+  Retain the same checkpoint between manual and scheduled runs, read back cadence
+  and expiry, and pause validation schedules after the required invocation.
+  Force the notebook's local OneLake state backend rather than inheriting ACI's
+  remote-checkpoint environment.
 
 ## References
 

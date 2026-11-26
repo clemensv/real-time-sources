@@ -13,6 +13,11 @@ on:
         type: boolean
         required: false
         default: true
+      feeders:
+        description: 'Optional comma-separated feeder slugs; empty builds the full fleet'
+        type: string
+        required: false
+        default: ''
 
 env:
   REGISTRY: ghcr.io
@@ -101,6 +106,7 @@ jobs:
           CHANGED_FILES_PATH: changed-files.txt
           ALL_BASE_JSON: ${{ steps.get-dockerfiles.outputs.all_base }}
           ALL_TRANSPORT_JSON: ${{ steps.get-dockerfiles.outputs.all_transport }}
+          FEEDER_FILTER: ${{ inputs.feeders }}
         run: python3 tools/ci/discover_container_matrix.py
 
   build-base:
@@ -130,7 +136,7 @@ jobs:
           sudo systemctl reload docker
 
       - name: Install cosign
-        if: github.event_name != 'pull_request'
+        if: github.event_name != 'pull_request' && (github.event_name != 'workflow_dispatch' || inputs.publish)
         uses: sigstore/cosign-installer@756fe2d284c7292c4e9b62c8a28f1e5629c59532
         with:
           cosign-release: 'v2.2.4'
@@ -144,7 +150,7 @@ jobs:
               mirrors = ["mirror.gcr.io"]
 
       - name: Log into registry ${{ env.REGISTRY }}
-        if: github.event_name != 'pull_request'
+        if: github.event_name != 'pull_request' && (github.event_name != 'workflow_dispatch' || inputs.publish)
         uses: docker/login-action@650006c6eb7dba73a995cc03b0b2d7f5ca915bee
         with:
           registry: ${{ env.REGISTRY }}
@@ -168,7 +174,7 @@ jobs:
         with:
           context: ./${{ matrix.container.path }}
           file: ./${{ matrix.container.path }}/${{ matrix.container.file }}
-          push: ${{ github.event_name != 'pull_request' }}
+          push: ${{ github.event_name != 'pull_request' && (github.event_name != 'workflow_dispatch' || inputs.publish) }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
@@ -178,7 +184,7 @@ jobs:
           cache-to: type=gha,mode=max,ignore-error=true
 
       - name: Sign the published Docker image
-        if: ${{ github.event_name != 'pull_request' }}
+        if: ${{ github.event_name != 'pull_request' && (github.event_name != 'workflow_dispatch' || inputs.publish) }}
         env:
           TAGS: ${{ steps.meta.outputs.tags }}
           DIGEST: ${{ steps.build-and-push.outputs.digest }}
@@ -241,7 +247,7 @@ jobs:
           sudo systemctl reload docker
 
       - name: Install cosign
-        if: github.event_name != 'pull_request'
+        if: github.event_name != 'pull_request' && (github.event_name != 'workflow_dispatch' || inputs.publish)
         uses: sigstore/cosign-installer@756fe2d284c7292c4e9b62c8a28f1e5629c59532
         with:
           cosign-release: 'v2.2.4'
@@ -255,7 +261,7 @@ jobs:
               mirrors = ["mirror.gcr.io"]
 
       - name: Log into registry ${{ env.REGISTRY }}
-        if: github.event_name != 'pull_request'
+        if: github.event_name != 'pull_request' && (github.event_name != 'workflow_dispatch' || inputs.publish)
         uses: docker/login-action@650006c6eb7dba73a995cc03b0b2d7f5ca915bee
         with:
           registry: ${{ env.REGISTRY }}
@@ -279,7 +285,7 @@ jobs:
         with:
           context: ./${{ matrix.container.path }}
           file: ./${{ matrix.container.path }}/${{ matrix.container.file }}
-          push: ${{ github.event_name != 'pull_request' }}
+          push: ${{ github.event_name != 'pull_request' && (github.event_name != 'workflow_dispatch' || inputs.publish) }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
@@ -289,7 +295,7 @@ jobs:
           cache-to: type=gha,mode=max,ignore-error=true
 
       - name: Sign the published Docker image
-        if: ${{ github.event_name != 'pull_request' }}
+        if: ${{ github.event_name != 'pull_request' && (github.event_name != 'workflow_dispatch' || inputs.publish) }}
         env:
           TAGS: ${{ steps.meta.outputs.tags }}
           DIGEST: ${{ steps.build-and-push.outputs.digest }}

@@ -15,8 +15,8 @@ def fabric_kafka_config(config: Mapping[str, Any]) -> dict[str, Any]:
     mode = os.getenv("KAFKA_AUTH_MODE", "")
     if not mode:
         return result
-    if mode != "fabric-entra":
-        raise ValueError("KAFKA_AUTH_MODE must be unset or fabric-entra")
+    if mode not in ("fabric-entra", "azure-entra"):
+        raise ValueError("KAFKA_AUTH_MODE must be unset, fabric-entra or azure-entra")
     if result.get("security.protocol") not in ("SSL", "SASL_SSL"):
         raise ValueError("Fabric Entra Kafka authentication requires TLS")
     if any(result.get(key) for key in ("sasl.username", "sasl.password")):
@@ -29,6 +29,25 @@ def fabric_kafka_config(config: Mapping[str, Any]) -> dict[str, Any]:
             or endpoint.path or endpoint.query or endpoint.fragment):
         raise ValueError("Fabric Entra Kafka authentication requires a namespace endpoint on port 9093")
     audience = f"https://{endpoint.hostname}/"
+    if mode == "azure-entra":
+        from azure.identity import ManagedIdentityCredential
+
+        client_id = os.environ.get("KAFKA_ENTRA_CLIENT_ID")
+        if not client_id:
+            raise ValueError("azure-entra requires KAFKA_ENTRA_CLIENT_ID")
+        credential = ManagedIdentityCredential(client_id=client_id)
+
+        def managed_oauth(_: str) -> tuple[str, float]:
+            token = credential.get_token("https://eventhubs.azure.net/.default")
+            if token.expires_on <= time.time() + 60:
+                raise ValueError("Managed identity Event Hubs token expires within 60 seconds")
+            return token.token, float(token.expires_on)
+
+        result.pop("sasl.mechanisms", None)
+        result.update({"security.protocol": "SASL_SSL", "sasl.mechanism": "OAUTHBEARER",
+                       "oauth_cb": managed_oauth})
+        return result
+
     notebookutils = importlib.import_module("notebookutils")
 
     def oauth(_: str) -> tuple[str, float]:

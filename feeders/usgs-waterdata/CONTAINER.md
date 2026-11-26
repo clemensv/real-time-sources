@@ -110,12 +110,16 @@ image includes the Cyrus SASL PLAIN module; Entra/SAS CBS paths are unchanged.
 | `SASL_USERNAME` | unset | SASL username; must be paired with `SASL_PASSWORD`. |
 | `SASL_PASSWORD` | unset | SASL password for the explicit broker username; required with `SASL_USERNAME` and supplied as a secret. |
 | `SASL_MECHANISM` | `PLAIN` | SASL mechanism for explicit credentials. |
-| `KAFKA_AUTH_MODE` | unset | `fabric-entra` is notebook-only: TLS, one namespace on port 9093 and refreshed NotebookUtils namespace-audience tokens. Explicit passwords are rejected in this mode. Unset preserves existing broker authentication. |
+| `KAFKA_AUTH_MODE` | unset | `azure-entra` uses an explicit managed identity for Event Hubs Kafka; `fabric-entra` uses NotebookUtils namespace-audience tokens in notebooks. Both require TLS and one namespace on port 9093, refresh tokens and reject passwords. Unset preserves existing broker authentication. |
+| `KAFKA_ENTRA_CLIENT_ID` | required with `azure-entra` | User-assigned managed identity client ID. The Event Hubs template grants this identity Data Sender and disables broker local authentication; there is no key fallback. |
 
 ```powershell
 docker run --rm -v "${PWD}\state:/state" -e STATE_FILE=/state/native-kafka.json -e KAFKA_BOOTSTRAP_SERVERS=kafka.example:9093 -e SASL_USERNAME=publisher -e SASL_PASSWORD="<password>" ghcr.io/clemensv/real-time-sources-usgs-waterdata:latest
-docker run --rm -v "${PWD}\state:/state" -e STATE_FILE=/state/native-eventhub.json -e CONNECTION_STRING="Endpoint=sb://<namespace>.servicebus.windows.net/;SharedAccessKeyName=<policy>;SharedAccessKey=<key>;EntityPath=<hub>" ghcr.io/clemensv/real-time-sources-usgs-waterdata:latest
+docker run --rm -v "${PWD}\state:/state" -e STATE_FILE=/state/native-eventhub.json -e KAFKA_BOOTSTRAP_SERVERS="<namespace>.servicebus.windows.net:9093" -e KAFKA_TOPIC="<hub>" -e KAFKA_AUTH_MODE=azure-entra -e KAFKA_ENTRA_CLIENT_ID="<assigned-identity-client-id>" ghcr.io/clemensv/real-time-sources-usgs-waterdata:latest
 ```
+
+The managed-identity example requires an Azure host with the selected identity
+assigned and its identity endpoint reachable from the container.
 
 ## MQTT 5 variant
 
@@ -239,8 +243,12 @@ For long-running ACI deployment leave `onceMode=false`.
 Kafka BYO accepts either `connectionString` or direct `kafkaBootstrapServers`,
 `kafkaTopic`, `kafkaEnableTls` and `saslUsername`/`saslPassword`/
 `saslMechanism` settings. Leave `connectionString` empty for direct settings.
-The provision-new Event Hubs template supplies its generated connection string;
-separate bootstrap/SASL controls are not applicable there.
+The provision-new Event Hubs template disables local authentication and supplies
+its namespace endpoint, hub name and a dedicated Kafka publisher identity.
+That identity has namespace-scoped Azure Event Hubs Data Sender, separate from
+the state identity. The OAuth callback refreshes Event Hubs tokens; no broker
+key or password fallback is configured. Separate bootstrap/SASL controls are not
+applicable there.
 
 MQTT BYO infers `userpass` when `brokerUsername` is supplied and `anonymous`
 otherwise; `mqttAuthMode` can select an explicit mode. `mqttEnableTls` defaults

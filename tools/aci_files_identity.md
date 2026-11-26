@@ -25,6 +25,21 @@ Use `--mode smb` only for the explicit legacy mount variant. The Python
 `configure(template)` API retains its SMB default for existing callers;
 `configure(template, mode="azure-files-rest")` selects HTTPS.
 
+### Event Hubs broker identity is separate
+
+Storage identity does not authenticate Kafka publishing. For the native USGS
+Event Hubs template, generation also runs
+`python tools\aci_kafka_identity.py <eventhub-template>`. This shared
+transformation disables Event Hubs local authentication, replaces the SAS
+authorization rule and connection-string binding with a dedicated publisher
+identity and namespace-scoped Azure Event Hubs Data Sender, and preserves the
+separate state identity. The runtime explicitly selects
+`KAFKA_AUTH_MODE=azure-entra` and `KAFKA_ENTRA_CLIENT_ID`; its OAuth callback
+refreshes managed-identity tokens for `https://eventhubs.azure.net/.default`.
+No NotebookUtils, SAS key or default-credential fallback is used by this mode.
+Incremental deployment retains obsolete authorization-rule resources; disabling
+local auth prevents their use, and operators must remove them after cutover.
+
 ## Resources and permissions
 
 - `allowSharedKeyAccess=false` remains mandatory. No key is read or supplied.

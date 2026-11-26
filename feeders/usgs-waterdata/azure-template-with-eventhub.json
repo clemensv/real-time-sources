@@ -116,10 +116,9 @@
     "imageName": "ghcr.io/clemensv/real-time-sources-usgs-waterdata:latest",
     "eventHubNamespaceName": "[concat(parameters('containerGroupName'), '-ehns')]",
     "eventHubName": "usgs-waterdata",
-    "authRuleName": "bridge-send-listen",
-    "authRuleResourceId": "[resourceId('Microsoft.EventHub/namespaces/eventhubs/authorizationRules', variables('eventHubNamespaceName'), variables('eventHubName'), variables('authRuleName'))]",
     "logAnalyticsWorkspaceName": "[concat(parameters('containerGroupName'), '-logs')]",
-    "stateIdentityName": "[concat(variables('storageAccountName'), '-files-mi')]"
+    "stateIdentityName": "[concat(variables('storageAccountName'), '-files-mi')]",
+    "kafkaIdentityName": "[concat(parameters('containerGroupName'), '-kafka-mi')]"
   },
   "resources": [
     {
@@ -147,7 +146,8 @@
       "properties": {
         "minimumTlsVersion": "1.2",
         "isAutoInflateEnabled": false,
-        "kafkaEnabled": true
+        "kafkaEnabled": true,
+        "disableLocalAuth": true
       }
     },
     {
@@ -160,20 +160,6 @@
       "properties": {
         "partitionCount": 4,
         "messageRetentionInDays": 1
-      }
-    },
-    {
-      "type": "Microsoft.EventHub/namespaces/eventhubs/authorizationRules",
-      "apiVersion": "2024-01-01",
-      "name": "[concat(variables('eventHubNamespaceName'), '/', variables('eventHubName'), '/', variables('authRuleName'))]",
-      "dependsOn": [
-        "[resourceId('Microsoft.EventHub/namespaces/eventhubs', variables('eventHubNamespaceName'), variables('eventHubName'))]"
-      ],
-      "properties": {
-        "rights": [
-          "Send",
-          "Listen"
-        ]
       }
     },
     {
@@ -230,10 +216,11 @@
       "location": "[parameters('location')]",
       "dependsOn": [
         "[resourceId('Microsoft.OperationalInsights/workspaces', variables('logAnalyticsWorkspaceName'))]",
-        "[variables('authRuleResourceId')]",
         "[resourceId('Microsoft.Storage/storageAccounts/fileServices/shares', variables('storageAccountName'), 'default', variables('fileShareName'))]",
         "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', variables('stateIdentityName'))]",
-        "[extensionResourceId(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), 'Microsoft.Authorization/roleAssignments', guid(variables('storageAccountName'), variables('stateIdentityName'), 'files-rest-contributor'))]"
+        "[extensionResourceId(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), 'Microsoft.Authorization/roleAssignments', guid(variables('storageAccountName'), variables('stateIdentityName'), 'files-rest-contributor'))]",
+        "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', variables('kafkaIdentityName'))]",
+        "[extensionResourceId(resourceId('Microsoft.EventHub/namespaces', variables('eventHubNamespaceName')), 'Microsoft.Authorization/roleAssignments', guid(resourceGroup().id, variables('kafkaIdentityName'), 'eventhubs-data-sender'))]"
       ],
       "properties": {
         "osType": "Linux",
@@ -257,10 +244,6 @@
                 }
               },
               "environmentVariables": [
-                {
-                  "name": "CONNECTION_STRING",
-                  "secureValue": "[listKeys(variables('authRuleResourceId'), '2024-01-01').primaryConnectionString]"
-                },
                 {
                   "name": "LOG_LEVEL",
                   "value": "[parameters('logLevel')]"
@@ -328,6 +311,26 @@
                 {
                   "name": "STATE_AZURE_FILES_ROOT",
                   "value": "/mnt/bridge-state"
+                },
+                {
+                  "name": "KAFKA_AUTH_MODE",
+                  "value": "azure-entra"
+                },
+                {
+                  "name": "KAFKA_ENTRA_CLIENT_ID",
+                  "value": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', variables('kafkaIdentityName')), '2023-01-31').clientId]"
+                },
+                {
+                  "name": "KAFKA_BOOTSTRAP_SERVERS",
+                  "value": "[concat(variables('eventHubNamespaceName'), '.servicebus.windows.net:9093')]"
+                },
+                {
+                  "name": "KAFKA_TOPIC",
+                  "value": "[variables('eventHubName')]"
+                },
+                {
+                  "name": "KAFKA_ENABLE_TLS",
+                  "value": "true"
                 }
               ]
             }
@@ -337,7 +340,8 @@
       "identity": {
         "type": "UserAssigned",
         "userAssignedIdentities": {
-          "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', variables('stateIdentityName'))]": {}
+          "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', variables('stateIdentityName'))]": {},
+          "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', variables('kafkaIdentityName'))]": {}
         }
       }
     },
@@ -359,6 +363,27 @@
       "properties": {
         "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '69566ab7-960f-475b-8e7c-b3118f30c6bd')]",
         "principalId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', variables('stateIdentityName')), '2023-01-31').principalId]",
+        "principalType": "ServicePrincipal"
+      }
+    },
+    {
+      "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
+      "apiVersion": "2023-01-31",
+      "name": "[variables('kafkaIdentityName')]",
+      "location": "[parameters('location')]"
+    },
+    {
+      "type": "Microsoft.Authorization/roleAssignments",
+      "apiVersion": "2022-04-01",
+      "name": "[guid(resourceGroup().id, variables('kafkaIdentityName'), 'eventhubs-data-sender')]",
+      "scope": "[concat('Microsoft.EventHub/namespaces/', variables('eventHubNamespaceName'))]",
+      "dependsOn": [
+        "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', variables('kafkaIdentityName'))]",
+        "[resourceId('Microsoft.EventHub/namespaces', variables('eventHubNamespaceName'))]"
+      ],
+      "properties": {
+        "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '2b629674-e913-4c01-ae53-ef4638d8f975')]",
+        "principalId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', variables('kafkaIdentityName')), '2023-01-31').principalId]",
         "principalType": "ServicePrincipal"
       }
     }
