@@ -77,7 +77,7 @@ Kubernetes, Container Apps, Cloud Run, ECS.
 <!-- root-catalog:begin -->
 _The catalog below is rendered from `catalog.json`. Click a category to expand. Inside each category, click a source to see deploy targets, contract key, and event types. The [interactive portal](https://clemensv.github.io/real-time-sources) has the same content with live filters._
 
-<details open><summary><b>💧 Hydrology and Water Monitoring</b> &nbsp;<sub>24 sources</sub></summary>
+<details open><summary><b>💧 Hydrology and Water Monitoring</b> &nbsp;<sub>25 sources</sub></summary>
 
 <table width="100%">
 <tr><td>
@@ -664,7 +664,7 @@ SYKE
 <tr><td valign="middle">🔌</td><td valign="middle"><b>Transports</b></td><td valign="middle">Kafka · MQTT · AMQP</td></tr>
 <tr><td valign="middle">📍</td><td valign="middle"><b>Kafka key</b></td><td valign="middle"><code>{time_series_id}</code></td></tr>
 <tr><td valign="middle">📦</td><td valign="middle"><b>Events</b></td><td valign="middle">4 type(s)</td></tr>
-<tr><td valign="middle">✅</td><td valign="middle"><b>Build</b></td><td valign="middle"><a href="https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml">workflow</a></td></tr>
+<tr><td valign="middle">✅</td><td valign="middle"><b>Build</b></td><td valign="middle"><a href="https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml">passing</a></td></tr>
 <tr><td valign="middle">🗄️</td><td valign="middle"><b>KQL schema</b></td><td valign="middle">yes</td></tr>
 </table>
 
