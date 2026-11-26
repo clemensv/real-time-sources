@@ -7,7 +7,8 @@ name = "sensor-community-amqp"
 version = "0.1.0"
 description = "sensor-community AMQP companion feeder"
 requires-python = ">=3.10"
-dependencies = ['python-qpid-proton>=0.39.0', 'azure-identity>=1.15.0']
+# WORKAROUND(xregistry/codegen#714): Proton 0.41.1 corrupts AMQP properties and body.
+dependencies = ['python-qpid-proton>=0.39.0,<0.41.0', 'azure-identity>=1.15.0']
 
 [tool.setuptools.packages.find]
 where = ["."]

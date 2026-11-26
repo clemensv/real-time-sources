@@ -77,11 +77,23 @@ def _load_jstruct_validators(project_dir: str) -> Dict[str, InstanceValidator]:
             group = _resolve_json_pointer(manifest, pointer)
             for name, message in group.get("messages", {}).items():
                 resolved = _resolve_message_inheritance(manifest, message)
-                schema_record = _resolve_json_pointer(manifest, resolved["dataschemauri"])
-                if "schema" in schema_record:
-                    schema = schema_record["schema"]
-                else:
-                    schema = schema_record["versions"][schema_record["defaultversionid"]]["schema"]
+                schema_uri = resolved["dataschemauri"]
+                resource_uri = schema_uri.split("/versions/", 1)[0]
+                resource = _resolve_json_pointer(manifest, resource_uri)
+                schema_group = _resolve_json_pointer(manifest, resource_uri.rsplit("/schemas/", 1)[0])
+                selected = _resolve_json_pointer(manifest, schema_uri)
+                if "versions" in selected:
+                    selected = selected["versions"][selected["defaultversionid"]]
+                schema_format = str(
+                    selected.get("format") or resource.get("format")
+                    or schema_group.get("format") or resolved.get("dataschemaformat", "")
+                ).lower()
+                if schema_format.startswith("avro"):
+                    continue
+                assert "jsonstructure" in schema_format or schema_format == "jstruct", (
+                    f"Unsupported AMQP JSON schema format for {name}: {schema_format!r}"
+                )
+                schema = selected["schema"]
                 errors = _SCHEMA_VALIDATOR.validate(schema)
                 assert not errors, f"Invalid AMQP JsonStructure schema for {name}: {errors}"
                 event_type = resolved.get("envelopemetadata", {}).get("type", {}).get("value", name)
@@ -122,7 +134,24 @@ class AmqpDockerFlowBase:
         queue = self.source_dir
         if self.source_dir == 'uk-bods-siri':
             build_image('siri', dockerfile='Dockerfile.amqp', tag='ghcr.io/clemensv/real-time-sources/siri-amqp:latest')
+        if self.source_dir == 'tokyo-docomo-bikeshare':
+            build_image('gbfs-bikeshare', dockerfile='Dockerfile.amqp', tag='ghcr.io/clemensv/real-time-sources-gbfs-bikeshare-amqp:latest')
         image = build_image(self.source_dir, dockerfile="Dockerfile.amqp", tag=f"test-{self.image}")
+        client.containers.run(
+            image.id,
+            entrypoint=["python", "-c"],
+            command=["""from proton import Message
+from importlib.metadata import version
+for length in (247, 248, 249):
+    original = Message(body=b"payload", properties={"key": "x" * length})
+    decoded = Message()
+    decoded.decode(original.encode())
+    assert decoded.properties == original.properties, f"Lost AMQP properties at length {length}"
+    assert decoded.body == original.body, f"Lost AMQP body at length {length}"
+print("AMQP codec boundary checks passed:", version("python-qpid-proton"))
+"""],
+            remove=True,
+        )
         network = client.networks.create(f"{self.image}-e2e", driver="bridge")
         host_port = _find_free_port()
         broker = None

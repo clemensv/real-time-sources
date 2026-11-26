@@ -150,6 +150,11 @@ This source emits the following event families (see [EVENTS.md](EVENTS.md) for f
 
 - **FR.Paris.OpenData.Velo** — 2 event type(s): FR.Paris.OpenData.Velo.Counter, FR.Paris.OpenData.Velo.BicycleCount.
 
+The shared acquisition code converts integral `sum_counts` values such as
+`71.0` to the schema's 32-bit integer representation. Zero and null are
+preserved. Fractional, non-numeric, and out-of-range counts are reported
+and skipped without discarding other records in the response.
+
 <!-- source-deploy:begin -->
 ## Deploy
 

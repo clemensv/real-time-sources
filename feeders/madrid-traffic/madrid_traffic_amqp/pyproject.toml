@@ -7,8 +7,9 @@ name = "madrid-traffic-amqp"
 version = "0.1.0"
 description = "AMQP companion feeder for Madrid Traffic"
 requires-python = ">=3.10"
+# WORKAROUND(xregistry/codegen#714): Proton 0.41.1 corrupts AMQP properties and body.
 dependencies = [
-    "python-qpid-proton>=0.40.0",
+    "python-qpid-proton>=0.40.0,<0.41.0",
     "madrid_traffic_core",
 ]
 

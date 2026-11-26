@@ -265,11 +265,12 @@ def test_strict_mqtt_checks_out_of_band_routing_against_an_expected_value(monkey
 
 
 @pytest.mark.parametrize("protocol", ["AMQP", "amqp", "AMQP/1.0"])
+@pytest.mark.parametrize("base_attribute", ["basemessageuri", "basemessage"])
 @pytest.mark.parametrize("schema_ref", [
     "#/schemagroups/structures/schemas/payload",
     "#/schemagroups/structures/schemas/payload/versions/1",
 ])
-def test_amqp_schemas_resolve_inherited_message_references_without_group_format(tmp_path, monkeypatch, protocol, schema_ref):
+def test_amqp_schemas_resolve_inherited_message_references_without_group_format(tmp_path, monkeypatch, protocol, base_attribute, schema_ref):
     schema = {
         "$schema": "https://json-structure.org/meta/core/v0/#",
         "$id": "https://example.test/Observation",
@@ -286,7 +287,7 @@ def test_amqp_schemas_resolve_inherited_message_references_without_group_format(
                 "envelopemetadata": {"type": {"value": "Fixture.Observation"}},
             }}},
             "amqp": {"messages": {"inherited": {
-                "basemessageuri": "/messagegroups/base/messages/observation",
+                base_attribute: "/messagegroups/base/messages/observation",
             }}},
         },
         "schemagroups": {"structures": {"schemas": {"payload": {
@@ -302,3 +303,62 @@ def test_amqp_schemas_resolve_inherited_message_references_without_group_format(
 
     assert not validators["Fixture.Observation"].validate_instance({"value": 1.0})
     assert validators["Fixture.Observation"].validate_instance({"value": None})
+
+
+@pytest.mark.parametrize("format_location", ["group", "resource", "version"])
+@pytest.mark.parametrize("version_reference", [False, True])
+def test_amqp_validators_use_selected_schema_format_and_version(tmp_path, format_location, version_reference):
+    schema = {
+        "$schema": "https://json-structure.org/meta/core/v0/#",
+        "$id": "https://example.test/schemas/Observation/v2",
+        "name": "Observation",
+        "type": "object",
+        "properties": {"count": {"type": "int32"}},
+        "required": ["count"],
+    }
+    previous = {**schema, "$id": "https://example.test/schemas/Observation/v1",
+                "properties": {"count": {"type": "string"}}}
+    version = {"schema": schema}
+    resource = {"defaultversionid": "2", "versions": {
+        "1": {"schema": previous}, "2": version,
+    }}
+    group = {"schemas": {"example.Observation": resource}}
+    {"group": group, "resource": resource, "version": version}[format_location]["format"] = "JsonStructure/draft-02"
+    schema_ref = "#/schemagroups/example.jstruct/schemas/example.Observation"
+    if version_reference:
+        resource["defaultversionid"] = "1"
+        schema_ref += "/versions/2"
+    manifest = {
+        "endpoints": {"amqp": {"protocol": "AMQP", "messagegroups": ["/messagegroups/amqp"]}},
+        "messagegroups": {
+            "base": {"messages": {"observation": {
+                "dataschemauri": schema_ref,
+                "envelopemetadata": {"type": {"value": "Fixture.Observation"}},
+            }}},
+            "amqp": {"messages": {
+                "json": {"basemessageuri": "/messagegroups/base/messages/observation"},
+                "avro": {
+                    "basemessageuri": "/messagegroups/base/messages/observation",
+                    "dataschemauri": "#/schemagroups/example.avro/schemas/example.AvroObservation",
+                },
+            }},
+        },
+        "schemagroups": {
+            "example.jstruct": group,
+            "example.avro": {"format": "Avro/1.11.3", "schemas": {
+                "example.AvroObservation": {"schema": {
+                    "type": "record", "name": "AvroObservation", "fields": [],
+                }},
+            }},
+        },
+    }
+    xreg_dir = tmp_path / "xreg"
+    xreg_dir.mkdir()
+    (xreg_dir / "test.xreg.json").write_text(json.dumps(manifest), encoding="utf-8")
+
+    validators = amqp_flow._load_jstruct_validators(str(tmp_path))
+
+    assert set(validators) == {"Fixture.Observation"}
+    validator = validators["Fixture.Observation"]
+    assert validator.validate({"count": 71}) == []
+    assert validator.validate({"count": 71.5})

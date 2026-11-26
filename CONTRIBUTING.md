@@ -37,6 +37,17 @@ python -m <source_package> feed --once
 
 with the appropriate `CONNECTION_STRING` env var set.
 
+AMQP applications and the Docker E2E runner cap `python-qpid-proton` below
+0.41.0 until [xregistry/codegen#714](https://github.com/xregistry/codegen/issues/714)
+is resolved. Version 0.41.1 loses application properties and the message body
+at a map8 encoding boundary. The AMQP Docker E2E test checks that boundary
+inside each built image before testing delivery through the broker.
+Keep the cap in handwritten application manifests; do not edit generated
+producer dependencies.
+AMQP payload validation follows endpoint message inheritance and selected
+schema versions. It resolves format declarations from the version, resource,
+or schema group and excludes Avro declarations from the JSON flow.
+
 ## Repository layout
 
 - `feeders/<source>/` — per-source code, Docker, ARM templates, xreg

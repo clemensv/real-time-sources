@@ -7,7 +7,8 @@ name = "eurdep-radiation-amqp"
 version = "0.1.0"
 description = "AMQP feeder for EURDEP radiation"
 requires-python = ">=3.10"
-dependencies = ["python-qpid-proton>=0.40.0", "cloudevents>=1.11.0,<2.0.0", "dataclasses_json>=0.6.7", "avro>=1.11.3", "azure-identity>=1.17.0", "azure-core>=1.30.0", "requests>=2.32.3"]
+# WORKAROUND(xregistry/codegen#714): Proton 0.41.1 corrupts AMQP properties and body.
+dependencies = ["python-qpid-proton>=0.40.0,<0.41.0", "cloudevents>=1.11.0,<2.0.0", "dataclasses_json>=0.6.7", "avro>=1.11.3", "azure-identity>=1.17.0", "azure-core>=1.30.0", "requests>=2.32.3"]
 
 [project.scripts]
 eurdep-radiation-amqp = "eurdep_radiation_amqp.app:main"

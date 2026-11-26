@@ -8,11 +8,12 @@ dynamic = ["version"]
 description = "ERDDAP feeder package"
 authors = [{ name = "Clemens Vasters", email = "clemensv@microsoft.com" }]
 requires-python = ">=3.10,<4.0"
+# WORKAROUND(xregistry/codegen#714): Proton 0.41.1 corrupts AMQP properties and body.
 dependencies = [
     "avro>=1.11.3",
     "cloudevents>=1.11.0,<2.0.0",
     "dataclasses_json>=0.6.7",
-    "python-qpid-proton>=0.39.0",
+    "python-qpid-proton>=0.39.0,<0.41.0",
     "azure-identity>=1.17.0",
 ]
 

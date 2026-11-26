@@ -8,7 +8,8 @@ packages = [{include = "openaq_amqp"}]
 [tool.poetry.dependencies]
 python = ">=3.10,<4.0"
 requests = ">=2.32.3"
-python-qpid-proton = ">=0.39.0"
+# WORKAROUND(xregistry/codegen#714): Proton 0.41.1 corrupts AMQP properties and body.
+python-qpid-proton = ">=0.39.0,<0.41.0"
 cloudevents = ">=1.11.0,<2.0.0"
 dataclasses_json = ">=0.6.7"
 avro = ">=1.11.3"

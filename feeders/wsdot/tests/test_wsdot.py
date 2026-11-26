@@ -1047,6 +1047,22 @@ class TestParseBridgeClearance:
         assert data["crossing_location_id"] == "9603"
         assert data["state_route_id"] is None
 
+    @pytest.mark.parametrize("legacy_id", [None, ""])
+    def test_crossing_record_guid_fallback(self, legacy_id):
+        raw = dict(SAMPLE_BRIDGE_CLEARANCE, CrossingLocationId=legacy_id)
+        b = WSDOTApi.parse_bridge_clearance(raw)
+        assert b.crossing_location_id == raw["CrossingRecordGuid"]
+        assert json.loads(b.to_json())["crossing_location_id"] == raw["CrossingRecordGuid"]
+
+    @pytest.mark.parametrize("raw", [
+        {},
+        {"CrossingLocationId": None, "CrossingRecordGuid": None},
+        {"CrossingLocationId": "", "CrossingRecordGuid": ""},
+    ])
+    def test_missing_identity_rejected(self, raw):
+        with pytest.raises(ValueError, match="CrossingLocationId or CrossingRecordGuid"):
+            WSDOTApi.parse_bridge_clearance(raw)
+
 
 # ---------------------------------------------------------------------------
 # Ferry terminal sailing space parsing
@@ -1181,8 +1197,17 @@ class TestWSDOTApiExtended:
 
 
 class TestFeedProducerRouting:
-    def test_feed_uses_group_specific_producers(self):
+    @pytest.mark.parametrize("identity, expected_id", [
+        ({"CrossingLocationId": 9603, "CrossingRecordGuid": "record-guid"}, "9603"),
+        ({"CrossingLocationId": 0, "CrossingRecordGuid": "record-guid"}, "0"),
+        ({"CrossingRecordGuid": "record-guid"}, "record-guid"),
+    ])
+    def test_feed_uses_group_specific_producers(self, identity, expected_id):
         sent = []
+        clearance_sends = []
+        clearance = {key: value for key, value in SAMPLE_BRIDGE_CLEARANCE.items()
+                     if key != "CrossingLocationId"}
+        clearance.update(identity)
 
         class FakeTrafficProducer:
             def __init__(self, *_args, **_kwargs):
@@ -1275,6 +1300,8 @@ class TestFeedProducerRouting:
                 pass
 
             def send_us_wa_wsdot_bridgeclearances_bridge_clearance(self, **_kwargs):
+                clearance_sends.append((_kwargs["_crossing_location_id"],
+                                        _kwargs["data"].crossing_location_id))
                 sent.append("bridge_clearance")
 
         class FakeFerryterminalsProducer:
@@ -1321,7 +1348,7 @@ class TestFeedProducerRouting:
                             fetch_road_weather=MagicMock(return_value=[SAMPLE_ROAD_WEATHER]),
                             fetch_highway_alerts=MagicMock(return_value=[SAMPLE_HIGHWAY_ALERT]),
                             fetch_highway_cameras=MagicMock(return_value=[SAMPLE_HIGHWAY_CAMERA]),
-                            fetch_bridge_clearances=MagicMock(return_value=[SAMPLE_BRIDGE_CLEARANCE]),
+                            fetch_bridge_clearances=MagicMock(return_value=[clearance]),
                             fetch_terminal_sailing_space=MagicMock(return_value=[SAMPLE_TERMINAL_SAILING_SPACE])), \
              patch("wsdot.wsdot.time.sleep", side_effect=KeyboardInterrupt):
             feed(args)
@@ -1344,6 +1371,7 @@ class TestFeedProducerRouting:
             "bridge_clearance",
             "terminal_sailing_space",
         ]
+        assert clearance_sends == [(expected_id, expected_id)]
 
 
 # ---------------------------------------------------------------------------

@@ -4,8 +4,8 @@ avro>=1.11.3,<2.0.0
 testcontainers[kafka]>=4.7,<5
 json-structure>=0.6.1
 paho-mqtt>=2.1.0
-python-qpid-proton>=0.40.0
+# WORKAROUND(xregistry/codegen#714): Proton 0.41.1 corrupts AMQP properties and body.
+python-qpid-proton>=0.40.0,<0.41.0
 azure-servicebus>=7.12.0
 pytest
 pytest-timeout
-python-qpid-proton>=0.40.0

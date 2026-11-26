@@ -630,9 +630,18 @@ class WSDOTApi:
         )
 
     @staticmethod
+    def _bridge_clearance_id(raw: Dict[str, Any]) -> str:
+        value = raw.get("CrossingLocationId")
+        if value is None or value == "":
+            value = raw.get("CrossingRecordGuid")
+        if value is None or value == "":
+            raise ValueError("Bridge clearance has no CrossingLocationId or CrossingRecordGuid")
+        return str(value)
+
+    @staticmethod
     def parse_bridge_clearance(raw: Dict[str, Any]) -> BridgeClearance:
         return BridgeClearance(
-            crossing_location_id=str(raw.get("CrossingLocationId", "")),
+            crossing_location_id=WSDOTApi._bridge_clearance_id(raw),
             bridge_number=raw.get("BridgeNumber") or None,
             state_route_id=(str(raw["StateRouteID"]) if raw.get("StateRouteID") is not None else None),
             state_structure_id=raw.get("StateStructureId") or None,
@@ -958,7 +967,7 @@ def feed(args):
             if emit_reference or is_initial:
                 clearances = api.fetch_bridge_clearances()
                 c = _emit_batch(producer, lambda raw: bridgeclearances_ep.send_us_wa_wsdot_bridgeclearances_bridge_clearance(
-                    _feedurl=FEED_URL, _crossing_location_id=str(raw.get("CrossingLocationId", "")),
+                    _feedurl=FEED_URL, _crossing_location_id=WSDOTApi._bridge_clearance_id(raw),
                     data=WSDOTApi.parse_bridge_clearance(raw), flush_producer=False), clearances, "bridge clearance")
                 total += c
                 logging.info("Sent %d bridge clearances", c)

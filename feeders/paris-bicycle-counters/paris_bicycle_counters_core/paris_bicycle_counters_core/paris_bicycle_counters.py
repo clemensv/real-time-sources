@@ -135,12 +135,19 @@ class ParisBicycleCounterPoller:
                 if not is_topic_safe_segment(counter_id):
                     print(f"Skipping count with MQTT-unsafe id_compteur={counter_id!r}", file=sys.stderr)
                     continue
+                count = record.get("sum_counts")
+                if count is not None:
+                    if isinstance(count, float) and count.is_integer():
+                        count = int(count)
+                    if isinstance(count, bool) or not isinstance(count, int) or not -(2**31) <= count < 2**31:
+                        print(f"Skipping count with invalid sum_counts={count!r} for {counter_id}", file=sys.stderr)
+                        continue
                 counts.append(
                     BicycleCount(
                         ce_id=f"{counter_id}/{ce_datetime(date_val)}/count",
                         counter_id=counter_id,
                         counter_name=record.get("nom_compteur", ""),
-                        count=record.get("sum_counts"),
+                        count=count,
                         date=date_val,
                         longitude=coords.get("lon"),
                         latitude=coords.get("lat"),

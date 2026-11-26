@@ -350,6 +350,34 @@ class TestFetchBicycleCounts:
         assert counts[0].count == 79
         assert counts[0].longitude == 2.35702
 
+    @pytest.mark.parametrize("raw_count, expected", [(71.0, 71), (0.0, 0)])
+    @patch('paris_bicycle_counters.paris_bicycle_counters.requests.get')
+    def test_integral_float_count_is_serialized_as_integer(self, mock_get, raw_count, expected):
+        record = dict(SAMPLE_COUNTER_DATA_RESPONSE["results"][0], sum_counts=raw_count)
+        mock_get.return_value.json.return_value = {"results": [record]}
+
+        counts = ParisBicycleCounterPoller.fetch_bicycle_counts()
+
+        assert len(counts) == 1
+        emitted_count = json.loads(counts[0].to_json())["count"]
+        assert type(emitted_count) is int
+        assert emitted_count == expected
+
+    @pytest.mark.parametrize("raw_count", [71.5, "invalid", True, float("nan"), float("inf"), 2**31])
+    @patch('paris_bicycle_counters.paris_bicycle_counters.requests.get')
+    def test_invalid_count_is_reported_without_dropping_other_records(self, mock_get, raw_count, capsys):
+        invalid = dict(SAMPLE_COUNTER_DATA_RESPONSE["results"][0], sum_counts=raw_count)
+        valid = SAMPLE_COUNTER_DATA_RESPONSE["results"][1]
+        mock_get.return_value.json.return_value = {"results": [invalid, valid]}
+
+        counts = ParisBicycleCounterPoller.fetch_bicycle_counts()
+
+        assert len(counts) == 1
+        assert counts[0].counter_id == valid["id_compteur"]
+        error = capsys.readouterr().err
+        assert "sum_counts" in error
+        assert invalid["id_compteur"] in error
+
     @patch('paris_bicycle_counters.paris_bicycle_counters.requests.get')
     def test_fetch_bicycle_counts_with_since_filter(self, mock_get):
         mock_response = Mock()

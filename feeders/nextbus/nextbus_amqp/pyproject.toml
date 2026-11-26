@@ -7,8 +7,9 @@ name = "nextbus-amqp"
 dynamic = ["version"]
 description = "AMQP companion feeder for Nextbus"
 requires-python = ">=3.10"
+# WORKAROUND(xregistry/codegen#714): Proton 0.41.1 corrupts AMQP properties and body.
 dependencies = [
-    "python-qpid-proton>=0.40.0",
+    "python-qpid-proton>=0.40.0,<0.41.0",
     "nextbus_core",
     "requests>=2.32.3",
 ]
