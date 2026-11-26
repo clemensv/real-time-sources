@@ -1,7 +1,7 @@
 """Verify the --once flag causes main() to exit after one polling cycle."""
 
 import sys
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch, MagicMock, call
 
 import bafu_hydro.bafu_hydro as bridge
 
@@ -54,12 +54,17 @@ def test_once_flag_exits_after_one_cycle(tmp_path, monkeypatch):
 
     sleep_mock = MagicMock()
     with patch.object(bridge, "Producer") as ProducerCls, \
-         patch.object(bridge.requests, "get", side_effect=_fake_get), \
+         patch.object(bridge.requests.Session, "get", side_effect=_fake_get) as get_mock, \
          patch.object(bridge.time, "sleep", sleep_mock):
         ProducerCls.return_value = MagicMock()
         bridge.main()
 
     sleep_mock.assert_not_called()
+    assert get_mock.call_args_list == [
+        call(f"{bridge.EXISTENZ_BASE_URL}/locations", timeout=60),
+        call(f"{bridge.EXISTENZ_BASE_URL}/latest", timeout=60),
+    ]
+    assert ProducerCls.return_value.produce.call_count == 2
 
 
 def test_once_via_env_var_exits_after_one_cycle(tmp_path, monkeypatch):
@@ -78,9 +83,14 @@ def test_once_via_env_var_exits_after_one_cycle(tmp_path, monkeypatch):
 
     sleep_mock = MagicMock()
     with patch.object(bridge, "Producer") as ProducerCls, \
-         patch.object(bridge.requests, "get", side_effect=_fake_get), \
+         patch.object(bridge.requests.Session, "get", side_effect=_fake_get) as get_mock, \
          patch.object(bridge.time, "sleep", sleep_mock):
         ProducerCls.return_value = MagicMock()
         bridge.main()
 
     sleep_mock.assert_not_called()
+    assert get_mock.call_args_list == [
+        call(f"{bridge.EXISTENZ_BASE_URL}/locations", timeout=60),
+        call(f"{bridge.EXISTENZ_BASE_URL}/latest", timeout=60),
+    ]
+    assert ProducerCls.return_value.produce.call_count == 2

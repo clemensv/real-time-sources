@@ -52,6 +52,9 @@ fixed sample IDs belong to explicitly selected mock mode.
 The live INPE MQTT case sets `SINCE_DATE` to a rolling 30-day window,
 matching the Kafka feeder's initial poll. It still queries both biomes
 and validates real alerts, without backfilling the entire WFS archive.
+Once-mode unit tests mock the HTTP method the client actually uses.
+The BAFU client uses `Session.get`; patching only `requests.get` leaves
+live network access in a test that is meant to be hermetic.
 
 ## Repository layout
 
