@@ -134,6 +134,8 @@ docker run --rm   -v "$PWD/state:/state"   -e STATE_FILE=/state/kmi-belgium.json
 | `USER_AGENT` | HTTP `User-Agent` header sent on upstream requests. Operators should override the default with their own contact string. |
 | `USER_AGENT_CONTACT` | Contact e-mail embedded in the `User-Agent` header for upstream operators. Override the default with your own address. |
 
+Live WFS GET requests retry connection failures, read failures, HTTP 429, and HTTP 500/502/503/504 up to four times after the initial attempt. Each attempt retains the 60-second request timeout. Retries use exponential backoff and honor `Retry-After`; exhaustion raises an error rather than substituting empty or synthetic data.
+
 ### Kafka image
 
 | Variable | Description |
@@ -157,6 +159,7 @@ docker run --rm   -v "$PWD/state:/state"   -e STATE_FILE=/state/kmi-belgium.json
 | `MQTT_CLIENT_ID` | Unique MQTT client identifier. |
 | `MQTT_CONTENT_MODE` | `binary` (default) or `structured`. |
 | `MQTT_ENTRA_AUDIENCE` | JWT audience for `entra` auth mode (default `https://eventgrid.azure.net/`). |
+| `KMI_BELGIUM_MOCK` | `true` selects one synthetic sample cycle without upstream HTTP or live state access; default `false`. Also available as `--mock`. |
 
 ### AMQP image
 
@@ -170,6 +173,18 @@ docker run --rm   -v "$PWD/state:/state"   -e STATE_FILE=/state/kmi-belgium.json
 | `AMQP_ENTRA_AUDIENCE` / `AMQP_ENTRA_CLIENT_ID` | Entra ID token settings for `entra` mode. |
 | `AMQP_SAS_KEY_NAME` / `AMQP_SAS_KEY` | SAS-token inputs for `sas` mode. |
 | `AMQP_CONTENT_MODE` | `binary` (default) or `structured`. |
+| `KMI_BELGIUM_MOCK` | `true` selects one synthetic sample cycle without upstream HTTP or live state access; default `false`. Also available as `--mock`. |
+
+### Synthetic acquisition for broker smoke tests
+
+For MQTT or AMQP, set `KMI_BELGIUM_MOCK=true` on the existing image, or pass `--mock` to the corresponding Python entry point:
+
+```bash
+python -m kmi_belgium_mqtt feed --mock
+python -m kmi_belgium_amqp feed --mock
+```
+
+Configure the broker and authentication as usual. The feeder publishes `Station` first, then `WeatherObservation` for station code `6418` with a fixed UTC observation timestamp and synthetic measurements. It completes one cycle even when `ONCE_MODE` is unset or false, without polling sleeps or any reads or writes to `STATE_FILE`. Broker connection, disconnect/close, and publish-error handling remain active. These events qualify synthetic acquisition and broker delivery; they do not prove live KMI availability. The Kafka image continues to use live acquisition.
 
 ## Deploying into Azure Container Instances
 

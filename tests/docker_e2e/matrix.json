@@ -2114,7 +2114,7 @@
       "image": "bafu-hydro-kafka",
       "file": "Dockerfile",
       "test_file": "test_docker_kafka_flow.py",
-      "test_class": "TestBafuHydroDockerFlow"
+      "test_class": "TestBafuHydroMockDockerFlow"
     },
     {
       "dir": "feeders/bafu-hydro",

@@ -152,6 +152,23 @@ For Entra-ID and SAS-CBS AMQP authentication variants, see [CONTAINER.md](CONTAI
 
 The complete environment-variable matrix for each image is documented in [CONTAINER.md](CONTAINER.md). Runtime entry points come from image `CMD`: Kafka ["python", "-m", "bafu_hydro", "feed"] MQTT ["python", "-m", "bafu_hydro_mqtt", "feed"] AMQP ["python", "-m", "bafu_hydro_amqp", "feed"].
 
+### Kafka CI and live qualification
+
+The Kafka CI matrix selects the explicit synthetic test below. It exercises
+the normal generated producer, a real Kafka broker, both event families, and
+the existing key, subject and payload-schema checks. It does not prove access
+to the live API. Run the retained live test separately from the repository
+root when upstream qualification is required:
+
+```powershell
+python -m pytest tests\docker_e2e\test_docker_kafka_flow.py::TestBAFUHydroMockDockerFlow -v
+python -m pytest tests\docker_e2e\test_docker_kafka_flow.py::TestBAFUHydroDockerFlow -v
+```
+
+GitHub-runner HTTP 403 responses are tracked in [#1766](https://github.com/clemensv/real-time-sources/issues/1766).
+Mock-mode success does not resolve that access failure. See
+[CONTAINER.md](CONTAINER.md#environment-variables) for explicit mock selection.
+
 ## Data model
 
 This feeder emits the following event families:

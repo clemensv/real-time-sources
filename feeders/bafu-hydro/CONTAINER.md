@@ -169,6 +169,15 @@ docker run --rm \
 | `USER_AGENT_CONTACT` | Contact e-mail embedded in the `User-Agent` header for upstream operators. Override the default with your own address. |
 | `MOCK_MODE` | Set to a truthy value to emit deterministic offline sample data instead of calling the live upstream (offline testing / Docker E2E). |
 
+For Kafka, `MOCK_MODE=true` (or `feed --mock`) publishes three synthetic
+Station events followed by three WaterLevelObservation events through the
+normal generated producer, then exits. It performs no upstream HTTP requests,
+state reads or writes, or polling sleep. Live mode remains the default; HTTP
+failures never select mock data automatically. Kafka batches use a 120-second
+flush timeout and raise if messages remain queued. Observation dedupe state
+advances only after that flush succeeds. A failed `--once` poll exits with an
+error instead of reporting a successful single-cycle run.
+
 ### Kafka image
 
 | Variable | Description |

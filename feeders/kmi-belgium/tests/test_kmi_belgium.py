@@ -1,10 +1,19 @@
 """Unit tests for the KMI Belgium weather bridge."""
 
+import json
+import socket
 import sys
+import threading
 import types
 from copy import deepcopy
 from dataclasses import dataclass
 from datetime import datetime, timezone
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+
+import pytest
+import requests
+from urllib3.util import connection as urllib3_connection
+from urllib3.util import retry as urllib3_retry
 
 
 confluent_kafka = types.ModuleType("confluent_kafka")
@@ -140,3 +149,136 @@ class TestGeoJsonParsing:
         assert by_code["6418"].longitude == 4.357
         assert by_code["6484"].latitude == 49.62
         assert by_code["6484"].longitude == 5.587
+
+
+@pytest.fixture
+def local_wfs(monkeypatch):
+    outcomes = []
+    paths = []
+    sleeps = []
+    release_timeouts = threading.Event()
+    monkeypatch.setattr(urllib3_retry.time, "sleep", sleeps.append)
+
+    class Handler(BaseHTTPRequestHandler):
+        def do_GET(self):
+            paths.append(self.path)
+            outcome = outcomes.pop(0) if outcomes else 200
+            if outcome == "reset":
+                self.connection.shutdown(socket.SHUT_RDWR)
+                self.connection.close()
+                return
+            if outcome == "timeout":
+                release_timeouts.wait(timeout=2)
+                return
+            body = json.dumps({"features": [SAMPLE_FEATURE]}).encode("utf-8")
+            self.send_response(outcome)
+            self.send_header("Content-Type", "application/json")
+            self.send_header("Content-Length", str(len(body)))
+            if outcome == 429:
+                self.send_header("Retry-After", "1")
+            self.end_headers()
+            self.wfile.write(body)
+
+        def log_message(self, *args):
+            pass
+
+    server = ThreadingHTTPServer(("127.0.0.1", 0), Handler)
+    worker = threading.Thread(target=server.serve_forever, kwargs={"poll_interval": 0.01}, daemon=True)
+    worker.start()
+    api = KMIBelgiumAPI(base_url=f"http://127.0.0.1:{server.server_port}/wfs")
+    api.session.trust_env = False
+    try:
+        yield api, outcomes, paths, sleeps
+    finally:
+        release_timeouts.set()
+        api.session.close()
+        server.shutdown()
+        server.server_close()
+        worker.join(timeout=2)
+        assert not worker.is_alive()
+
+
+@pytest.mark.parametrize("status", [429, 500, 502, 503, 504])
+def test_live_wfs_retries_transient_get_statuses_and_returns_features(local_wfs, status):
+    api, outcomes, paths, sleeps = local_wfs
+    outcomes.extend([status, status, 200])
+
+    assert api.get_observations() == [SAMPLE_FEATURE]
+
+    assert len(paths) == 3
+    assert sleeps == ([1, 1] if status == 429 else [2.0])
+
+
+def test_live_wfs_retry_exhaustion_is_an_error_after_five_attempts(local_wfs):
+    api, outcomes, paths, sleeps = local_wfs
+    outcomes.extend([502] * 5)
+
+    with pytest.raises(requests.exceptions.RetryError, match="502"):
+        api.get_observations()
+
+    assert len(paths) == 5
+    assert sleeps == [2.0, 4.0, 8.0]
+
+
+def test_live_wfs_does_not_retry_permanent_http_errors(local_wfs):
+    api, outcomes, paths, sleeps = local_wfs
+    outcomes.append(400)
+
+    with pytest.raises(requests.exceptions.HTTPError, match="400"):
+        api.get_observations()
+
+    assert len(paths) == 1
+    assert sleeps == []
+
+
+def test_live_wfs_retries_read_resets(local_wfs):
+    api, outcomes, paths, sleeps = local_wfs
+    outcomes.extend(["reset", "reset", 200])
+
+    assert api.get_observations() == [SAMPLE_FEATURE]
+
+    assert len(paths) == 3
+    assert sleeps == [2.0]
+
+
+def test_live_wfs_read_timeout_exhaustion_is_bounded(local_wfs, monkeypatch):
+    api, outcomes, paths, sleeps = local_wfs
+    outcomes.extend(["timeout"] * 5)
+    request = api.session.request
+
+    def short_timeout(method, url, **kwargs):
+        kwargs["timeout"] = (0.2, 0.05)
+        return request(method, url, **kwargs)
+
+    monkeypatch.setattr(api.session, "request", short_timeout)
+    with pytest.raises(requests.exceptions.ConnectionError, match="Read timed out"):
+        api.get_observations()
+
+    assert len(paths) == 5
+    assert sleeps == [2.0, 4.0, 8.0]
+
+
+@pytest.mark.parametrize("failed_connections", [2, 5])
+def test_live_wfs_connect_retries_are_bounded(local_wfs, monkeypatch, failed_connections):
+    api, _, paths, sleeps = local_wfs
+    connect = urllib3_connection.create_connection
+    attempts = []
+
+    def interrupted_connection(*args, **kwargs):
+        attempts.append(args[0])
+        if len(attempts) <= failed_connections:
+            raise ConnectionRefusedError("test connection refused")
+        return connect(*args, **kwargs)
+
+    monkeypatch.setattr(urllib3_connection, "create_connection", interrupted_connection)
+    if failed_connections == 5:
+        with pytest.raises(requests.exceptions.ConnectionError, match="test connection refused"):
+            api.get_observations()
+        assert len(attempts) == 5
+        assert paths == []
+        assert sleeps == [2.0, 4.0, 8.0]
+    else:
+        assert api.get_observations() == [SAMPLE_FEATURE]
+        assert len(attempts) == 3
+        assert len(paths) == 1
+        assert sleeps == [2.0]

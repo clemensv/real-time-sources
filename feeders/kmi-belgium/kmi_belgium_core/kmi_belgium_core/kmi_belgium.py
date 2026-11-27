@@ -9,6 +9,8 @@ from datetime import datetime, timezone
 from typing import Any
 
 import requests
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
 
 from kmi_belgium_producer_data import Station, WeatherObservation
 
@@ -50,6 +52,18 @@ class KMIBelgiumAPI:
         self.base_url = base_url
         self.polling_interval = polling_interval
         self.session = requests.Session()
+        retries = Retry(
+            total=4,
+            connect=4,
+            read=4,
+            status=4,
+            backoff_factor=1,
+            status_forcelist=(429, 500, 502, 503, 504),
+            allowed_methods=frozenset({"GET"}),
+            respect_retry_after_header=True,
+        )
+        self.session.mount("https://", HTTPAdapter(max_retries=retries))
+        self.session.mount("http://", HTTPAdapter(max_retries=retries))
         self.session.headers["User-Agent"] = USER_AGENT
 
     def get_observations(self, last_timestamp: str | None = None, count: int | None = None) -> list[dict[str, Any]]:
@@ -119,6 +133,30 @@ class KMIBelgiumAPI:
         if len(coordinates) < 2:
             raise ValueError("GeoJSON feature is missing [longitude, latitude] coordinates")
         return float(coordinates[0]), float(coordinates[1])
+
+
+class MockKMIBelgiumAPI(KMIBelgiumAPI):
+    """Deterministic acquisition for a single broker smoke-test cycle."""
+
+    def __init__(self, polling_interval: int = 600) -> None:
+        self.polling_interval = polling_interval
+
+    def get_observations(self, last_timestamp: str | None = None, count: int | None = None) -> list[dict[str, Any]]:
+        return [{
+            "type": "Feature",
+            "id": "aws_10min.mock-6418",
+            "geometry": {"type": "Point", "coordinates": [4.357, 50.797]},
+            "properties": {
+                "code": 6418,
+                "timestamp": "2024-05-01T10:20:00Z",
+                "precip_quantity": 0.0,
+                "temp_dry_shelter_avg": 12.5,
+                "wind_speed_10m": 3.2,
+                "humidity_rel_shelter_avg": 70.0,
+                "pressure": 1013.2,
+                "region": None,
+            },
+        }]
 
 
 def _to_float(value: Any) -> float | None:

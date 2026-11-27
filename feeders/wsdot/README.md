@@ -162,6 +162,13 @@ This source emits the following event families (see [EVENTS.md](EVENTS.md) for f
 - **us.wa.wsdot.bridgeclearances** — 1 event type(s): us.wa.wsdot.bridgeclearances.BridgeClearance.
 - **us.wa.wsdot.ferryterminals** — 1 event type(s): us.wa.wsdot.ferryterminals.TerminalSailingSpace.
 
+Bridge-clearance events retain the `crossing_location_id` field, subject,
+and Kafka key template. The Kafka bridge uses `CrossingLocationId` when
+present, including zero, and otherwise uses `CrossingRecordGuid` from the
+[current clearance API](https://wsdot.wa.gov/traffic/api/Documentation/class_clearance.html).
+A record with neither identifier is reported and skipped; it is never
+published with an empty identity.
+
 <!-- source-deploy:begin -->
 ## Deploy
 

@@ -22,6 +22,7 @@ import socket
 import time
 import warnings
 from contextlib import closing
+from datetime import datetime, timedelta, timezone
 from functools import lru_cache
 from typing import Any, Dict, List, Mapping, Tuple
 
@@ -5587,6 +5588,7 @@ def _assert_mqtt_contract_messages(project_dir: str, messages: List[Dict[str, An
                 f"Subject {props['ce_subject']!r} does not match template {contract['subject_template']!r}"
             )
         if strict:
+            _merge_template_values(contract['topic'], sample['topic'], context)
             assert sample['topic'] == _render_mqtt_template(contract['topic'], context)
             if contract.get('subject_template'):
                 assert props['ce_subject'] == _render_mqtt_template(contract['subject_template'], context)
@@ -5675,7 +5677,13 @@ def mosquitto_inpe_deter_brazil():
 
 class TestInpeDeterBrazilMqttDockerFlow:
     def test_emits_mqtt_uns_topics(self, mosquitto_inpe_deter_brazil, inpe_deter_brazil_mqtt_image):
-        _run_mqtt_contract_flow('inpe-deter-brazil', inpe_deter_brazil_mqtt_image, mosquitto_inpe_deter_brazil)
+        since_date = (datetime.now(timezone.utc) - timedelta(days=30)).date().isoformat()
+        _run_mqtt_contract_flow(
+            'inpe-deter-brazil',
+            inpe_deter_brazil_mqtt_image,
+            mosquitto_inpe_deter_brazil,
+            extra_env={'SINCE_DATE': since_date},
+        )
 
 
 @pytest.fixture(scope='module')
@@ -6486,12 +6494,37 @@ class TestNwsForecastsMqttDockerFlow(_B3SimpleMqttFlow):
     expected_count = 3
     expected_prefix = ['weather/us/noaa/nws-forecasts/wa/public/WAZ315/', 'weather/us/noaa/nws-forecasts/pz/marine/PZZ135/']
 
-class TestSingaporeNeaMqttDockerFlow(_B3SimpleMqttFlow):
+class TestSingaporeNeaMqttDockerFlow:
     source_dir = 'singapore-nea'
     image = 'singapore-nea-mqtt'
-    topic_filter = '#'
-    expected_count = 5
-    expected_prefix = ['weather/sg/nea/singapore-nea/central/S109/', 'air-quality/sg/nea/singapore-nea/central/central/']
+
+    def test_emits_expected_mqtt_topics(self):
+        broker, network, host_port, broker_ip = _generic_mosquitto(
+            f'{self.image}-e2e', f'{self.image}-e2e-broker'
+        )
+        try:
+            image = build_image(self.source_dir, dockerfile='Dockerfile.mqtt', tag=f'test-{self.image}')
+            _run_mqtt_contract_flow(
+                self.source_dir, image,
+                {'host_port': host_port, 'internal_host': broker_ip, 'internal_port': 1883, 'network': network.name},
+                required_types={
+                    'SG.Gov.NEA.Weather.Station',
+                    'SG.Gov.NEA.Weather.WeatherObservation',
+                    'SG.Gov.NEA.AirQuality.Region',
+                    'SG.Gov.NEA.AirQuality.PSIReading',
+                    'SG.Gov.NEA.AirQuality.PM25Reading',
+                },
+                min_messages=5, timeout=240, strict=True,
+            )
+        finally:
+            try:
+                broker.kill()
+            except docker.errors.APIError:
+                pass
+            try:
+                network.remove()
+            except docker.errors.APIError:
+                pass
 
 
 class TestJmaBosaiAmedasMqttDockerFlow:

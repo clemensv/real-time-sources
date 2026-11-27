@@ -406,7 +406,7 @@ def _resolve_message_inheritance(
     """
     if depth > 5:
         raise AssertionError('basemessageuri chain too deep')
-    base_url = message.get('basemessageuri')
+    base_url = message.get('basemessageuri') or message.get('basemessage')
     if not base_url:
         return message
     base_pointer = '#' + base_url if base_url.startswith('/') else base_url
@@ -414,7 +414,7 @@ def _resolve_message_inheritance(
     base_resolved = _resolve_message_inheritance(document, base_message, depth + 1)
     merged = dict(base_resolved)
     for key, value in message.items():
-        if key == 'basemessageuri':
+        if key in ('basemessageuri', 'basemessage'):
             continue
         merged[key] = value
     return merged

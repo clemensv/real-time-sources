@@ -15,6 +15,7 @@ authors = [
     { name = "Clemens Vasters", email = "clemensv@microsoft.com" },
 ]
 requires-python = ">=3.10,<4.0"
+# WORKAROUND(xregistry/codegen#714): Proton 0.41.1 corrupts AMQP properties and body.
 dependencies = [
     "autobahn_core",
     "avro>=1.12.1",
@@ -22,7 +23,7 @@ dependencies = [
     "azure-identity>=1.17.0",
     "cloudevents>=1.11.0,<2.0.0",
     "dataclasses_json>=0.6.7",
-    "python-qpid-proton>=0.40.0",
+    "python-qpid-proton>=0.40.0,<0.41.0",
 ]
 
 [project.scripts]

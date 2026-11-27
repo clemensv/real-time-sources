@@ -10,6 +10,8 @@ from datetime import datetime
 from typing import Dict, List, Optional, Set, Tuple
 
 import requests
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
 
 from paris_bicycle_counters_producer_data import BicycleCount, Counter
 
@@ -20,6 +22,20 @@ USER_AGENT = os.environ.get("USER_AGENT") or (
     "(+https://github.com/clemensv/real-time-sources; "
     + os.environ.get("USER_AGENT_CONTACT", "clemensv@microsoft.com") + ")"
 )
+
+
+def _create_http_session() -> requests.Session:
+    retry = Retry(
+        total=3,
+        backoff_factor=0.5,
+        allowed_methods={"GET"},
+        status_forcelist=(429, 500, 502, 503, 504),
+        raise_on_status=False,
+    )
+    session = requests.Session()
+    for scheme in ("http://", "https://"):
+        session.mount(scheme, HTTPAdapter(max_retries=retry))
+    return session
 
 
 def ce_datetime(value: datetime) -> str:
@@ -68,37 +84,38 @@ class ParisBicycleCounterPoller:
         counters: List[Counter] = []
         offset = 0
         limit = 100
-        while True:
-            params = {"limit": limit, "offset": offset}
-            response = requests.get(COUNTER_LOCATIONS_URL, params=params, headers={"User-Agent": USER_AGENT}, timeout=30)
-            response.raise_for_status()
-            data = response.json()
-            results = data.get("results", [])
-            if not results:
-                break
-            for record in results:
-                coords = record.get("coordinates") or {}
-                counter_id = record.get("id_compteur", "")
-                if not is_topic_safe_segment(counter_id):
-                    print(f"Skipping counter with MQTT-unsafe id_compteur={counter_id!r}", file=sys.stderr)
-                    continue
-                fields = {
-                    "counter_name": record.get("nom_compteur", ""),
-                    "channel_name": record.get("channel_name"),
-                    "installation_date": record.get("installation_date"),
-                    "longitude": coords.get("lon"),
-                    "latitude": coords.get("lat"),
-                }
-                counters.append(
-                    Counter(
-                        ce_id=counter_info_ce_id(counter_id, fields),
-                        counter_id=counter_id,
-                        **fields,
+        with _create_http_session() as session:
+            while True:
+                params = {"limit": limit, "offset": offset}
+                response = session.get(COUNTER_LOCATIONS_URL, params=params, headers={"User-Agent": USER_AGENT}, timeout=30)
+                response.raise_for_status()
+                data = response.json()
+                results = data.get("results", [])
+                if not results:
+                    break
+                for record in results:
+                    coords = record.get("coordinates") or {}
+                    counter_id = record.get("id_compteur", "")
+                    if not is_topic_safe_segment(counter_id):
+                        print(f"Skipping counter with MQTT-unsafe id_compteur={counter_id!r}", file=sys.stderr)
+                        continue
+                    fields = {
+                        "counter_name": record.get("nom_compteur", ""),
+                        "channel_name": record.get("channel_name"),
+                        "installation_date": record.get("installation_date"),
+                        "longitude": coords.get("lon"),
+                        "latitude": coords.get("lat"),
+                    }
+                    counters.append(
+                        Counter(
+                            ce_id=counter_info_ce_id(counter_id, fields),
+                            counter_id=counter_id,
+                            **fields,
+                        )
                     )
-                )
-            if len(results) < limit:
-                break
-            offset += limit
+                if len(results) < limit:
+                    break
+                offset += limit
         return counters
 
     @staticmethod
@@ -108,49 +125,57 @@ class ParisBicycleCounterPoller:
         offset = 0
         limit = 100
         max_offset = 10000 - limit
-        while True:
-            params: Dict[str, object] = {"limit": limit, "offset": offset}
-            if since:
-                params["where"] = f"date >= '{since.strftime('%Y-%m-%dT%H:%M:%S')}'"
-            try:
-                response = requests.get(COUNTER_DATA_URL, params=params, headers={"User-Agent": USER_AGENT}, timeout=30)  # type: ignore[arg-type]
-                response.raise_for_status()
-            except requests.HTTPError as error:
-                print(f"Stopping pagination at offset {offset}: {error}", file=sys.stderr)
-                break
-            data = response.json()
-            results = data.get("results", [])
-            if not results:
-                break
-            for record in results:
-                coords = record.get("coordinates") or {}
-                date_str = record.get("date")
-                if not date_str:
-                    continue
+        with _create_http_session() as session:
+            while True:
+                params: Dict[str, object] = {"limit": limit, "offset": offset}
+                if since:
+                    params["where"] = f"date >= '{since.strftime('%Y-%m-%dT%H:%M:%S')}'"
                 try:
-                    date_val = datetime.fromisoformat(date_str.replace("Z", "+00:00"))
-                except (ValueError, TypeError):
-                    continue
-                counter_id = record.get("id_compteur", "")
-                if not is_topic_safe_segment(counter_id):
-                    print(f"Skipping count with MQTT-unsafe id_compteur={counter_id!r}", file=sys.stderr)
-                    continue
-                counts.append(
-                    BicycleCount(
-                        ce_id=f"{counter_id}/{ce_datetime(date_val)}/count",
-                        counter_id=counter_id,
-                        counter_name=record.get("nom_compteur", ""),
-                        count=record.get("sum_counts"),
-                        date=date_val,
-                        longitude=coords.get("lon"),
-                        latitude=coords.get("lat"),
+                    response = session.get(COUNTER_DATA_URL, params=params, headers={"User-Agent": USER_AGENT}, timeout=30)  # type: ignore[arg-type]
+                    response.raise_for_status()
+                except requests.HTTPError as error:
+                    print(f"Stopping pagination at offset {offset}: {error}", file=sys.stderr)
+                    break
+                data = response.json()
+                results = data.get("results", [])
+                if not results:
+                    break
+                for record in results:
+                    coords = record.get("coordinates") or {}
+                    date_str = record.get("date")
+                    if not date_str:
+                        continue
+                    try:
+                        date_val = datetime.fromisoformat(date_str.replace("Z", "+00:00"))
+                    except (ValueError, TypeError):
+                        continue
+                    counter_id = record.get("id_compteur", "")
+                    if not is_topic_safe_segment(counter_id):
+                        print(f"Skipping count with MQTT-unsafe id_compteur={counter_id!r}", file=sys.stderr)
+                        continue
+                    count = record.get("sum_counts")
+                    if count is not None:
+                        if isinstance(count, float) and count.is_integer():
+                            count = int(count)
+                        if isinstance(count, bool) or not isinstance(count, int) or not -(2**31) <= count < 2**31:
+                            print(f"Skipping count with invalid sum_counts={count!r} for {counter_id}", file=sys.stderr)
+                            continue
+                    counts.append(
+                        BicycleCount(
+                            ce_id=f"{counter_id}/{ce_datetime(date_val)}/count",
+                            counter_id=counter_id,
+                            counter_name=record.get("nom_compteur", ""),
+                            count=count,
+                            date=date_val,
+                            longitude=coords.get("lon"),
+                            latitude=coords.get("lat"),
+                        )
                     )
-                )
-            if len(results) < limit:
-                break
-            offset += limit
-            if offset > max_offset:
-                break
+                if len(results) < limit:
+                    break
+                offset += limit
+                if offset > max_offset:
+                    break
         return counts
 
     @staticmethod

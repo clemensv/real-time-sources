@@ -37,6 +37,25 @@ python -m <source_package> feed --once
 
 with the appropriate `CONNECTION_STRING` env var set.
 
+AMQP applications and the Docker E2E runner cap `python-qpid-proton` below
+0.41.0 until [xregistry/codegen#714](https://github.com/xregistry/codegen/issues/714)
+is resolved. Version 0.41.1 loses application properties and the message body
+at a map8 encoding boundary. The AMQP Docker E2E test checks that boundary
+inside each built image before testing delivery through the broker.
+Keep the cap in handwritten application manifests; do not edit generated
+producer dependencies.
+AMQP payload validation follows endpoint message inheritance and selected
+schema versions. It resolves format declarations from the version, resource,
+or schema group and excludes Avro declarations from the JSON flow.
+Live MQTT tests validate current entity IDs and required event families;
+fixed sample IDs belong to explicitly selected mock mode.
+The live INPE MQTT case sets `SINCE_DATE` to a rolling 30-day window,
+matching the Kafka feeder's initial poll. It still queries both biomes
+and validates real alerts, without backfilling the entire WFS archive.
+Once-mode unit tests mock the HTTP method the client actually uses.
+The BAFU client uses `Session.get`; patching only `requests.get` leaves
+live network access in a test that is meant to be hermetic.
+
 ## Repository layout
 
 - `feeders/<source>/` — per-source code, Docker, ARM templates, xreg

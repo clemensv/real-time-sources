@@ -7,7 +7,8 @@ name = "usgs-waterdata-amqp"
 dynamic = ["version"]
 description = "Native USGS Water Data AMQP 1.0 CloudEvents publisher"
 requires-python = ">=3.10,<4.0"
-dependencies = ["usgs-waterdata", "azure-identity>=1.17", "python-qpid-proton>=0.40", "usgs-waterdata-amqp-producer-data", "usgs-waterdata-amqp-producer-amqp-producer"]
+# WORKAROUND(xregistry/codegen#714): Proton 0.41.1 corrupts map8 application properties.
+dependencies = ["usgs-waterdata", "azure-identity>=1.17", "python-qpid-proton>=0.40,<0.41.0", "usgs-waterdata-amqp-producer-data", "usgs-waterdata-amqp-producer-amqp-producer"]
 
 [tool.setuptools_scm]
 root = "../../.."

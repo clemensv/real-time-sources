@@ -7,9 +7,10 @@ name = "wikimedia-eventstreams-amqp"
 version = "0.1.0"
 description = "AMQP 1.0 feeder for Wikimedia EventStreams"
 requires-python = ">=3.10"
+# WORKAROUND(xregistry/codegen#714): Proton 0.41.1 corrupts AMQP properties and body.
 dependencies = [
     "wikimedia_eventstreams_core",
-    "python-qpid-proton>=0.40.0",
+    "python-qpid-proton>=0.40.0,<0.41.0",
     "cloudevents>=1.11.0,<2.0.0",
     "dataclasses_json>=0.6.7",
     "avro>=1.11.3",

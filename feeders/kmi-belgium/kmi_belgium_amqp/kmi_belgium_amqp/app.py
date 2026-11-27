@@ -13,7 +13,7 @@ try:
 except Exception:
     symbol = lambda value: value  # type: ignore
 
-from kmi_belgium_core import KMIBelgiumAPI, _format_timestamp, _load_state, _save_state, extract_stations
+from kmi_belgium_core import KMIBelgiumAPI, MockKMIBelgiumAPI, _format_timestamp, _load_state, _save_state, extract_stations
 from kmi_belgium_amqp_producer_amqp_producer.producer import BEGovKMIWeatherAmqpProducer
 
 logger = logging.getLogger(__name__)
@@ -80,8 +80,10 @@ def _build_amqp_producer(args):
     return _apply_partition_key_workaround(BEGovKMIWeatherAmqpProducer(**kwargs))
 
 async def _run_live(args: argparse.Namespace, producer: BEGovKMIWeatherAmqpProducer) -> None:
-    api = KMIBelgiumAPI(polling_interval=args.polling_interval)
-    previous_readings = _load_state(args.state_file)
+    api = MockKMIBelgiumAPI(polling_interval=args.polling_interval) if args.mock else KMIBelgiumAPI(polling_interval=args.polling_interval)
+    previous_readings = {} if args.mock else _load_state(args.state_file)
+    if args.mock:
+        logger.info("Synthetic KMI acquisition: one sample cycle; live state is untouched")
     stations = extract_stations(api.get_latest_observations())
     for station in stations:
         producer.send_station(data=station, _station_code=station.station_code, _region=_segment(station.region or "unknown"))  # type: ignore[arg-type]
@@ -103,8 +105,9 @@ async def _run_live(args: argparse.Namespace, producer: BEGovKMIWeatherAmqpProdu
             sent += 1
         if latest_observation_time is not None:
             previous_readings["__last_timestamp__"] = _format_timestamp(latest_observation_time)
-        _save_state(args.state_file, previous_readings)
-        if args.once:
+        if not args.mock:
+            _save_state(args.state_file, previous_readings)
+        if args.once or args.mock:
             break
         await asyncio.sleep(args.polling_interval)
 
@@ -128,6 +131,8 @@ def main() -> None:
     parser.add_argument("--state-file", default=os.getenv("STATE_FILE", os.path.expanduser(r"~/.kmi_belgium_amqp_state.json")))
     parser.add_argument("--polling-interval", type=int, default=int(os.getenv("POLLING_INTERVAL", "600")))
     parser.add_argument("--once", action="store_true", default=_env_bool("ONCE_MODE", False))
+    parser.add_argument("--mock", action="store_true", default=_env_bool("KMI_BELGIUM_MOCK", False),
+                        help="Publish one synthetic sample cycle without upstream HTTP or live state access.")
     args = parser.parse_args()
     producer = _build_amqp_producer(args)
     try:

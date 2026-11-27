@@ -46,7 +46,7 @@ from kystverket_ais_amqp_producer_data import (
 )
 from kystverket_ais_amqp_producer_amqp_producer.producer import NOKystverketAISAmqpProducer
 
-from kystverket_ais_core import NMEADecoder, DecodedAIS
+from kystverket_ais_core import NMEADecoder, DecodedAIS, mock_ais_corpus
 from kystverket_ais_core import TCPSource, RawNMEASentence
 
 from .enrichment import (
@@ -316,6 +316,10 @@ class KystverketAisAmqpBridge:
                     geohash5=data.geohash5, data=data, qos=0, retain=False,
                 )
 
+    async def emit_mock_corpus(self) -> None:
+        """Publish one synthetic message per family without opening TCP."""
+        for decoded in mock_ais_corpus():
+            await self.dispatch(decoded)
 
 
 import argparse
@@ -408,7 +412,11 @@ async def _run(args: argparse.Namespace) -> None:
     client = KystverketAisAmqpClient(producer)
     bridge = KystverketAisAmqpBridge(client, tcp_host=args.tcp_host, tcp_port=args.tcp_port)
     try:
-        await bridge.run(max_events=args.max_events)
+        if args.mock:
+            logger.info("Mock mode: emitting synthetic Kystverket AIS corpus and exiting")
+            await bridge.emit_mock_corpus()
+        else:
+            await bridge.run(max_events=args.max_events)
     finally:
         producer.close()
 
@@ -434,6 +442,9 @@ def main() -> None:
     feed.add_argument("--tcp-host", default=os.getenv("AIS_TCP_HOST", KystverketAisAmqpBridge.DEFAULT_TCP_HOST))
     feed.add_argument("--tcp-port", type=int, default=int(os.getenv("AIS_TCP_PORT", str(KystverketAisAmqpBridge.DEFAULT_TCP_PORT))))
     feed.add_argument("--max-events", type=int, default=int(os.getenv("KYSTVERKET_AIS_MAX_EVENTS", "0")) or None)
+    feed.add_argument("--mock", action="store_true",
+                      default=os.getenv("KYSTVERKET_AIS_MOCK", "false").lower() in ("true", "1", "yes"),
+                      help="Skip live TCP, emit one synthetic event per family, then exit")
     args = p.parse_args()
     if args.command != "feed":
         p.print_help(); sys.exit(1)

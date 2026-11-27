@@ -130,6 +130,10 @@ docker run --rm \
 
 ## Using the AMQP image
 
+Each poll acquires its reference and measurement data before opening the AMQP connection. It publishes counter reference events first, then measurements, and closes the connection before the polling interval. Slow HTTP acquisition therefore cannot leave a blocking AMQP connection idle until the broker expires it. Delivery failures propagate and leave persisted dedupe state unchanged.
+
+HTTP GETs retry connection resets, HTTP 429, and selected 5xx responses up to three times with backoff. The request timeout remains 30 seconds per attempt. Exhausted failures remain visible through exceptions or the existing pagination diagnostic.
+
 ### Generic AMQP 1.0 broker (SASL PLAIN)
 
 ```bash
@@ -177,7 +181,7 @@ docker run --rm \
 | Variable | Description |
 |---|---|
 | `PARIS_BICYCLE_COUNTERS_MQTT_STATE_FILE` | Path to the MQTT image dedupe state file; falls back to `STATE_FILE` when unset. |
-| `PARIS_BICYCLE_COUNTERS_MOCK` | Set to a truthy value to emit deterministic offline sample data instead of calling the live counter API (offline testing / Docker E2E). |
+| `PARIS_BICYCLE_COUNTERS_MOCK` | The AMQP image accepts this unsupported option with a warning and still acquires live data; it does not select an offline fixture. |
 
 ### Common
 

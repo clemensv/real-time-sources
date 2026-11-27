@@ -10,10 +10,15 @@ import re
 import sys
 import time
 from datetime import datetime
-from typing import Dict, List, Tuple
+from typing import TYPE_CHECKING, Dict, List, Tuple
 
 import requests
 from confluent_kafka import Producer
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
+
+if TYPE_CHECKING:
+    from urllib3.response import BaseHTTPResponse
 
 from epa_uv_producer_data import DailyForecast, HourlyForecast
 try:
@@ -40,6 +45,15 @@ HOURLY_URL = "https://data.epa.gov/dmapservice/getEnvirofactsUVHOURLY/CITY/{city
 DAILY_URL = "https://data.epa.gov/dmapservice/getEnvirofactsUVDAILY/CITY/{city}/STATE/{state}/JSON"
 DEFAULT_POLL_INTERVAL_SECONDS = 21600
 MAX_SEEN_IDS = 20000
+
+
+class _ForecastRetry(Retry):
+    RETRY_AFTER_STATUS_CODES = frozenset({429, 503})
+
+    def get_retry_after(self, response: BaseHTTPResponse) -> float | None:
+        """Keep server-directed waits within the single-cycle retry budget."""
+        delay = super().get_retry_after(response)
+        return min(delay, 5) if delay is not None else None
 
 
 def slugify(text: str) -> str:
@@ -148,6 +162,19 @@ class EPAUVBridge:
         self.locations = locations
         self.state_file = state_file
         self.session = requests.Session()
+        retries = _ForecastRetry(
+            total=3,
+            connect=3,
+            read=3,
+            status=3,
+            backoff_factor=0.5,
+            status_forcelist=(404, 429, *range(500, 600)),
+            allowed_methods=frozenset({"GET"}),
+            respect_retry_after_header=True,
+            raise_on_status=False,
+        )
+        self.session.mount("https://", HTTPAdapter(max_retries=retries))
+        self.session.mount("http://", HTTPAdapter(max_retries=retries))
         self.session.headers["User-Agent"] = USER_AGENT
         state = _load_state(state_file)
         self.hourly_order = [str(value) for value in state.get("seen_hourly_ids", [])][-MAX_SEEN_IDS:]
@@ -175,14 +202,14 @@ class EPAUVBridge:
 
     def fetch_hourly(self, city: str, state: str) -> List[HourlyForecast]:
         """Fetch hourly UV forecasts for one location."""
-        response = self.session.get(HOURLY_URL.format(city=city, state=state), timeout=60)
+        response = self.session.get(HOURLY_URL.format(city=city, state=state), timeout=(5, 20))
         response.raise_for_status()
         rows = response.json()
         return [parse_hourly_row(city, state, row) for row in rows]
 
     def fetch_daily(self, city: str, state: str) -> List[DailyForecast]:
         """Fetch daily UV forecasts for one location."""
-        response = self.session.get(DAILY_URL.format(city=city, state=state), timeout=60)
+        response = self.session.get(DAILY_URL.format(city=city, state=state), timeout=(5, 20))
         response.raise_for_status()
         rows = response.json()
         return [parse_daily_row(city, state, row) for row in rows]
