@@ -1,8 +1,14 @@
 """Unit tests for the EPA UV bridge."""
 
+import json
+from http.server import BaseHTTPRequestHandler, HTTPServer
+from threading import Thread
 from unittest.mock import Mock, patch
 
 import pytest
+import requests
+
+from epa_uv import epa_uv as bridge_module
 
 from epa_uv.epa_uv import (
     DAILY_URL,
@@ -59,6 +65,70 @@ class TestFetch:
         assert len(daily) == 1
         assert bridge.session.get.call_args_list[0].args[0] == HOURLY_URL.format(city="Seattle", state="WA")
         assert bridge.session.get.call_args_list[1].args[0] == DAILY_URL.format(city="Seattle", state="WA")
+
+    @pytest.mark.parametrize(
+        "family,statuses",
+        [
+            pytest.param("hourly", [404, 200], id="transient-hourly-404"),
+            pytest.param("daily", [502, 200], id="transient-daily-502"),
+            pytest.param("hourly", [404, 404, 404, 404], id="exhausted-hourly-404"),
+            pytest.param("daily", [400], id="non-retryable-daily-400"),
+            pytest.param("daily", [413], id="non-retryable-retry-after"),
+            pytest.param("daily", [429, 200], id="bounded-retry-after"),
+            pytest.param("hourly", [503, 503, 503, 503], id="exhausted-hourly-503"),
+            pytest.param("hourly", [None, 200], id="connection-reset"),
+            pytest.param("daily", [None, None, None, None], id="exhausted-connection-resets"),
+        ],
+    )
+    def test_retries_transient_responses_but_surfaces_terminal_errors(self, monkeypatch, family, statuses):
+        calls = []
+        delays = []
+        rows = HOURLY_ROWS if family == "hourly" else DAILY_ROWS
+        monkeypatch.setattr("urllib3.util.retry.time.sleep", delays.append)
+
+        class Handler(BaseHTTPRequestHandler):
+            def do_GET(self):
+                status = statuses[min(len(calls), len(statuses) - 1)]
+                calls.append(self.path)
+                if status is None:
+                    self.close_connection = True
+                    return
+                self.send_response(status)
+                self.send_header("Content-Type", "application/json")
+                if status in (413, 429):
+                    self.send_header("Retry-After", "3600")
+                self.end_headers()
+                self.wfile.write(json.dumps(rows if status == 200 else {"error": "fixture"}).encode("utf-8"))
+
+            def log_message(self, *args):
+                pass
+
+        server = HTTPServer(("127.0.0.1", 0), Handler)
+        thread = Thread(target=server.serve_forever, daemon=True)
+        thread.start()
+        bridge = None
+        try:
+            monkeypatch.setattr(bridge_module, f"{family.upper()}_URL", f"http://127.0.0.1:{server.server_port}/forecast")
+            bridge = EPAUVBridge([("Seattle", "WA")])
+            fetch = bridge.fetch_hourly if family == "hourly" else bridge.fetch_daily
+            if statuses[-1] == 200:
+                assert len(fetch("Seattle", "WA")) == len(rows)
+            elif statuses[-1] is None:
+                with pytest.raises(requests.ConnectionError):
+                    fetch("Seattle", "WA")
+            else:
+                with pytest.raises(requests.HTTPError, match=str(statuses[-1])):
+                    fetch("Seattle", "WA")
+            assert len(calls) == len(statuses)
+            assert all(0 < delay <= 5 for delay in delays)
+            if 429 in statuses:
+                assert delays == [5]
+        finally:
+            if bridge is not None:
+                bridge.session.close()
+            server.shutdown()
+            thread.join(timeout=5)
+            server.server_close()
 
 
 @pytest.mark.unit

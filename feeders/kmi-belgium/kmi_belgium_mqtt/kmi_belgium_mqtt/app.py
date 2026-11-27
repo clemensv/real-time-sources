@@ -13,7 +13,7 @@ from urllib.request import Request, urlopen
 import paho.mqtt.client as mqtt
 from paho.mqtt.client import CallbackAPIVersion, MQTTv5
 
-from kmi_belgium_core import KMIBelgiumAPI, _format_timestamp, _load_state, _save_state, extract_stations
+from kmi_belgium_core import KMIBelgiumAPI, MockKMIBelgiumAPI, _format_timestamp, _load_state, _save_state, extract_stations
 from kmi_belgium_mqtt_producer_mqtt_client.client import BEGovKMIWeatherMqttMqttClient
 
 logger = logging.getLogger(__name__)
@@ -60,8 +60,10 @@ def _segment(value) -> str:
     return "-".join(text.split()) or "unknown"
 
 async def _run_live(args: argparse.Namespace, mqtt_client: BEGovKMIWeatherMqttMqttClient) -> None:
-    api = KMIBelgiumAPI(polling_interval=args.polling_interval)
-    previous_readings = _load_state(args.state_file)
+    api = MockKMIBelgiumAPI(polling_interval=args.polling_interval) if args.mock else KMIBelgiumAPI(polling_interval=args.polling_interval)
+    previous_readings = {} if args.mock else _load_state(args.state_file)
+    if args.mock:
+        logger.info("Synthetic KMI acquisition: one sample cycle; live state is untouched")
     stations = extract_stations(api.get_latest_observations())
     for station in stations:
         await mqtt_client.publish_be_gov_kmi_weather_mqtt_station(station_code=station.station_code, region=_segment(station.region or "unknown"), data=station)  # type: ignore[arg-type]
@@ -83,8 +85,9 @@ async def _run_live(args: argparse.Namespace, mqtt_client: BEGovKMIWeatherMqttMq
             sent += 1
         if latest_observation_time is not None:
             previous_readings["__last_timestamp__"] = _format_timestamp(latest_observation_time)
-        _save_state(args.state_file, previous_readings)
-        if args.once:
+        if not args.mock:
+            _save_state(args.state_file, previous_readings)
+        if args.once or args.mock:
             break
         await asyncio.sleep(args.polling_interval)
 
@@ -96,6 +99,8 @@ def main() -> None:
     parser.add_argument("--state-file", default=os.getenv("STATE_FILE", os.path.expanduser(r"~/.kmi_belgium_mqtt_state.json")))
     parser.add_argument("--polling-interval", type=int, default=int(os.getenv("POLLING_INTERVAL", "600")))
     parser.add_argument("--once", action="store_true", default=os.getenv("ONCE_MODE", "").lower() in ("1", "true", "yes"))
+    parser.add_argument("--mock", action="store_true", default=os.getenv("KMI_BELGIUM_MOCK", "").lower() in ("1", "true", "yes", "on"),
+                        help="Publish one synthetic sample cycle without upstream HTTP or live state access.")
     parser.add_argument("--username", default=os.getenv("MQTT_USERNAME", ""))
     parser.add_argument("--password", default=os.getenv("MQTT_PASSWORD", ""))
     parser.add_argument("--client-id", default=os.getenv("MQTT_CLIENT_ID", ""))

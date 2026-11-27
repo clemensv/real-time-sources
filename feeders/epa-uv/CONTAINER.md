@@ -131,7 +131,13 @@ docker run --rm   -v "$PWD/state:/state"   -e EPA_UV_STATE_FILE=/state/epa-uv.js
 
 | Variable | Description |
 |---|---|
-| `EPA_UV_MOCK` | Set to a truthy value to emit deterministic synthetic UV observations instead of calling the live EPA API (offline testing / Docker E2E). |
+| `EPA_UV_MOCK` | AMQP image only: set to a truthy value to emit deterministic synthetic UV forecasts for offline testing. Kafka and MQTT always call the live EPA API. |
+
+### Upstream HTTP retries and errors
+
+All three images use the documented EPA Envirofacts hourly and daily forecast endpoints. Each GET allows at most three retries (four attempts total) for connection/read failures, HTTP 429, HTTP 5xx, and transient HTTP 404 responses observed on these forecast services. Other HTTP errors, including 400 and 403, are not retried.
+
+Each attempt has a 5-second connection timeout and a 20-second read timeout. Retries use a 0.5-second exponential backoff factor; server-provided `Retry-After` waits are capped at 5 seconds to keep once-mode runs bounded. A `Retry-After` header does not make other HTTP errors retryable. Exhausted HTTP status retries raise `requests.HTTPError`; connection/read failures remain explicit request exceptions. Kafka logs a failed cycle: continuous mode waits for the next poll, while `--once` returns after logging. MQTT and AMQP propagate the failure and exit. A failed fetch raises instead of returning empty forecasts; the existing dedupe behavior is unchanged.
 
 ### Common (all images)
 

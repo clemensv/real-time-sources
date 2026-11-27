@@ -72,6 +72,7 @@ All variants share:
 
 - Contract-first CloudEvents output aligned with the xRegistry manifest.
 - Stateful poller with dedupe/resume support via `STATE_FILE`.
+- Bounded retries for transient live WFS connection, read, and HTTP failures.
 - Transport parity across Kafka, MQTT, and AMQP with the same event semantics.
 - Ready for Azure Event Hubs / Fabric Event Streams connection strings.
 
@@ -105,7 +106,7 @@ kmi-belgium/
 ## Quick start with Docker
 
 > [!IMPORTANT]
-> Always mount a volume for `STATE_FILE`. Without a persisted state file, the poller restarts cold and may republish already-seen records.
+> For live runs, mount a volume for `STATE_FILE`. Without a persisted state file, the poller restarts cold and may republish already-seen records.
 
 ### Kafka
 
@@ -136,6 +137,8 @@ For full authentication matrices (Kafka SASL/Event Hubs, MQTT password/Entra, AM
 ## Configuration reference
 
 The complete environment-variable matrix for all images is documented in [CONTAINER.md](CONTAINER.md). Docker entrypoints are taken from image `CMD` values (`["python", "-m", "kmi_belgium", "feed"]`, `["python", "-m", "kmi_belgium_mqtt", "feed"]`, `["python", "-m", "kmi_belgium_amqp", "feed"]`).
+
+MQTT and AMQP support `--mock` or `KMI_BELGIUM_MOCK=true` for broker smoke tests. This publishes a deterministic `Station` followed by one `WeatherObservation` with the same station code, then exits even without `ONCE_MODE`. It makes no upstream HTTP requests and never reads or changes live state. Broker authentication and publishing still run normally; this proves synthetic acquisition over a real broker, not live KMI availability. Live acquisition remains the default. See [the container smoke-test instructions](CONTAINER.md#synthetic-acquisition-for-broker-smoke-tests).
 
 ## Data model
 

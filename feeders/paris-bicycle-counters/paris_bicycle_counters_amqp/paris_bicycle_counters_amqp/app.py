@@ -89,31 +89,37 @@ def _build_amqp_producer(args):
     return _apply_partition_key_workaround(FRParisOpenDataVeloAmqpProducer(**kwargs))
 
 
-async def _run_live(args: argparse.Namespace, producer: FRParisOpenDataVeloAmqpProducer) -> None:
-    """Acquire live Paris bicycle counter data and publish via AMQP."""
+async def _run_live(args: argparse.Namespace) -> None:
+    """Acquire each complete poll before opening its AMQP publishing connection."""
     poller = ParisBicycleCounterPoller(last_polled_file=args.state_file)
     while True:
         counters = poller.fetch_counter_locations()
-        for counter in counters:
-            producer.send_counter(
-                data=counter,  # type: ignore[arg-type]
-                _counter_id=counter.counter_id,
-                _ce_id=counter.ce_id,
-            )
-        logger.info("Published %d counter info events", len(counters))
-
         state = poller.load_state()
         seen_keys = set(state.get("seen_keys", []))
         since = datetime.now(timezone.utc) - timedelta(days=7)
         counts = poller.fetch_bicycle_counts(since=since)
         new_counts, seen_keys = poller.dedup_counts(counts, seen_keys)
-        for count in new_counts:
-            producer.send_bicycle_count(
-                data=count,  # type: ignore[arg-type]
-                _counter_id=count.counter_id,
-                _ce_id=count.ce_id,
-                _time=ce_datetime(count.date) if hasattr(count.date, "isoformat") else str(count.date),
-            )
+
+        # Blocking Proton connections are only serviced during sends, not HTTP
+        # acquisition or polling sleeps.
+        producer = _retry_producer_init(lambda: _build_amqp_producer(args))
+        try:
+            for counter in counters:
+                producer.send_counter(
+                    data=counter,  # type: ignore[arg-type]
+                    _counter_id=counter.counter_id,
+                    _ce_id=counter.ce_id,
+                )
+            logger.info("Published %d counter info events", len(counters))
+            for count in new_counts:
+                producer.send_bicycle_count(
+                    data=count,  # type: ignore[arg-type]
+                    _counter_id=count.counter_id,
+                    _ce_id=count.ce_id,
+                    _time=ce_datetime(count.date) if hasattr(count.date, "isoformat") else str(count.date),
+                )
+        finally:
+            producer.close()
 
         cutoff = datetime.now(timezone.utc) - timedelta(days=14)
         trimmed_keys = set()
@@ -172,15 +178,9 @@ def _retry_producer_init(factory, max_attempts=5, initial_delay=10):
                           attempt + 1, max_attempts, e, delay)
             time.sleep(delay)
 async def _async_main(args: argparse.Namespace) -> None:
-    producer = _retry_producer_init(lambda: _build_amqp_producer(args))
-    try:
-        if args.mock_mode:
-            logger.warning("Mock mode is not supported for %s; acquiring live data instead", SOURCE_ID)
-        await _run_live(args, producer)
-    finally:
-        close = getattr(producer, "close", None)
-        if close:
-            close()
+    if args.mock_mode:
+        logger.warning("Mock mode is not supported for %s; acquiring live data instead", SOURCE_ID)
+    await _run_live(args)
 
 
 def main() -> None:

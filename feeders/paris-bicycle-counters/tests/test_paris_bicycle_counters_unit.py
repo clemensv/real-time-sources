@@ -6,8 +6,13 @@ Tests core functionality without external dependencies.
 import pytest
 import json
 import os
+import threading
+from contextlib import contextmanager
+from http.server import BaseHTTPRequestHandler, HTTPServer
 from unittest.mock import Mock, patch, MagicMock, call
 from datetime import datetime, timezone, timedelta
+import requests
+from paris_bicycle_counters_core import paris_bicycle_counters as core
 from paris_bicycle_counters_producer_data import Counter, BicycleCount
 from paris_bicycle_counters.paris_bicycle_counters import (
     ParisBicycleCounterPoller,
@@ -264,7 +269,7 @@ class TestBicycleCountDataclass:
 class TestFetchCounterLocations:
     """Unit tests for fetching counter locations."""
 
-    @patch('paris_bicycle_counters.paris_bicycle_counters.requests.get')
+    @patch('paris_bicycle_counters.paris_bicycle_counters.requests.Session.get')
     def test_fetch_counter_locations_basic(self, mock_get):
         mock_response = Mock()
         mock_response.json.return_value = SAMPLE_COUNTER_LOCATIONS_RESPONSE
@@ -280,7 +285,7 @@ class TestFetchCounterLocations:
         assert counters[0].longitude == 2.38886
         assert counters[0].latitude == 48.86057
 
-    @patch('paris_bicycle_counters.paris_bicycle_counters.requests.get')
+    @patch('paris_bicycle_counters.paris_bicycle_counters.requests.Session.get')
     def test_fetch_counter_locations_empty(self, mock_get):
         mock_response = Mock()
         mock_response.json.return_value = {"total_count": 0, "results": []}
@@ -290,7 +295,7 @@ class TestFetchCounterLocations:
         counters = ParisBicycleCounterPoller.fetch_counter_locations()
         assert len(counters) == 0
 
-    @patch('paris_bicycle_counters.paris_bicycle_counters.requests.get')
+    @patch('paris_bicycle_counters.paris_bicycle_counters.requests.Session.get')
     def test_fetch_counter_locations_pagination(self, mock_get):
         page1 = {"total_count": 150, "results": [
             {"id_compteur": f"counter-{i}", "nom_compteur": f"Counter {i}",
@@ -316,7 +321,7 @@ class TestFetchCounterLocations:
         assert len(counters) == 150
         assert mock_get.call_count == 2
 
-    @patch('paris_bicycle_counters.paris_bicycle_counters.requests.get')
+    @patch('paris_bicycle_counters.paris_bicycle_counters.requests.Session.get')
     def test_fetch_counter_locations_missing_coordinates(self, mock_get):
         response = {"total_count": 1, "results": [
             {"id_compteur": "test-1", "nom_compteur": "Test", "channel_name": None,
@@ -337,7 +342,7 @@ class TestFetchCounterLocations:
 class TestFetchBicycleCounts:
     """Unit tests for fetching bicycle count data."""
 
-    @patch('paris_bicycle_counters.paris_bicycle_counters.requests.get')
+    @patch('paris_bicycle_counters.paris_bicycle_counters.requests.Session.get')
     def test_fetch_bicycle_counts_basic(self, mock_get):
         mock_response = Mock()
         mock_response.json.return_value = SAMPLE_COUNTER_DATA_RESPONSE
@@ -351,7 +356,7 @@ class TestFetchBicycleCounts:
         assert counts[0].longitude == 2.35702
 
     @pytest.mark.parametrize("raw_count, expected", [(71.0, 71), (0.0, 0)])
-    @patch('paris_bicycle_counters.paris_bicycle_counters.requests.get')
+    @patch('paris_bicycle_counters.paris_bicycle_counters.requests.Session.get')
     def test_integral_float_count_is_serialized_as_integer(self, mock_get, raw_count, expected):
         record = dict(SAMPLE_COUNTER_DATA_RESPONSE["results"][0], sum_counts=raw_count)
         mock_get.return_value.json.return_value = {"results": [record]}
@@ -364,7 +369,7 @@ class TestFetchBicycleCounts:
         assert emitted_count == expected
 
     @pytest.mark.parametrize("raw_count", [71.5, "invalid", True, float("nan"), float("inf"), 2**31])
-    @patch('paris_bicycle_counters.paris_bicycle_counters.requests.get')
+    @patch('paris_bicycle_counters.paris_bicycle_counters.requests.Session.get')
     def test_invalid_count_is_reported_without_dropping_other_records(self, mock_get, raw_count, capsys):
         invalid = dict(SAMPLE_COUNTER_DATA_RESPONSE["results"][0], sum_counts=raw_count)
         valid = SAMPLE_COUNTER_DATA_RESPONSE["results"][1]
@@ -378,7 +383,7 @@ class TestFetchBicycleCounts:
         assert "sum_counts" in error
         assert invalid["id_compteur"] in error
 
-    @patch('paris_bicycle_counters.paris_bicycle_counters.requests.get')
+    @patch('paris_bicycle_counters.paris_bicycle_counters.requests.Session.get')
     def test_fetch_bicycle_counts_with_since_filter(self, mock_get):
         mock_response = Mock()
         mock_response.json.return_value = SAMPLE_COUNTER_DATA_RESPONSE
@@ -393,7 +398,7 @@ class TestFetchBicycleCounts:
         assert 'where' in params
         assert '2025-12-06' in params['where']
 
-    @patch('paris_bicycle_counters.paris_bicycle_counters.requests.get')
+    @patch('paris_bicycle_counters.paris_bicycle_counters.requests.Session.get')
     def test_fetch_bicycle_counts_empty(self, mock_get):
         mock_response = Mock()
         mock_response.json.return_value = SAMPLE_COUNTER_DATA_EMPTY_RESPONSE
@@ -403,7 +408,7 @@ class TestFetchBicycleCounts:
         counts = ParisBicycleCounterPoller.fetch_bicycle_counts()
         assert len(counts) == 0
 
-    @patch('paris_bicycle_counters.paris_bicycle_counters.requests.get')
+    @patch('paris_bicycle_counters.paris_bicycle_counters.requests.Session.get')
     def test_fetch_bicycle_counts_missing_date_skipped(self, mock_get):
         response = {"total_count": 2, "results": [
             {"id_compteur": "c1", "nom_compteur": "Counter 1", "sum_counts": 10,
@@ -420,7 +425,7 @@ class TestFetchBicycleCounts:
         assert len(counts) == 1
         assert counts[0].counter_id == "c2"
 
-    @patch('paris_bicycle_counters.paris_bicycle_counters.requests.get')
+    @patch('paris_bicycle_counters.paris_bicycle_counters.requests.Session.get')
     def test_fetch_bicycle_counts_null_sum_counts(self, mock_get):
         response = {"total_count": 1, "results": [
             {"id_compteur": "c1", "nom_compteur": "Counter 1", "sum_counts": None,
@@ -592,7 +597,7 @@ class TestPollAndSend:
 class TestFieldMapping:
     """Unit tests for French-to-English field mapping."""
 
-    @patch('paris_bicycle_counters.paris_bicycle_counters.requests.get')
+    @patch('paris_bicycle_counters.paris_bicycle_counters.requests.Session.get')
     def test_french_field_names_mapped_to_english(self, mock_get):
         response = {"total_count": 1, "results": [
             {"id_compteur": "FR-001", "nom_compteur": "Rue de Rivoli E-O",
@@ -609,7 +614,7 @@ class TestFieldMapping:
         assert counts[0].counter_name == "Rue de Rivoli E-O"  # nom_compteur -> counter_name
         assert counts[0].count == 55                   # sum_counts -> count
 
-    @patch('paris_bicycle_counters.paris_bicycle_counters.requests.get')
+    @patch('paris_bicycle_counters.paris_bicycle_counters.requests.Session.get')
     def test_counter_location_field_mapping(self, mock_get):
         response = {"total_count": 1, "results": [
             {"id_compteur": "FR-002", "nom_compteur": "Boulevard Voltaire N-S",
@@ -631,7 +636,7 @@ class TestFieldMapping:
 class TestEdgeCases:
     """Unit tests for edge cases."""
 
-    @patch('paris_bicycle_counters.paris_bicycle_counters.requests.get')
+    @patch('paris_bicycle_counters.paris_bicycle_counters.requests.Session.get')
     def test_invalid_date_format_skipped(self, mock_get):
         response = {"total_count": 1, "results": [
             {"id_compteur": "c1", "nom_compteur": "Test", "sum_counts": 10,
@@ -645,7 +650,7 @@ class TestEdgeCases:
         counts = ParisBicycleCounterPoller.fetch_bicycle_counts()
         assert len(counts) == 0
 
-    @patch('paris_bicycle_counters.paris_bicycle_counters.requests.get')
+    @patch('paris_bicycle_counters.paris_bicycle_counters.requests.Session.get')
     def test_missing_coordinates_field(self, mock_get):
         response = {"total_count": 1, "results": [
             {"id_compteur": "c1", "nom_compteur": "Test", "sum_counts": 10,
@@ -700,3 +705,70 @@ class TestEdgeCases:
 
     def test_bicycle_count_from_data_none(self):
         assert BicycleCount.from_data(None) is None
+
+
+@contextmanager
+def _upstream_responses(responses):
+    attempts = []
+
+    class Handler(BaseHTTPRequestHandler):
+        def do_GET(self):
+            status, payload = responses[min(len(attempts), len(responses) - 1)]
+            attempts.append(self.path)
+            if status is None:
+                self.close_connection = True
+                return
+            body = json.dumps(payload).encode("utf-8")
+            self.send_response(status)
+            self.send_header("Content-Type", "application/json")
+            self.send_header("Content-Length", str(len(body)))
+            self.end_headers()
+            self.wfile.write(body)
+
+        def log_message(self, *_args):
+            pass
+
+    server = HTTPServer(("127.0.0.1", 0), Handler)
+    thread = threading.Thread(target=server.serve_forever, daemon=True)
+    thread.start()
+    try:
+        yield f"http://127.0.0.1:{server.server_port}/records", attempts
+    finally:
+        server.shutdown()
+        server.server_close()
+        thread.join(timeout=5)
+        assert not thread.is_alive()
+
+
+@pytest.mark.unit
+class TestHttpRetries:
+    @pytest.mark.parametrize("initial_status", [None, 429, 503])
+    @pytest.mark.parametrize("method,url_name,payload", [
+        ("fetch_counter_locations", "COUNTER_LOCATIONS_URL", SAMPLE_COUNTER_LOCATIONS_RESPONSE),
+        ("fetch_bicycle_counts", "COUNTER_DATA_URL", SAMPLE_COUNTER_DATA_RESPONSE),
+    ])
+    def test_transient_upstream_failure_is_retried(self, monkeypatch, initial_status, method, url_name, payload):
+        with _upstream_responses([(initial_status, {}), (200, payload)]) as (url, attempts):
+            monkeypatch.setattr(core, url_name, url)
+
+            rows = getattr(ParisBicycleCounterPoller, method)()
+
+        assert len(attempts) == 2
+        assert len(rows) == 3
+
+    @pytest.mark.parametrize("method,url_name", [
+        ("fetch_counter_locations", "COUNTER_LOCATIONS_URL"),
+        ("fetch_bicycle_counts", "COUNTER_DATA_URL"),
+    ])
+    def test_retry_exhaustion_stays_bounded_and_visible(self, monkeypatch, capsys, method, url_name):
+        with _upstream_responses([(503, {})]) as (url, attempts):
+            monkeypatch.setattr(core, url_name, url)
+
+            if method == "fetch_counter_locations":
+                with pytest.raises(requests.HTTPError, match="503"):
+                    ParisBicycleCounterPoller.fetch_counter_locations()
+            else:
+                assert ParisBicycleCounterPoller.fetch_bicycle_counts() == []
+                assert "Stopping pagination at offset 0:" in capsys.readouterr().err
+
+        assert len(attempts) == 4
