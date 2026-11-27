@@ -60,7 +60,10 @@ def resolve_message(document: Json, parts: list[str], seen: tuple[str, ...] = ()
     if len(parts) != 4 or parts[0] != "messagegroups" or parts[2] != "messages":
         raise ValueError(f"Expected a message reference: {reference}")
     message = lookup(document, parts)
-    parent = message.get("basemessageuri")
+    parent = message.get("basemessageuri") or message.get("basemessage")
+    if message.get("basemessageuri") and message.get("basemessage"):
+        if reference_parts(message["basemessageuri"]) != reference_parts(message["basemessage"]):
+            raise ValueError(f"Conflicting message inheritance: {reference}")
     if parent:
         return merge(resolve_message(document, reference_parts(parent), seen + (reference,)), message)
     return copy.deepcopy(message)

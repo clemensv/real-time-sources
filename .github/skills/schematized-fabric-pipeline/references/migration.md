@@ -24,11 +24,17 @@ Check the actual implementations, not only their names.
 - Use `tools\deploy-fabric\bind_notebook_schemas.py` only after service metadata
   has established exact versions, fingerprints, content type and history
   serialization. It injects a literal map; it is not a metadata resolver.
-- The pilot's read-only resolver is still in `pegelonline_core.fabric`.
-  Before automated fleet deployment, extract its non-domain schema-resolution
-  logic into shared tooling with existing tests and synthetic identities.
-  Do not copy it into every feeder or make other feeders depend on Pegelonline.
-  Its same-workspace schema-set limitation remains a qualification gate.
+- Use `tools\deploy-fabric\resolve_schema_bindings.py` for deployment-time
+  registered URL resolution. It verifies pinned fingerprints, source/history
+  selections and payload encoding without a source runtime dependency.
+  The pilot resolver remains for its existing callers; do not copy it into
+  other feeders. Same-workspace schema sets remain the qualified scope.
+- Use `tools\deploy-fabric\bind_notebook_definition.py` to inject resolved
+  mappings into complete Notebook definitions without losing other parts or
+  Spark/Environment/Lakehouse/database bindings. It prepares an external
+  definition only; publication and service readback remain operator gates.
+  Accept either `notebook-content.ipynb` or Fabric-native `notebook-content.py`;
+  native metadata and nonmapping code must remain unchanged.
 - The legacy shared deployers create dispatch ingestion and can overwrite the
   Spark kernel/Environment. They are not a qualified schematized path.
   A shared migration deployer must preserve every definition part, source
@@ -157,6 +163,49 @@ Do not clear dedupe state to manufacture fresh events. A new binding/state path
 requires an explicit replay decision and retention of the old file. If an upstream
 dry period yields no new observations, wait within the approved deadline or report
 blocked acceptance; do not use old rows or synthetic telemetry as runtime proof.
+
+### Qualify workspace-identity notebook execution before publishing
+
+The documented workspace-identity route uses a DataPipeline Notebook activity,
+not an assumed identity on a standalone `RunNotebook` invocation. Qualify the
+runtime separately from feeder acquisition and schema ingestion.
+
+1. Read the service's supported connection types. The Notebook activity uses
+   connection type `Notebook`, creation method `Notebook.Actions`, and
+   credential type `WorkspaceIdentity`. A connection created with
+   `FabricDataPipelines.Actions` can pass creation/readback but is rejected by
+   `TridentNotebook` at execution.
+2. Verify the identity's Contributor role in the notebook workspace and the
+   tenant prerequisite documented in
+   [Notebook activity](https://learn.microsoft.com/en-us/fabric/data-factory/notebook-activity):
+   service principals must be allowed to call Fabric public APIs. Check any
+   security-group scope. If tenant-setting readback is forbidden, obtain
+   administrator verification; do not silently change the setting or assume
+   that workspace access establishes tenant eligibility.
+3. Create an owned probe Notebook with published Spark Environment and
+   Lakehouse dependencies. For an `.ipynb` definition, explicitly set
+   `definition.format` to `ipynb` in the create request. The default native
+   format can reject `notebook-content.ipynb` during conversion.
+4. Bind the pipeline's `TridentNotebook` activity to the actual notebook and
+   workspace IDs and set `externalReferences.connection` to the Notebook
+   connection ID. Read back the complete definition. The on-demand pipeline
+   job type is `Pipeline`; retain the accepted job ID before polling.
+5. Require a OneLake probe log that confirms the expected workspace-identity
+   principal. Log selected identity/audience claims only, never tokens.
+   Verify the publisher's required token audience and broker admission
+   separately. A `pbi` token or a completed job does not prove publishing.
+
+An `Unauthorized` workspace lookup before the first cell, with no OneLake
+log, blocks runtime qualification. Preserve the job and activity errors,
+verify role and tenant prerequisites, and report the unresolved authorization
+boundary. This does not prove that all Entra transports are unsupported.
+Do not fetch keys or run as a delegated user without fallback approval.
+
+Clean up only owned probes, connections and role assignments after recording
+the outcome. Deprovision a newly created control identity only after verifying
+that no unrelated items depend on it. An asynchronous deprovision operation can
+succeed without a result document; verify operation status and workspace
+readback instead of repeating the mutation after a result-read error.
 
 ### ACI managed-identity HTTPS checkpoints
 

@@ -89,8 +89,11 @@ def test_python_data_generation_rejects_incomplete_or_historical_selection(tmp_p
     assert not (tmp_path / "definition.json").exists()
 
 
-def test_inherited_metadata_versions_and_no_input_mutation():
+@pytest.mark.parametrize("parent_key", ["basemessageuri", "basemessage"])
+def test_inherited_metadata_versions_and_no_input_mutation(parent_key):
     original = registry()
+    message = original["messagegroups"]["variant"]["messages"]["reading.avro"]
+    message[parent_key] = message.pop("basemessageuri")
     before = copy.deepcopy(original)
     derived, definition = generator.generate(
         original, ["variant"],
@@ -107,6 +110,23 @@ def test_inherited_metadata_versions_and_no_input_mutation():
     assert metadata["datacontenttype"]["value"] == "application/json"
     assert [v["id"] for v in definition["schemas"][0]["versions"]] == ["2"]
     assert json.loads(definition["schemas"][0]["versions"][0]["schema"])["doc"] == "Second version"
+
+
+def test_conflicting_legacy_and_current_message_parents_rejected():
+    original = registry()
+    message = original["messagegroups"]["variant"]["messages"]["reading.avro"]
+    message["basemessage"] = "/messagegroups/base/messages/different"
+    with pytest.raises(ValueError, match="Conflicting message inheritance"):
+        generator.resolve_message(original, ["messagegroups", "variant", "messages", "reading.avro"])
+
+
+def test_mixed_legacy_and_current_parent_cycle_rejected():
+    original = registry()
+    original["messagegroups"]["base"]["messages"]["reading"]["basemessage"] = (
+        "/messagegroups/variant/messages/reading.avro"
+    )
+    with pytest.raises(ValueError, match="Cyclic message inheritance"):
+        generator.resolve_message(original, ["messagegroups", "variant", "messages", "reading.avro"])
 
 
 @pytest.mark.parametrize("change,match", [

@@ -20,8 +20,9 @@ python tools\deploy-fabric\generate_schema_set.py `
 ```
 
 Repeat `--messagegroup` for additional event families. The command resolves
-`basemessageuri` inheritance, including metadata overrides, and preserves the
-inherited CloudEvents wire type. It resolves local `#/`, `/`, and `xreg://./`
+`basemessageuri` and legacy `basemessage` inheritance, including metadata
+overrides, and preserves the inherited CloudEvents wire type. It resolves local
+`#/`, `/`, and `xreg://./`
 references. Unresolved references, inheritance cycles, duplicate wire types and
 conflicting schema IDs are errors.
 
@@ -133,12 +134,34 @@ workspace IDs, schema URLs, schedules and acceptance evidence outside the checko
 Schema generation does not bind physical schema URLs. After registration and
 association with the exact Eventstream source, the deployment operator resolves
 the selected versions, verifies their fingerprints and obtains exact
-service-issued version URLs. For the pilot, the existing
-`pegelonline_core.fabric.lookup_dataschema_overrides` resolver performs that
-read-only check during deployment with the approved operator credential.
-Pass `payload_encoding="json"` or `"avro"` to also verify registered
-content-type metadata, matching history serialization and per-schema typed
-storage for every selected family before supplying the map to the binder.
+service-issued version URLs. The shared
+[resolve_schema_bindings.py](./resolve_schema_bindings.py) performs the
+read-only check with the explicitly selected `az_m` or `az_b` operator profile.
+Its Python API also accepts the caller's approved token callback. It verifies
+registered content type, matching history serialization, identical source/history
+schema-set/version selections and per-schema typed storage for every family.
+If the named profile shim is absent, the command invokes Azure CLI with the
+corresponding process-local `AZURE_CONFIG_DIR`; it never switches accounts.
+The original pilot resolver remains available for its existing callers; fleet
+deployment uses the shared tool without a Pegelonline runtime dependency.
+
+Write the event-type-keyed `SCHEMA_BINDINGS` selection as external JSON. Each
+entry contains the original `source_uri`, explicit `projected_version` and
+compact-schema `schema_sha256`. Then resolve against the associated source:
+
+```powershell
+python -m pip install -r tools\deploy-fabric\requirements-migration.txt
+python tools\deploy-fabric\resolve_schema_bindings.py `
+  --workspace-id <workspace-id> --eventstream-id <eventstream-id> `
+  --source-id <source-node-id> `
+  --expected-bindings <operator-directory>\expected-bindings.json `
+  --payload-encoding <json-or-avro> --azure-profile <az_m-or-az_b> `
+  --output <operator-directory>\resolved-map.json
+```
+
+Provider-specific metadata access must already be approved. A denial is a
+blocker; this tool does not change identities, fetch broker keys, register
+schemas or mutate the pipeline. Cross-workspace schema sets remain unsupported.
 
 Write the resulting original-URI-keyed map to an external operator file, then:
 
@@ -149,6 +172,27 @@ python tools\deploy-fabric\bind_notebook_schemas.py `
   --payload-encoding <json-or-avro> `
   --output <operator-directory>\deployed-notebook.ipynb
 ```
+
+For an existing complete Notebook definition, use
+[bind_notebook_definition.py](./bind_notebook_definition.py) instead. Supply its
+`parts` object exported through the Fabric definition API, not just the notebook
+content. Both `notebook-content.ipynb` and Fabric-native `notebook-content.py`
+are supported. Native code keeps its metadata and state statements unchanged;
+only the unique top-level deployment mapping assignments are replaced.
+It retains unknown fields and every other part and rejects a missing
+Spark kernel, the wrong Environment or absent Lakehouse/database dependencies:
+
+```powershell
+python tools\deploy-fabric\bind_notebook_definition.py `
+  --definition <operator-directory>\notebook-definition.json `
+  --resolved-map <operator-directory>\resolved-map.json `
+  --payload-encoding <json-or-avro> --environment-id <environment-id> `
+  --output <operator-directory>\bound-notebook-definition.json
+```
+
+This is a preparation tool, not a deployer. Upload through the approved API
+path, complete asynchronous publication, and read back all parts and bindings.
+It does not qualify the legacy deployment scripts or apply KQL ingestion DDL.
 
 The binder validates exact source-URI coverage and HTTPS version-URL shape,
 replaces the single `deployment-dataschema-overrides` code cell and compiles
