@@ -64,6 +64,41 @@ class BAFUHydroAPI:
         return data.get('payload', [])
 
 
+class _MockBAFUHydroAPI(BAFUHydroAPI):
+    """Synthetic acquisition for explicit offline Kafka tests."""
+
+    def __init__(self):
+        pass
+
+    def get_locations(self) -> dict:
+        return {
+            f"mock-station-{index}": {
+                "name": f"Mock Station {index}",
+                "water-body-name": "Mock River",
+                "water-body-type": "river",
+                "lat": 47.0 + index * 0.01,
+                "lon": 8.0 + index * 0.01,
+            }
+            for index in range(1, 4)
+        }
+
+    def get_latest(self) -> list:
+        return [
+            {
+                "loc": f"mock-station-{index}",
+                "par": parameter,
+                "val": value,
+                "timestamp": 1700000000,
+            }
+            for index in range(1, 4)
+            for parameter, value in (
+                (PAR_HEIGHT, 1.23),
+                (PAR_FLOW, 12.3),
+                (PAR_TEMPERATURE, 9.5),
+            )
+        ]
+
+
 def parse_connection_string(connection_string: str) -> dict:
     """Parse a Kafka connection string into a config dict."""
     config = {}
@@ -129,7 +164,8 @@ def send_stations(api: BAFUHydroAPI, producer: CHBAFUHydrologyEventProducer) -> 
         producer.send_ch_bafu_hydrology_station(_station_id=station_id, data=station_data, flush_producer=False)
         sent_count += 1
 
-    producer.producer.flush()
+    if producer.producer.flush(timeout=120):
+        raise RuntimeError("Kafka flush failed while emitting station events")
     logger.info("Sent %d station events", sent_count)
     return locations
 
@@ -137,6 +173,7 @@ def send_stations(api: BAFUHydroAPI, producer: CHBAFUHydrologyEventProducer) -> 
 def feed_observations(api: BAFUHydroAPI, producer: CHBAFUHydrologyEventProducer, locations: dict, previous_readings: dict) -> int:
     """Fetch latest measurements and send observations to Kafka."""
     sent_count = 0
+    pending_readings = {}
 
     latest = api.get_latest()
     measurements_by_station = {}
@@ -203,9 +240,11 @@ def feed_observations(api: BAFUHydroAPI, producer: CHBAFUHydrologyEventProducer,
         )
         producer.send_ch_bafu_hydrology_water_level_observation(_station_id=station_id, data=obs_data, flush_producer=False)
         sent_count += 1
-        previous_readings[reading_key] = wl_ts_str or q_ts_str or temp_ts_str
+        pending_readings[reading_key] = wl_ts_str or q_ts_str or temp_ts_str
 
-    producer.producer.flush()
+    if producer.producer.flush(timeout=120):
+        raise RuntimeError("Kafka flush failed while emitting observation events")
+    previous_readings.update(pending_readings)
     return sent_count
 
 
@@ -220,6 +259,9 @@ def main():
                         default=os.environ.get('STATE_FILE', os.path.expanduser('~/.bafu_hydro_state.json')))
     subparsers = parser.add_subparsers(dest='command')
     feed_parser = subparsers.add_parser('feed', help='Feed data to Kafka')
+    feed_parser.add_argument('--mock', action='store_true',
+                             default=os.environ.get('MOCK_MODE', '').lower() in ('1', 'true', 'yes'),
+                             help='Emit one synthetic cycle without HTTP, state or sleep (also via MOCK_MODE).')
     feed_parser.add_argument('--once', action='store_true',
                              default=os.environ.get('ONCE_MODE', '').lower() in ('1', 'true', 'yes'),
                              help='Exit after one polling cycle (also via ONCE_MODE env var). Useful for scheduled execution in Fabric notebooks.')
@@ -228,7 +270,8 @@ def main():
     args = parser.parse_args()
     logging.basicConfig(level=logging.INFO)
 
-    api = BAFUHydroAPI()
+    mock_mode = getattr(args, 'mock', False)
+    api = _MockBAFUHydroAPI() if mock_mode else BAFUHydroAPI()
 
     if args.command == 'list':
         locations = api.get_locations()
@@ -258,8 +301,14 @@ def main():
         kafka_producer = Producer(kafka_config)
         bafu_producer = CHBAFUHydrologyEventProducer(kafka_producer, args.topic)
         logger.info("Starting BAFU Hydro bridge, polling every %d seconds", args.polling_interval)
-        previous_readings = _load_state(args.state_file)
+        if mock_mode:
+            logger.info("MOCK_MODE: synthetic acquisition; upstream HTTP and persistent state are disabled")
+        previous_readings = {} if mock_mode else _load_state(args.state_file)
         locations = send_stations(api, bafu_producer)
+        if mock_mode:
+            count = feed_observations(api, bafu_producer, locations, previous_readings)
+            logger.info("MOCK_MODE: sent %d synthetic observation events and exiting", count)
+            return
         while True:
             try:
                 count = feed_observations(api, bafu_producer, locations, previous_readings)
@@ -267,6 +316,8 @@ def main():
                 logger.info("Sent %d observation events", count)
             except Exception as e:
                 logger.error("Error fetching/sending data: %s", e)
+                if getattr(args, 'once', False):
+                    raise
             if getattr(args, 'once', False):
                 logger.info("--once mode: exiting after first polling cycle")
                 break

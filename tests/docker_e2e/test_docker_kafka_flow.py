@@ -1754,6 +1754,24 @@ class TestBAFUHydroDockerFlow:
         )
 
 
+class TestBAFUHydroMockDockerFlow:
+    """Explicit synthetic acquisition over real Kafka; not live upstream proof."""
+
+    TOPIC = 'test-bafu-hydro-mock'
+
+    def test_emits_mock_reference_and_telemetry(self, kafka: KafkaFixture, bafu_image):
+        _run_kafka_flow_test(
+            kafka, bafu_image, self.TOPIC,
+            reference_types=['Station'],
+            telemetry_types=['WaterLevelObservation'],
+            required_exact_types=['CH.BAFU.Hydrology.Station', 'CH.BAFU.Hydrology.WaterLevelObservation'],
+            fail_on_missing_types=True,
+            require_clean_exit=True,
+            extra_env={'MOCK_MODE': 'true'},
+            min_messages=6,
+        )
+
+
 # ---------------------------------------------------------------------------
 # BOM Australia (weather observations)
 # ---------------------------------------------------------------------------

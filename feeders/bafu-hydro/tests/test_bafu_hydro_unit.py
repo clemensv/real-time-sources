@@ -237,6 +237,7 @@ class TestSendStations:
     def _mock_producer(self):
         p = MagicMock(spec=CHBAFUHydrologyEventProducer)
         p.producer = MagicMock()
+        p.producer.flush.return_value = 0
         return p
 
     @patch("bafu_hydro.bafu_hydro.BAFUHydroAPI.get_locations")
@@ -272,6 +273,7 @@ class TestFeedObservations:
     def _mock_producer(self):
         p = MagicMock(spec=CHBAFUHydrologyEventProducer)
         p.producer = MagicMock()
+        p.producer.flush.return_value = 0
         return p
 
     @patch("bafu_hydro.bafu_hydro.BAFUHydroAPI.get_latest")
@@ -300,6 +302,7 @@ class TestFeedObservations:
         # Second call with same data — all readings are already in previous_readings
         prod.reset_mock()
         prod.producer = MagicMock()
+        prod.producer.flush.return_value = 0
         count = feed_observations(api, prod, locations, previous)
         assert count == 0
         prod.send_ch_bafu_hydrology_water_level_observation.assert_not_called()
@@ -330,6 +333,19 @@ class TestFeedObservations:
         api = BAFUHydroAPI()
         count = feed_observations(api, prod, {"2018": {}}, {})
         assert count == 0
+
+    @patch("bafu_hydro.bafu_hydro.BAFUHydroAPI.get_latest")
+    def test_failed_flush_does_not_advance_reading_state(self, mock_latest):
+        mock_latest.return_value = SAMPLE_LATEST_RESPONSE["payload"]
+        prod = self._mock_producer()
+        prod.producer.flush.return_value = 1
+        previous = {"retained-reading": "unchanged"}
+        with pytest.raises(RuntimeError, match="Kafka flush failed"):
+            feed_observations(BAFUHydroAPI(), prod, {"2018": {}, "2030": {}}, previous)
+        assert previous == {"retained-reading": "unchanged"}
+        prod.producer.flush.return_value = 0
+        assert feed_observations(BAFUHydroAPI(), prod, {"2018": {}, "2030": {}}, previous) == 2
+        assert prod.send_ch_bafu_hydrology_water_level_observation.call_count == 4
 
 
 # ---------------------------------------------------------------------------
