@@ -24,11 +24,15 @@ Check the actual implementations, not only their names.
 - Use `tools\deploy-fabric\bind_notebook_schemas.py` only after service metadata
   has established exact versions, fingerprints, content type and history
   serialization. It injects a literal map; it is not a metadata resolver.
-- The pilot's read-only resolver is still in `pegelonline_core.fabric`.
-  Before automated fleet deployment, extract its non-domain schema-resolution
-  logic into shared tooling with existing tests and synthetic identities.
-  Do not copy it into every feeder or make other feeders depend on Pegelonline.
-  Its same-workspace schema-set limitation remains a qualification gate.
+- Use `tools\deploy-fabric\resolve_schema_bindings.py` for deployment-time
+  registered URL resolution. It verifies pinned fingerprints, source/history
+  selections and payload encoding without a source runtime dependency.
+  The pilot resolver remains for its existing callers; do not copy it into
+  other feeders. Same-workspace schema sets remain the qualified scope.
+- Use `tools\deploy-fabric\bind_notebook_definition.py` to inject resolved
+  mappings into complete Notebook definitions without losing other parts or
+  Spark/Environment/Lakehouse/database bindings. It prepares an external
+  definition only; publication and service readback remain operator gates.
 - The legacy shared deployers create dispatch ingestion and can overwrite the
   Spark kernel/Environment. They are not a qualified schematized path.
   A shared migration deployer must preserve every definition part, source
