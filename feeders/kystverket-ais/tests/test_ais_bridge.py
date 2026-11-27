@@ -2,6 +2,10 @@
 
 from unittest.mock import MagicMock, patch
 from datetime import datetime, timezone
+from argparse import Namespace
+import asyncio
+
+import pytest
 
 from kystverket_ais.ais_bridge import _emit_event, _mmsi_key_mapper, AISBridge
 from kystverket_ais.nmea_decoder import DecodedAIS
@@ -126,3 +130,95 @@ class TestAISBridgeFiltering:
 
         # Event producer should NOT have been called
         assert event_prod.send_no_kystverket_ais_position_report_class_a.call_count == 0
+
+
+class TestAmqpExecutionMode:
+    def test_mqtt_corpus_keeps_static_enrichment(self):
+        from unittest.mock import AsyncMock
+        from kystverket_ais_mqtt import app
+
+        client = MagicMock()
+        methods = (
+            "publish_no_kystverket_ais_mqtt_ship_static",
+            "publish_no_kystverket_ais_mqtt_position_report",
+            "publish_no_kystverket_ais_mqtt_aid_to_navigation",
+        )
+        for method in methods:
+            setattr(client, method, AsyncMock())
+        bridge = app.KystverketAisMqttBridge(client)
+        with patch.object(app, "TCPSource", side_effect=AssertionError("Mock mode opened TCP")):
+            asyncio.run(bridge.emit_mock_corpus())
+        for method in methods:
+            send = getattr(client, method)
+            send.assert_awaited_once()
+            values = send.call_args.kwargs
+            data = values["data"]
+            for name in ("mmsi", "flag", "ship_type", "geohash5"):
+                assert values[name] == getattr(data, name)
+        assert client.publish_no_kystverket_ais_mqtt_ship_static.call_args.kwargs["data"].ship_type == "cargo"
+        assert client.publish_no_kystverket_ais_mqtt_position_report.call_args.kwargs["data"].ship_type == "cargo"
+
+    def test_mock_mode_emits_every_family_without_live_tcp(self):
+        from kystverket_ais_amqp import app
+
+        producer = MagicMock()
+        args = Namespace(mock=True, tcp_host="invalid.test", tcp_port=1, max_events=None)
+        with patch.object(app, "create_amqp_producer", return_value=producer), patch.object(
+            app, "TCPSource", side_effect=AssertionError("Mock mode opened the live TCP source"),
+        ):
+            asyncio.run(app._run(args))
+        for method in ("send_ship_static", "send_position_report", "send_aid_to_navigation"):
+            send = getattr(producer, method)
+            send.assert_called_once()
+            values = send.call_args.kwargs
+            data = values["data"]
+            assert values["_mmsi"] == data.mmsi
+            assert values["_flag"] == data.flag
+            assert values["_ship_type"] == data.ship_type
+            assert values["_geohash5"] == data.geohash5
+        assert producer.send_ship_static.call_args.kwargs["data"].ship_type == "cargo"
+        assert producer.send_position_report.call_args.kwargs["data"].ship_type == "cargo"
+        producer.close.assert_called_once()
+
+    def test_live_mode_keeps_the_event_bound(self):
+        from unittest.mock import AsyncMock
+        from kystverket_ais_amqp import app
+
+        producer = MagicMock()
+        args = Namespace(mock=False, tcp_host="invalid.test", tcp_port=1, max_events=7)
+        with patch.object(app, "create_amqp_producer", return_value=producer), patch.object(
+            app.KystverketAisAmqpBridge, "run", new_callable=AsyncMock,
+        ) as run:
+            asyncio.run(app._run(args))
+        run.assert_awaited_once_with(max_events=7)
+        producer.send_ship_static.assert_not_called()
+        producer.close.assert_called_once()
+
+    def test_mock_publish_failure_propagates_and_closes_producer(self):
+        from kystverket_ais_amqp import app
+
+        producer = MagicMock()
+        producer.send_ship_static.side_effect = RuntimeError("synthetic publish failure")
+        args = Namespace(mock=True, tcp_host="invalid.test", tcp_port=1, max_events=None)
+        with patch.object(app, "create_amqp_producer", return_value=producer), patch.object(
+            app, "TCPSource", side_effect=AssertionError("Mock mode opened the live TCP source"),
+        ), pytest.raises(RuntimeError, match="synthetic publish failure"):
+            asyncio.run(app._run(args))
+        producer.close.assert_called_once()
+
+    @pytest.mark.parametrize("environment,extra_args,expected", [
+        ("false", [], False),
+        ("true", [], True),
+        ("false", ["--mock"], True),
+    ])
+    def test_cli_selects_mock_mode(self, monkeypatch, environment, extra_args, expected):
+        from unittest.mock import AsyncMock
+        from kystverket_ais_amqp import app
+
+        monkeypatch.setenv("KYSTVERKET_AIS_MOCK", environment)
+        monkeypatch.setattr(app.sys, "argv", ["kystverket-ais-amqp", "feed", *extra_args])
+        run = AsyncMock()
+        monkeypatch.setattr(app, "_run", run)
+        app.main()
+        run.assert_awaited_once()
+        assert run.call_args.args[0].mock is expected

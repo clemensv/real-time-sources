@@ -128,6 +128,7 @@ class AmqpDockerFlowBase:
     require_cloud_events_application_properties = False
     validate_payloads = False
     strict = False
+    bounded_sample = False
 
     def test_emits_cloudevents_to_amqp_queue(self):
         client = docker.from_env()
@@ -210,7 +211,7 @@ print("AMQP codec boundary checks passed:", version("python-qpid-proton"))
                 feeder.kill()
                 result = {"StatusCode": -1}
             logs = feeder.logs().decode("utf-8", errors="replace")
-            if self.strict:
+            if self.strict or self.bounded_sample:
                 assert result.get("StatusCode") == 0, f"Bounded AMQP feeder did not finish: {result}\n{logs}"
             if result.get("StatusCode") not in (0, -1):
                 assert False, f"Feeder failed: {result}\n{logs[-4000:]}"
@@ -231,7 +232,7 @@ print("AMQP codec boundary checks passed:", version("python-qpid-proton"))
                 # If we saw at least one expected type, the bridge is functional but
                 # upstream didn't return all event variants in the window (common for
                 # ONCE_MODE from clean state with no mock). Warn but don't fail.
-                if seen & self.expected_types and not self.strict:
+                if seen & self.expected_types and not (self.strict or self.bounded_sample):
                     import warnings
                     missing = must_see - seen
                     warnings.warn(f"Missing types (bridge functional): {sorted(missing)}. Seen: {sorted(seen)}")
@@ -246,9 +247,10 @@ print("AMQP codec boundary checks passed:", version("python-qpid-proton"))
                     raw_props = dict(getattr(msg, "properties", None) or {})
                     for required in ("id", "source", "type", "subject", "specversion"):
                         assert f"cloudEvents:{required}" in raw_props, f"Missing cloudEvents:{required}: {raw_props}"
-                if self.strict:
+                if self.strict or self.bounded_sample:
                     assert str(ce["specversion"]) == "1.0"
                     assert getattr(msg, "content_type", None) == "application/json"
+                if self.strict:
                     annotations = dict(getattr(msg, "annotations", None) or {})
                     partition_key = annotations.get("x-opt-partition-key", annotations.get(b"x-opt-partition-key"))
                     assert partition_key == ce["subject"], f"Partition key differs from CE subject: {annotations}"
@@ -280,6 +282,9 @@ class TestKystverketAisAmqpDockerFlow(AmqpDockerFlowBase):
     image = "kystverket-ais-amqp"
     env = {"KYSTVERKET_AIS_MOCK": "true"}
     expected_types = {"NO.Kystverket.AIS.PositionReport", "NO.Kystverket.AIS.ShipStatic", "NO.Kystverket.AIS.AidToNavigation"}
+    require_cloud_events_application_properties = True
+    validate_payloads = True
+    bounded_sample = True
 
 
 class TestKingCountyMarineAmqpDockerFlow(AmqpDockerFlowBase):
