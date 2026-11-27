@@ -33,6 +33,8 @@ Check the actual implementations, not only their names.
   mappings into complete Notebook definitions without losing other parts or
   Spark/Environment/Lakehouse/database bindings. It prepares an external
   definition only; publication and service readback remain operator gates.
+  Accept either `notebook-content.ipynb` or Fabric-native `notebook-content.py`;
+  native metadata and nonmapping code must remain unchanged.
 - The legacy shared deployers create dispatch ingestion and can overwrite the
   Spark kernel/Environment. They are not a qualified schematized path.
   A shared migration deployer must preserve every definition part, source

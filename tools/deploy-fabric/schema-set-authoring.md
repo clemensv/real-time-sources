@@ -20,8 +20,9 @@ python tools\deploy-fabric\generate_schema_set.py `
 ```
 
 Repeat `--messagegroup` for additional event families. The command resolves
-`basemessageuri` inheritance, including metadata overrides, and preserves the
-inherited CloudEvents wire type. It resolves local `#/`, `/`, and `xreg://./`
+`basemessageuri` and legacy `basemessage` inheritance, including metadata
+overrides, and preserves the inherited CloudEvents wire type. It resolves local
+`#/`, `/`, and `xreg://./`
 references. Unresolved references, inheritance cycles, duplicate wire types and
 conflicting schema IDs are errors.
 
@@ -175,7 +176,10 @@ python tools\deploy-fabric\bind_notebook_schemas.py `
 For an existing complete Notebook definition, use
 [bind_notebook_definition.py](./bind_notebook_definition.py) instead. Supply its
 `parts` object exported through the Fabric definition API, not just the notebook
-content. It retains unknown fields and every other part and rejects a missing
+content. Both `notebook-content.ipynb` and Fabric-native `notebook-content.py`
+are supported. Native code keeps its metadata and state statements unchanged;
+only the unique top-level deployment mapping assignments are replaced.
+It retains unknown fields and every other part and rejects a missing
 Spark kernel, the wrong Environment or absent Lakehouse/database dependencies:
 
 ```powershell
