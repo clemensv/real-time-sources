@@ -164,6 +164,49 @@ requires an explicit replay decision and retention of the old file. If an upstre
 dry period yields no new observations, wait within the approved deadline or report
 blocked acceptance; do not use old rows or synthetic telemetry as runtime proof.
 
+### Qualify workspace-identity notebook execution before publishing
+
+The documented workspace-identity route uses a DataPipeline Notebook activity,
+not an assumed identity on a standalone `RunNotebook` invocation. Qualify the
+runtime separately from feeder acquisition and schema ingestion.
+
+1. Read the service's supported connection types. The Notebook activity uses
+   connection type `Notebook`, creation method `Notebook.Actions`, and
+   credential type `WorkspaceIdentity`. A connection created with
+   `FabricDataPipelines.Actions` can pass creation/readback but is rejected by
+   `TridentNotebook` at execution.
+2. Verify the identity's Contributor role in the notebook workspace and the
+   tenant prerequisite documented in
+   [Notebook activity](https://learn.microsoft.com/en-us/fabric/data-factory/notebook-activity):
+   service principals must be allowed to call Fabric public APIs. Check any
+   security-group scope. If tenant-setting readback is forbidden, obtain
+   administrator verification; do not silently change the setting or assume
+   that workspace access establishes tenant eligibility.
+3. Create an owned probe Notebook with published Spark Environment and
+   Lakehouse dependencies. For an `.ipynb` definition, explicitly set
+   `definition.format` to `ipynb` in the create request. The default native
+   format can reject `notebook-content.ipynb` during conversion.
+4. Bind the pipeline's `TridentNotebook` activity to the actual notebook and
+   workspace IDs and set `externalReferences.connection` to the Notebook
+   connection ID. Read back the complete definition. The on-demand pipeline
+   job type is `Pipeline`; retain the accepted job ID before polling.
+5. Require a OneLake probe log that confirms the expected workspace-identity
+   principal. Log selected identity/audience claims only, never tokens.
+   Verify the publisher's required token audience and broker admission
+   separately. A `pbi` token or a completed job does not prove publishing.
+
+An `Unauthorized` workspace lookup before the first cell, with no OneLake
+log, blocks runtime qualification. Preserve the job and activity errors,
+verify role and tenant prerequisites, and report the unresolved authorization
+boundary. This does not prove that all Entra transports are unsupported.
+Do not fetch keys or run as a delegated user without fallback approval.
+
+Clean up only owned probes, connections and role assignments after recording
+the outcome. Deprovision a newly created control identity only after verifying
+that no unrelated items depend on it. An asynchronous deprovision operation can
+succeed without a result document; verify operation status and workspace
+readback instead of repeating the mutation after a result-read error.
+
 ### ACI managed-identity HTTPS checkpoints
 
 For ACI-hosted feeders with persistent file checkpoints, adopt the managed-identity
